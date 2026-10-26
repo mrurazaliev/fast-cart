@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button'
 
 const RouteError = () => {
   const error = useRouteError()
-  const notFound = isRouteErrorResponse(error) && error.status === 404
+  const notFound =
+    !error || (isRouteErrorResponse(error) && error.status === 404)
   return (
-    <main className="container space-y-6 py-24">
+    <section className="space-y-6">
       <h1 className="text-3xl font-semibold">
         {notFound
           ? 'This page is not available yet.'
@@ -14,7 +15,7 @@ const RouteError = () => {
       <Button asChild>
         <Link to="/">Back to home</Link>
       </Button>
-    </main>
+    </section>
   )
 }
 
