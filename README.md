@@ -40,4 +40,6 @@ The home hero loads categories from the public API with Redux Toolkit. Category 
 
 The local iPhone hero photograph comes from [Apple Newsroom](https://www.apple.com/ie/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/). The banner copy follows the supplied design; voucher redemption is not implemented.
 
+Flash Sales shows up to 12 discounted products from the first 100 catalog records. It uses the API's `hasDiscount` and a positive `discountPrice` below `price`. Images use the verified `/images/{filename}` endpoint. Prices have no currency symbol until the API currency is confirmed. Ratings, review counts, campaign deadlines and discount percentages are omitted. Cart and wishlist actions are visibly unavailable.
+
 The `marketplace` and `admin` branches start from the same setup commit. Continue buyer storefront work in `marketplace`.

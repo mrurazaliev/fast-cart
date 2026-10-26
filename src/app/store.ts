@@ -5,10 +5,15 @@ import {
   requestFinished,
 } from '@/features/requests/requestsSlice'
 import categoriesReducer from '@/features/categories/categoriesSlice'
+import productsReducer from '@/features/products/productsSlice'
 import { api } from '@/shared/api/client'
 
 export const store = configureStore({
-  reducer: { requests: requestsReducer, categories: categoriesReducer },
+  reducer: {
+    requests: requestsReducer,
+    categories: categoriesReducer,
+    products: productsReducer,
+  },
 })
 
 api.interceptors.request.use((config) => {
