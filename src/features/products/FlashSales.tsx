@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { fetchProducts } from '@/features/products/productsSlice'
 import { hasValidDiscount } from '@/shared/productPrice'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import ProductCard from '@/shared/components/ProductCard'
 import RequestState from '@/shared/components/RequestState'
 
@@ -72,7 +73,9 @@ const FlashSales = () => {
             size="icon"
             className="rounded-full"
             aria-label="Previous products"
-            aria-controls={rowId}
+            aria-controls={
+              status === 'succeeded' && products.length > 0 ? rowId : undefined
+            }
             disabled={!canScrollLeft}
             onClick={() => handleScroll(-1)}
           >
@@ -84,7 +87,9 @@ const FlashSales = () => {
             size="icon"
             className="rounded-full"
             aria-label="Next products"
-            aria-controls={rowId}
+            aria-controls={
+              status === 'succeeded' && products.length > 0 ? rowId : undefined
+            }
             disabled={!canScrollRight}
             onClick={() => handleScroll(1)}
           >
@@ -92,8 +97,29 @@ const FlashSales = () => {
           </Button>
         </div>
       </div>
+      {(status === 'idle' || status === 'pending') && (
+        <div role="status" aria-busy="true">
+          <span className="sr-only">Loading products…</span>
+          <div
+            aria-hidden="true"
+            className="flex gap-5 overflow-hidden p-1 pb-4 sm:gap-7"
+          >
+            {[0, 1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="w-[min(270px,80vw)] shrink-0 space-y-3 sm:w-[calc((100%_-_28px)/2)] lg:w-[calc((100%_-_84px)/4)]"
+              >
+                <Skeleton className="h-64 w-full" />
+                <div className="h-12">
+                  <Skeleton className="h-5 w-4/5" />
+                </div>
+                <Skeleton className="h-6 w-2/5" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       <RequestState
-        loading={status === 'idle' || status === 'pending'}
         error={error}
         onRetry={() => {
           void dispatch(fetchProducts())
