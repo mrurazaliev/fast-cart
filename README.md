@@ -1,6 +1,6 @@
 # FastCart
 
-Initial React + Vite foundation in JavaScript/JSX.
+Initial React + Vite foundation in TypeScript/TSX.
 
 ## Run locally
 
@@ -17,6 +17,7 @@ Copy `.env.example` to `.env.local` to override the public API URL. Never put se
 ## Checks
 
 ```sh
+npm run typecheck
 npm run build
 npm run lint
 npm run format:check
@@ -31,7 +32,7 @@ npm run format:check
 - `src/shared/components`: reusable request states
 - `src/components/ui`: shadcn/ui components
 
-Tailwind CSS uses the Vite plugin. shadcn/ui generates JavaScript components with `tsx: false` in `components.json`.
+Tailwind CSS uses the Vite plugin. shadcn/ui generates TypeScript components with `tsx: true` in `components.json`.
 
 Only `/` is implemented. Store pages, authentication and admin UI are later tasks. API authentication and business contracts still need verification. No token storage or guessed authorization response is implemented.
 

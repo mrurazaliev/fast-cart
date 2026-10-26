@@ -1,7 +1,13 @@
 import { LoaderCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const RequestState = ({ loading, error, onRetry }) => {
+type RequestStateProps = {
+  loading?: boolean
+  error?: string | null
+  onRetry?: () => void
+}
+
+const RequestState = ({ loading, error, onRetry }: RequestStateProps) => {
   if (loading)
     return (
       <p

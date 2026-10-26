@@ -1,8 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+type RequestsState = {
+  pending: number
+}
+
+const initialState: RequestsState = { pending: 0 }
+
 const requestsSlice = createSlice({
   name: 'requests',
-  initialState: { pending: 0 },
+  initialState,
   reducers: {
     requestStarted: (state) => {
       state.pending += 1
