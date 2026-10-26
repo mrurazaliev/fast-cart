@@ -1,0 +1,6 @@
+node_modules
+dist
+.codex-context
+AGENTS.md
+.setup-tools
+package-lock.json
