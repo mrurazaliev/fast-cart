@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div className="flex min-h-svh flex-col">
       <Header />
-      <main className="container flex-1 py-16 sm:py-24">
+      <main className="container flex-1 py-6 sm:py-10">
         <Outlet />
         <div className="mt-6">
           <RequestState loading={loading} />

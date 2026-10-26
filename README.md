@@ -36,4 +36,8 @@ Tailwind CSS uses the Vite plugin. shadcn/ui generates TypeScript components wit
 
 Only `/` is implemented. Store pages, authentication and admin UI are later tasks. API authentication and business contracts still need verification. No token storage or guessed authorization response is implemented.
 
+The home hero loads categories from the public API with Redux Toolkit. Category links and Shop Now target the future catalog route; the catalog itself is not implemented yet.
+
+The local iPhone hero photograph comes from [Apple Newsroom](https://www.apple.com/ie/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/). The banner copy follows the supplied design; voucher redemption is not implemented.
+
 The `marketplace` and `admin` branches start from the same setup commit. Continue buyer storefront work in `marketplace`.

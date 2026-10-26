@@ -2,11 +2,6 @@ import axios from 'axios'
 import type { AxiosResponse } from 'axios'
 import { ApiError } from '@/shared/api/types'
 import type { ApiResponseStatus } from '@/shared/api/types'
-import { store } from '@/app/store'
-import {
-  requestStarted,
-  requestFinished,
-} from '@/features/requests/requestsSlice'
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'https://store-api.softclub.tj',
@@ -25,14 +20,8 @@ const getErrorMessage = (error: unknown): string => {
   return 'The request could not be completed. Please try again.'
 }
 
-api.interceptors.request.use((config) => {
-  store.dispatch(requestStarted())
-  return config
-})
-
 api.interceptors.response.use(
   (response: AxiosResponse<unknown>) => {
-    store.dispatch(requestFinished())
     const body = response.data
     const status: ApiResponseStatus = {}
     if (typeof body === 'object' && body !== null) {
@@ -55,7 +44,6 @@ api.interceptors.response.use(
     return response
   },
   (error: unknown) => {
-    store.dispatch(requestFinished())
     if (axios.isCancel(error)) return Promise.reject(error)
     const status = axios.isAxiosError<unknown>(error)
       ? error.response?.status
