@@ -2,7 +2,8 @@ import { useRef } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { sessionStarted } from '@/features/auth/authSlice'
 import { loginSchema } from '@/features/auth/authSchemas'
 import type { LoginValues } from '@/features/auth/authSchemas'
 import { loginAccount, getAuthErrors } from '@/features/auth/authApi'
@@ -11,6 +12,7 @@ import AuthField from '@/features/auth/AuthField'
 import { Button } from '@/components/ui/button'
 
 const Login = () => {
+  const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.auth.session)
   const submitting = useRef(false)
   const {
@@ -28,7 +30,8 @@ const Login = () => {
     if (submitting.current) return
     submitting.current = true
     try {
-      await loginAccount(values)
+      const session = await loginAccount(values)
+      dispatch(sessionStarted(session))
     } catch (error) {
       const result = getAuthErrors(error)
       setError('root', { message: result.message })
@@ -46,10 +49,6 @@ const Login = () => {
 
   return (
     <AuthLayout title="Log in to FastCart">
-      <p role="status" className="text-sm text-muted-foreground">
-        Sign-in is awaiting verification of the server response. A session
-        cannot be started yet.
-      </p>
       <form
         noValidate
         onSubmit={(event) => void handleSubmit(onSubmit)(event)}

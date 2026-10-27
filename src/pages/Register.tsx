@@ -63,10 +63,7 @@ const Register = () => {
     <AuthLayout title="Create an account">
       {completed ? (
         <div role="status" className="space-y-5">
-          <p>
-            The registration request completed. Sign in separately to verify
-            access to your account.
-          </p>
+          <p>Your account has been created. Log in to continue.</p>
           <Button asChild className="h-12 rounded-sm px-8">
             <Link to="/login">Go to Log In</Link>
           </Button>

@@ -1,16 +1,28 @@
 import { api } from '@/shared/api/client'
+import { z } from 'zod'
 import { ApiError } from '@/shared/api/types'
+import { createAuthSession } from '@/features/auth/authSession'
 import type { LoginValues, RegisterValues } from '@/features/auth/authSchemas'
 
+const accountResponseSchema = z.object({
+  data: z.string(),
+  errors: z.array(z.unknown()).length(0),
+  statusCode: z.literal(200),
+})
+
 export const loginAccount = async (values: LoginValues) => {
-  await api.post<unknown>('/Account/login', values)
-  throw new Error(
-    'The sign-in response format has not been verified. You are not signed in.',
-  )
+  const response = await api.post<unknown>('/Account/login', values)
+  const result = accountResponseSchema.safeParse(response.data)
+  if (!result.success)
+    throw new Error('Unable to read the sign-in response. Please try again.')
+  return createAuthSession(result.data.data, values.userName)
 }
 
 export const registerAccount = async (values: RegisterValues) => {
-  await api.post<unknown>('/Account/register', values)
+  const response = await api.post<unknown>('/Account/register', values)
+  const result = accountResponseSchema.safeParse(response.data)
+  if (!result.success)
+    throw new Error('Unable to confirm registration. Please try again.')
 }
 
 export const getAuthErrors = (error: unknown) => {
