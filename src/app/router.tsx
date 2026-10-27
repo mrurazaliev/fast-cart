@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '@/app/App'
 import Products from '@/pages/Products'
+import Wishlist from '@/pages/Wishlist'
 import Home from '@/pages/Home'
 import RouteError from '@/pages/RouteError'
 
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'products', element: <Products /> },
+      { path: 'wishlist', element: <Wishlist /> },
       { path: '*', element: <RouteError /> },
     ],
   },

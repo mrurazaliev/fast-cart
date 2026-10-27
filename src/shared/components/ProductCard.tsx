@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, Heart, ImageOff } from 'lucide-react'
+import { Eye, Heart, ImageOff, Trash2 } from 'lucide-react'
 import type { Product } from '@/features/products/productsApi'
 import { getImageUrl } from '@/shared/api/imageUrl'
 import { formatPrice, hasValidDiscount } from '@/shared/productPrice'
 import { Button } from '@/components/ui/button'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { toggleWishlist } from '@/features/wishlist/wishlistSlice'
+import {
+  toggleWishlist,
+  removeFromWishlist,
+} from '@/features/wishlist/wishlistSlice'
 
-type ProductCardProps = { product: Product }
+type ProductCardProps = { product: Product; wishlist?: boolean }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
   const dispatch = useAppDispatch()
   const saved = useAppSelector((state) =>
     state.wishlist.ids.includes(product.id),
@@ -58,29 +61,41 @@ const ProductCard = ({ product }: ProductCardProps) => {
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => dispatch(toggleWishlist(product))}
+            onClick={() =>
+              dispatch(
+                wishlist
+                  ? removeFromWishlist(product.id)
+                  : toggleWishlist(product),
+              )
+            }
             aria-label={`${saved ? 'Remove from' : 'Add to'} wishlist: ${product.productName}`}
             aria-pressed={saved}
             className="size-9 rounded-full bg-white aria-pressed:text-primary"
           >
-            <Heart
-              className={`size-5 ${saved ? 'fill-current' : ''}`}
-              aria-hidden="true"
-            />
+            {wishlist ? (
+              <Trash2 className="size-5" aria-hidden="true" />
+            ) : (
+              <Heart
+                className={`size-5 ${saved ? 'fill-current' : ''}`}
+                aria-hidden="true"
+              />
+            )}
           </Button>
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            className="size-9 rounded-full bg-white hover:bg-white/90"
-          >
-            <Link
-              to={detailsUrl}
-              aria-label={`Quick view ${product.productName}`}
+          {!wishlist && (
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="size-9 rounded-full bg-white hover:bg-white/90"
             >
-              <Eye className="size-5" aria-hidden="true" />
-            </Link>
-          </Button>
+              <Link
+                to={detailsUrl}
+                aria-label={`Quick view ${product.productName}`}
+              >
+                <Eye className="size-5" aria-hidden="true" />
+              </Link>
+            </Button>
+          )}
         </div>
         <Button
           type="button"
