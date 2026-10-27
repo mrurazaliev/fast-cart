@@ -26,9 +26,11 @@ import {
 import Logo from '@/shared/components/Logo'
 import Navigation from '@/shared/components/header/Navigation'
 import SearchForm from '@/shared/components/header/SearchForm'
+import { useAppSelector } from '@/app/hooks'
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const wishlistCount = useAppSelector((state) => state.wishlist.ids.length)
 
   return (
     <header className="border-b border-border bg-background">
@@ -47,8 +49,20 @@ const Header = () => {
             size="icon"
             className="size-8 sm:size-9 rounded-full [&_svg]:size-6"
           >
-            <Link to="/wishlist" aria-label="Wishlist">
+            <Link
+              to="/wishlist"
+              aria-label={`Wishlist (${wishlistCount} items)`}
+              className="relative"
+            >
               <Heart className="size-6" strokeWidth={1.7} aria-hidden="true" />
+              {wishlistCount > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-4 text-white"
+                >
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
           </Button>
           <Button

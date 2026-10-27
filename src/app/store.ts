@@ -7,6 +7,8 @@ import {
 import categoriesReducer from '@/features/categories/categoriesSlice'
 import catalogReducer from '@/features/products/catalogSlice'
 import productsReducer from '@/features/products/productsSlice'
+import wishlistReducer from '@/features/wishlist/wishlistSlice'
+import { saveWishlistIds } from '@/features/wishlist/wishlistStorage'
 import { api } from '@/shared/api/client'
 
 export const store = configureStore({
@@ -15,7 +17,17 @@ export const store = configureStore({
     categories: categoriesReducer,
     products: productsReducer,
     catalog: catalogReducer,
+    wishlist: wishlistReducer,
   },
+})
+
+let previousWishlistIds = store.getState().wishlist.ids
+
+store.subscribe(() => {
+  const ids = store.getState().wishlist.ids
+  if (ids === previousWishlistIds) return
+  previousWishlistIds = ids
+  saveWishlistIds(ids)
 })
 
 api.interceptors.request.use((config) => {

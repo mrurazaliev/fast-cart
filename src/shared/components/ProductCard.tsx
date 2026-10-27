@@ -5,10 +5,16 @@ import type { Product } from '@/features/products/productsApi'
 import { getImageUrl } from '@/shared/api/imageUrl'
 import { formatPrice, hasValidDiscount } from '@/shared/productPrice'
 import { Button } from '@/components/ui/button'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { toggleWishlist } from '@/features/wishlist/wishlistSlice'
 
 type ProductCardProps = { product: Product }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const dispatch = useAppDispatch()
+  const saved = useAppSelector((state) =>
+    state.wishlist.ids.includes(product.id),
+  )
   const [failedImage, setFailedImage] = useState<string | null>(null)
   const imageUrl = getImageUrl(product.image)
   const discounted = hasValidDiscount(product)
@@ -52,12 +58,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
             type="button"
             variant="ghost"
             size="icon"
-            disabled
-            aria-label={`Wishlist unavailable for ${product.productName}`}
-            title="Wishlist is not available yet"
-            className="size-9 rounded-full bg-white disabled:opacity-60"
+            onClick={() => dispatch(toggleWishlist(product))}
+            aria-label={`${saved ? 'Remove from' : 'Add to'} wishlist: ${product.productName}`}
+            aria-pressed={saved}
+            className="size-9 rounded-full bg-white aria-pressed:text-primary"
           >
-            <Heart className="size-5" aria-hidden="true" />
+            <Heart
+              className={`size-5 ${saved ? 'fill-current' : ''}`}
+              aria-hidden="true"
+            />
           </Button>
           <Button
             asChild
