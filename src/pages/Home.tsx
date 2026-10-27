@@ -3,6 +3,7 @@ import CategoryMenu from '@/features/categories/CategoryMenu'
 import HeroBanner from '@/shared/components/home/HeroBanner'
 import FlashSales from '@/features/products/FlashSales'
 import BrowseCategories from '@/features/categories/BrowseCategories'
+import HomeProductSections from '@/features/products/HomeProductSections'
 
 const Home = () => {
   return (
@@ -26,6 +27,7 @@ const Home = () => {
       </div>
       <FlashSales />
       <BrowseCategories />
+      <HomeProductSections />
     </>
   )
 }
