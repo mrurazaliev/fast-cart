@@ -4,6 +4,7 @@ import HeroBanner from '@/shared/components/home/HeroBanner'
 import FlashSales from '@/features/products/FlashSales'
 import BrowseCategories from '@/features/categories/BrowseCategories'
 import HomeProductSections from '@/features/products/HomeProductSections'
+import NewArrival from '@/features/products/NewArrival'
 
 const Home = () => {
   return (
@@ -28,6 +29,7 @@ const Home = () => {
       <FlashSales />
       <BrowseCategories />
       <HomeProductSections />
+      <NewArrival />
     </>
   )
 }

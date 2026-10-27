@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { fetchProducts } from '@/features/products/productsSlice'
 import { selectHomeProducts } from '@/features/products/homeProductSelectors'
 import HomeProductSection from '@/features/products/HomeProductSection'
+import MusicBanner from '@/shared/components/home/MusicBanner'
 
 const HomeProductSections = () => {
   const dispatch = useAppDispatch()
@@ -31,6 +32,7 @@ const HomeProductSections = () => {
         onRetry={handleRetry}
         actionInHeader
       />
+      <MusicBanner />
       <HomeProductSection
         id="explore-products-title"
         label="Our Products"
