@@ -2,6 +2,7 @@ import { ChevronDown } from 'lucide-react'
 import CategoryMenu from '@/features/categories/CategoryMenu'
 import HeroBanner from '@/shared/components/home/HeroBanner'
 import FlashSales from '@/features/products/FlashSales'
+import BrowseCategories from '@/features/categories/BrowseCategories'
 
 const Home = () => {
   return (
@@ -24,6 +25,7 @@ const Home = () => {
         <HeroBanner />
       </div>
       <FlashSales />
+      <BrowseCategories />
     </>
   )
 }
