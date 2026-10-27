@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/shared/utils'
+import { useAppSelector } from '@/app/hooks'
 
 type NavigationProps = {
   mobile?: boolean
@@ -14,6 +15,7 @@ const links = [
 ]
 
 const Navigation = ({ mobile = false, onNavigate }: NavigationProps) => {
+  const signedIn = useAppSelector((state) => !!state.auth.session)
   return (
     <nav
       aria-label={mobile ? 'Mobile navigation' : 'Main navigation'}
@@ -22,23 +24,25 @@ const Navigation = ({ mobile = false, onNavigate }: NavigationProps) => {
         mobile ? 'flex-col gap-2' : 'items-center gap-7 xl:gap-10',
       )}
     >
-      {links.map(({ to, label }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end
-          onClick={onNavigate}
-          className={({ isActive }) =>
-            cn(
-              'w-fit border-b text-base transition-colors hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary',
-              mobile ? 'px-1 py-3' : 'py-1',
-              isActive ? 'border-foreground' : 'border-transparent',
-            )
-          }
-        >
-          {label}
-        </NavLink>
-      ))}
+      {links
+        .filter((link) => !signedIn || link.to !== '/register')
+        .map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              cn(
+                'w-fit border-b text-base transition-colors hover:border-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary',
+                mobile ? 'px-1 py-3' : 'py-1',
+                isActive ? 'border-foreground' : 'border-transparent',
+              )
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
     </nav>
   )
 }

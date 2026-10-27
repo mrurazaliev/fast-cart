@@ -8,6 +8,37 @@ export const api = axios.create({
   timeout: 15000,
 })
 
+let getSessionToken: () => string | null = () => null
+let clearSession: () => void = () => {}
+
+export const configureApiSession = (
+  getToken: () => string | null,
+  onUnauthorized: () => void,
+) => {
+  getSessionToken = getToken
+  clearSession = onUnauthorized
+}
+
+api.interceptors.request.use((config) => {
+  const token = getSessionToken()
+  if (
+    token &&
+    config.url !== '/Account/login' &&
+    config.url !== '/Account/register'
+  )
+    config.headers.set('Authorization', `Bearer ${token}`)
+  return config
+})
+
+const handleUnauthorized = (
+  status: number | undefined,
+  authorization: unknown,
+) => {
+  const token = getSessionToken()
+  if (status === 401 && token && authorization === `Bearer ${token}`)
+    clearSession()
+}
+
 const getErrorMessage = (error: unknown): string => {
   if (!axios.isAxiosError<unknown>(error))
     return 'The request could not be completed. Please try again.'
@@ -34,10 +65,16 @@ api.interceptors.response.use(
       (status.statusCode !== undefined && status.statusCode >= 400) ||
       status.errors?.length
     ) {
+      handleUnauthorized(
+        status.statusCode,
+        response.config.headers.get('Authorization'),
+      )
       return Promise.reject(
         new ApiError(
           'The server could not complete the request.',
           status.statusCode,
+          undefined,
+          body,
         ),
       )
     }
@@ -48,6 +85,15 @@ api.interceptors.response.use(
     const status = axios.isAxiosError<unknown>(error)
       ? error.response?.status
       : undefined
-    return Promise.reject(new ApiError(getErrorMessage(error), status, error))
+    if (axios.isAxiosError<unknown>(error))
+      handleUnauthorized(status, error.config?.headers.get('Authorization'))
+    return Promise.reject(
+      new ApiError(
+        getErrorMessage(error),
+        status,
+        error,
+        axios.isAxiosError<unknown>(error) ? error.response?.data : undefined,
+      ),
+    )
   },
 )

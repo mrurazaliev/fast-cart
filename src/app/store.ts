@@ -9,7 +9,9 @@ import catalogReducer from '@/features/products/catalogSlice'
 import productsReducer from '@/features/products/productsSlice'
 import wishlistReducer from '@/features/wishlist/wishlistSlice'
 import { saveWishlistIds } from '@/features/wishlist/wishlistStorage'
-import { api } from '@/shared/api/client'
+import { api, configureApiSession } from '@/shared/api/client'
+import authReducer, { loggedOut } from '@/features/auth/authSlice'
+import { saveAuthSession } from '@/features/auth/authSession'
 
 export const store = configureStore({
   reducer: {
@@ -18,8 +20,53 @@ export const store = configureStore({
     products: productsReducer,
     catalog: catalogReducer,
     wishlist: wishlistReducer,
+    auth: authReducer,
   },
 })
+
+let previousSession = store.getState().auth.session
+let expiryTimer: ReturnType<typeof setTimeout> | undefined
+
+const updateSession = () => {
+  if (expiryTimer) clearTimeout(expiryTimer)
+  const session = store.getState().auth.session
+  saveAuthSession(session)
+  if (session?.expiresAt !== null && session?.expiresAt !== undefined) {
+    const delay = Math.max(
+      0,
+      Math.min(session.expiresAt - Date.now(), 2147483647),
+    )
+    expiryTimer = setTimeout(() => {
+      if (session.expiresAt !== null && session.expiresAt <= Date.now())
+        store.dispatch(loggedOut())
+      else updateSession()
+    }, delay)
+  }
+}
+
+updateSession()
+store.subscribe(() => {
+  const session = store.getState().auth.session
+  if (session === previousSession) return
+  previousSession = session
+  updateSession()
+})
+
+configureApiSession(
+  () => {
+    const session = store.getState().auth.session
+    if (
+      session?.expiresAt !== null &&
+      session?.expiresAt !== undefined &&
+      session.expiresAt <= Date.now()
+    ) {
+      store.dispatch(loggedOut())
+      return null
+    }
+    return session?.token || null
+  },
+  () => store.dispatch(loggedOut()),
+)
 
 let previousWishlistIds = store.getState().wishlist.ids
 

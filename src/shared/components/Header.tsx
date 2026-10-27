@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   Heart,
   LogIn,
+  LogOut,
   Menu,
   ShoppingCart,
   UserRound,
@@ -13,6 +14,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -26,11 +28,14 @@ import {
 import Logo from '@/shared/components/Logo'
 import Navigation from '@/shared/components/header/Navigation'
 import SearchForm from '@/shared/components/header/SearchForm'
-import { useAppSelector } from '@/app/hooks'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { loggedOut } from '@/features/auth/authSlice'
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const wishlistCount = useAppSelector((state) => state.wishlist.ids.length)
+  const session = useAppSelector((state) => state.auth.session)
+  const dispatch = useAppDispatch()
 
   return (
     <header className="border-b border-border bg-background">
@@ -99,27 +104,44 @@ const Header = () => {
               sideOffset={16}
               className="w-52 rounded-sm border-0 bg-black/80 p-2 text-white shadow-lg backdrop-blur-md"
             >
-              <DropdownMenuItem
-                asChild
-                className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
-              >
-                <Link to="/login">
-                  <LogIn className="size-5 text-white" aria-hidden="true" />
-                  Log In
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                asChild
-                className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
-              >
-                <Link to="/register">
-                  <UserRoundPlus
-                    className="size-5 text-white"
-                    aria-hidden="true"
-                  />
-                  Sign Up
-                </Link>
-              </DropdownMenuItem>
+              {session ? (
+                <>
+                  <DropdownMenuLabel className="max-w-48 truncate px-3">
+                    {session.userName}
+                  </DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onSelect={() => dispatch(loggedOut())}
+                    className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
+                  >
+                    <LogOut className="size-5 text-white" aria-hidden="true" />
+                    Log Out
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem
+                    asChild
+                    className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
+                  >
+                    <Link to="/login">
+                      <LogIn className="size-5 text-white" aria-hidden="true" />
+                      Log In
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
+                  >
+                    <Link to="/register">
+                      <UserRoundPlus
+                        className="size-5 text-white"
+                        aria-hidden="true"
+                      />
+                      Sign Up
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
