@@ -5,6 +5,7 @@ import FlashSales from '@/features/products/FlashSales'
 import BrowseCategories from '@/features/categories/BrowseCategories'
 import HomeProductSections from '@/features/products/HomeProductSections'
 import NewArrival from '@/features/products/NewArrival'
+import ServicesSection from '@/shared/components/home/ServicesSection'
 
 const Home = () => {
   return (
@@ -30,6 +31,7 @@ const Home = () => {
       <BrowseCategories />
       <HomeProductSections />
       <NewArrival />
+      <ServicesSection />
     </>
   )
 }
