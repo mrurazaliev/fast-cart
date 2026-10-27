@@ -1,18 +1,25 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { createSearchParams, useNavigate } from 'react-router-dom'
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-const SearchForm = () => {
-  const [query, setQuery] = useState('')
+const SearchFields = ({ initialQuery }: { initialQuery: string }) => {
+  const [query, setQuery] = useState(initialQuery)
   const navigate = useNavigate()
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const productName = query.trim()
-    if (!productName) return
+    if (!productName) {
+      navigate('/products')
+      return
+    }
     navigate({
       pathname: '/products',
       search: createSearchParams({ ProductName: productName }).toString(),
@@ -46,6 +53,12 @@ const SearchForm = () => {
       </Button>
     </form>
   )
+}
+
+const SearchForm = () => {
+  const [params] = useSearchParams()
+  const query = params.get('ProductName') || ''
+  return <SearchFields key={query} initialQuery={query} />
 }
 
 export default SearchForm

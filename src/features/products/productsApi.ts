@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { api } from '@/shared/api/client'
 
-const productSchema = z.object({
+export const productSchema = z.object({
   id: z.number(),
   productName: z.string(),
   image: z.string().nullable(),

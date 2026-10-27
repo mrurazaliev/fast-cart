@@ -5,6 +5,7 @@ import {
   requestFinished,
 } from '@/features/requests/requestsSlice'
 import categoriesReducer from '@/features/categories/categoriesSlice'
+import catalogReducer from '@/features/products/catalogSlice'
 import productsReducer from '@/features/products/productsSlice'
 import { api } from '@/shared/api/client'
 
@@ -13,6 +14,7 @@ export const store = configureStore({
     requests: requestsReducer,
     categories: categoriesReducer,
     products: productsReducer,
+    catalog: catalogReducer,
   },
 })
 
