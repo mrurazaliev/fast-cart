@@ -31,7 +31,10 @@ export const getAuthErrors = (error: unknown) => {
     error instanceof Error
       ? error.message
       : 'Unable to complete this request. Please try again.'
+  const defaultMessage = message
   const body = error instanceof ApiError ? error.details : undefined
+  if (typeof body === 'string' && body.trim() && !body.trim().startsWith('<'))
+    message = body.trim()
   if (typeof body === 'object' && body !== null) {
     const errors = 'errors' in body ? body.errors : undefined
     const readMessage = (value: unknown): string => {
@@ -61,14 +64,18 @@ export const getAuthErrors = (error: unknown) => {
       }
       if (messages.length) message = messages.join(' ')
     } else if (typeof errors === 'string' && errors) message = errors
-    else if (
-      'message' in body &&
-      typeof body.message === 'string' &&
-      body.message
-    )
-      message = body.message
-    else if ('title' in body && typeof body.title === 'string' && body.title)
-      message = body.title
+    if (message === defaultMessage) {
+      for (const value of [
+        'message' in body ? body.message : undefined,
+        'detail' in body ? body.detail : undefined,
+        'title' in body ? body.title : undefined,
+      ]) {
+        if (typeof value === 'string' && value.trim()) {
+          message = value.trim()
+          break
+        }
+      }
+    }
   }
   if (error instanceof ApiError && error.status && message === error.message)
     message = `${message} (HTTP ${error.status})`
