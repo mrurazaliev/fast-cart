@@ -5,6 +5,7 @@ import type { Product } from '@/features/products/productsApi'
 import { getImageUrl } from '@/shared/api/imageUrl'
 import { formatPrice, hasValidDiscount } from '@/shared/productPrice'
 import { Button } from '@/components/ui/button'
+import ProductRating from '@/shared/components/ProductRating'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import {
   toggleWishlist,
@@ -128,6 +129,7 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
           </span>
         )}
       </p>
+      <ProductRating />
     </article>
   )
 }
