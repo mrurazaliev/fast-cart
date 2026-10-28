@@ -132,6 +132,18 @@ const Header = () => {
                     {session.userName}
                   </DropdownMenuLabel>
                   <DropdownMenuItem
+                    asChild
+                    className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
+                  >
+                    <Link to="/account">
+                      <UserRound
+                        className="size-5 text-white"
+                        aria-hidden="true"
+                      />
+                      My Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
                     onSelect={() => dispatch(loggedOut())}
                     className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
                   >
