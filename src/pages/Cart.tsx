@@ -290,17 +290,18 @@ const Cart = () => {
                 </dl>
                 <div className="space-y-3 text-center">
                   <Button
-                    disabled
+                    asChild
                     aria-describedby="checkout-note"
                     className="h-12 w-full rounded-sm"
                   >
-                    Proceed to checkout unavailable
+                    <Link to="/checkout">Proceed to checkout</Link>
                   </Button>
                   <p
                     id="checkout-note"
                     className="text-xs text-muted-foreground"
                   >
-                    Checkout is not available yet. No order has been placed.
+                    Review your billing details next. Order submission and
+                    payment are not available yet.
                   </p>
                 </div>
               </section>
