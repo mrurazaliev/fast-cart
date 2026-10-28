@@ -5,6 +5,7 @@ import type { RootState } from '@/app/store'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { mutateCart } from '@/features/cart/cartSlice'
 import { Button } from '@/components/ui/button'
+import { getCartQuantityIntent, getLoginReturnPath } from '@/shared/loginReturn'
 
 type AddToCartButtonProps = {
   productId: number
@@ -35,25 +36,29 @@ const AddToCartButton = ({
     error: string | null
   } | null>(null)
 
+  const openLogin = () => {
+    const returnTo = getLoginReturnPath({
+      returnTo: `${location.pathname}${location.search}${location.hash}`,
+    })
+    const cartQuantity = getCartQuantityIntent({
+      cartQuantity: { productId, quantity },
+    })
+    navigate('/login', {
+      state: { returnTo, ...(cartQuantity ? { cartQuantity } : {}) },
+    })
+  }
+
   const handleAdd = async () => {
     if (disabled || mutating) return
     if (!session) {
-      navigate('/login', {
-        state: {
-          returnTo: `${location.pathname}${location.search}${location.hash}`,
-        },
-      })
+      openLogin()
       return
     }
     const action = await dispatch(
       mutateCart({ type: 'add', productId, quantity, moveFromWishlist }),
     )
     if (!store.getState().auth.session) {
-      navigate('/login', {
-        state: {
-          returnTo: `${location.pathname}${location.search}${location.hash}`,
-        },
-      })
+      openLogin()
       return
     }
     if (mutateCart.fulfilled.match(action)) {

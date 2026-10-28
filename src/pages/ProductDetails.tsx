@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { parseProductId } from '@/features/products/productDetailsApi'
 import { fetchProductDetails } from '@/features/products/productDetailsSlice'
@@ -8,10 +8,15 @@ import RelatedItems from '@/features/products/RelatedItems'
 import RequestState from '@/shared/components/RequestState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { getCartQuantityIntent } from '@/shared/loginReturn'
 
 const ProductDetails = () => {
   const { id } = useParams()
+  const location = useLocation()
   const productId = parseProductId(id)
+  const initialQuantity = productId
+    ? getCartQuantityIntent(location.state, productId)?.quantity || 1
+    : 1
   const dispatch = useAppDispatch()
   const details = useAppSelector((state) => state.productDetails)
   const current = details.productId === productId
@@ -86,6 +91,12 @@ const ProductDetails = () => {
                 <ProductDetailsContent
                   key={details.item.id}
                   product={details.item}
+                  stock={details.stock}
+                  initialQuantity={initialQuantity}
+                  stockError={details.stockError}
+                  onRetryStock={() =>
+                    void dispatch(fetchProductDetails(productId))
+                  }
                 />
                 <RelatedItems
                   key={`related-${details.item.id}`}

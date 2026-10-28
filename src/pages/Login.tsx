@@ -11,7 +11,7 @@ import { loginAccount, getAuthErrors } from '@/features/auth/authApi'
 import AuthLayout from '@/features/auth/AuthLayout'
 import AuthField from '@/features/auth/AuthField'
 import { Button } from '@/components/ui/button'
-import { getLoginReturnPath } from '@/shared/loginReturn'
+import { getCartQuantityIntent, getLoginReturnPath } from '@/shared/loginReturn'
 
 const Login = () => {
   const dispatch = useAppDispatch()
@@ -70,8 +70,16 @@ const Login = () => {
     }
   }
 
-  if (session)
-    return <Navigate to={getLoginReturnPath(navigationState)} replace />
+  if (session) {
+    const cartQuantity = getCartQuantityIntent(navigationState)
+    return (
+      <Navigate
+        to={getLoginReturnPath(navigationState)}
+        replace
+        state={cartQuantity ? { cartQuantity } : null}
+      />
+    )
+  }
 
   return (
     <AuthLayout title="Log in to FastCart">

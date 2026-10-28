@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getProductDetails } from '@/features/products/productDetailsApi'
+import {
+  getProductDetails,
+  getProductStock,
+} from '@/features/products/productDetailsApi'
 import type { ProductDetails } from '@/features/products/productDetailsApi'
 
 type ProductDetailsState = {
@@ -8,6 +11,8 @@ type ProductDetailsState = {
   requestId: string | null
   status: 'idle' | 'pending' | 'succeeded' | 'failed'
   error: string | null
+  stock: number | null
+  stockError: string | null
 }
 
 const initialState: ProductDetailsState = {
@@ -16,15 +21,43 @@ const initialState: ProductDetailsState = {
   requestId: null,
   status: 'idle',
   error: null,
+  stock: null,
+  stockError: null,
 }
 
 export const fetchProductDetails = createAsyncThunk<
-  ProductDetails | null,
+  {
+    product: ProductDetails | null
+    stock: number | null
+    stockError: string | null
+  },
   number,
   { rejectValue: string }
 >('productDetails/fetch', async (id, { signal, rejectWithValue }) => {
   try {
-    return await getProductDetails(id, signal)
+    const product = await getProductDetails(id, signal)
+    if (!product) return { product: null, stock: null, stockError: null }
+    try {
+      const stock = await getProductStock(id, product.productName, signal)
+      return {
+        product,
+        stock,
+        stockError:
+          stock === null
+            ? 'Availability could not be verified. Please try again.'
+            : null,
+      }
+    } catch (error) {
+      if (signal.aborted) throw error
+      return {
+        product,
+        stock: null,
+        stockError:
+          error instanceof Error
+            ? error.message
+            : 'Unable to verify availability. Please try again.',
+      }
+    }
   } catch (error) {
     return rejectWithValue(
       error instanceof Error
@@ -46,10 +79,14 @@ const productDetailsSlice = createSlice({
         state.item = null
         state.status = 'pending'
         state.error = null
+        state.stock = null
+        state.stockError = null
       })
       .addCase(fetchProductDetails.fulfilled, (state, action) => {
         if (state.requestId !== action.meta.requestId) return
-        state.item = action.payload
+        state.item = action.payload.product
+        state.stock = action.payload.stock
+        state.stockError = action.payload.stockError
         state.status = 'succeeded'
       })
       .addCase(fetchProductDetails.rejected, (state, action) => {

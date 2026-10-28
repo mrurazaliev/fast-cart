@@ -1,7 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import type { RootState } from '@/app/store'
 import type { Product } from '@/features/products/productsApi'
-import { getProductDetails } from '@/features/products/productDetailsApi'
+import {
+  getProductDetails,
+  getProductStock,
+} from '@/features/products/productDetailsApi'
 
 export const fetchWishlistProduct = createAsyncThunk<
   Product | null,
@@ -16,7 +19,12 @@ export const fetchWishlistProduct = createAsyncThunk<
       state.catalog.items.find((product) => product.id === id)
     if (existing) return existing
     try {
-      return await getProductDetails(id, signal)
+      const product = await getProductDetails(id, signal)
+      if (!product) return null
+      const quantity = await getProductStock(id, product.productName, signal)
+      if (quantity === null)
+        throw new Error('Availability could not be verified. Please try again.')
+      return { ...product, quantity }
     } catch (error) {
       return rejectWithValue(
         error instanceof Error

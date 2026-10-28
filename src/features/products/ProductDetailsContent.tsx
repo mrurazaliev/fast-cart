@@ -11,17 +11,33 @@ import { Input } from '@/components/ui/input'
 import ProductRating from '@/shared/components/ProductRating'
 import ProductDelivery from '@/features/products/ProductDelivery'
 import { getColorSwatch } from '@/shared/productColor'
+import RequestState from '@/shared/components/RequestState'
 import AddToCartButton from '@/features/cart/AddToCartButton'
 
-const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
+const ProductDetailsContent = ({
+  product,
+  stock = product.quantity,
+  stockError,
+  onRetryStock,
+  initialQuantity = 1,
+}: {
+  product: ProductDetails
+  stock?: number | null
+  stockError?: string | null
+  onRetryStock?: () => void
+  initialQuantity?: number
+}) => {
   const dispatch = useAppDispatch()
   const saved = useAppSelector((state) =>
     state.wishlist.ids.includes(product.id),
   )
   const discounted = hasValidDiscount(product)
-  const [quantity, setQuantity] = useState(1)
-  const stock = product.quantity
   const quantityAvailable = stock !== null && stock !== undefined && stock > 0
+  const [quantity, setQuantity] = useState(() =>
+    quantityAvailable && Number.isSafeInteger(initialQuantity)
+      ? Math.max(1, Math.min(stock, initialQuantity))
+      : 1,
+  )
   const colorSwatch = product.color ? getColorSwatch(product.color) : null
   const changeQuantity = (value: number) => {
     if (!quantityAvailable || !Number.isFinite(value)) return
@@ -50,13 +66,11 @@ const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
             {product.productName}
           </h1>
           <ProductRating />
-          {product.quantity !== null && product.quantity !== undefined && (
+          {stock !== null && stock !== undefined && (
             <p
-              className={`text-sm ${product.quantity > 0 ? 'text-green-700' : 'text-muted-foreground'}`}
+              className={`text-sm ${stock > 0 ? 'text-green-700' : 'text-muted-foreground'}`}
             >
-              {product.quantity > 0
-                ? `In stock: ${product.quantity}`
-                : 'Out of stock'}
+              {stock > 0 ? `In stock: ${stock}` : 'Out of stock'}
             </p>
           )}
           <p className="flex flex-wrap items-center gap-4 text-2xl font-medium">
@@ -109,6 +123,7 @@ const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
           </dl>
         )}
         <div className="space-y-3 border-t pt-6">
+          <RequestState error={stockError} onRetry={onRetryStock} />
           <div className="flex flex-wrap items-center gap-4">
             <label htmlFor="product-quantity" className="text-sm font-medium">
               Quantity
@@ -169,7 +184,11 @@ const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
               size="icon"
               aria-label={`${saved ? 'Remove from' : 'Add to'} wishlist: ${product.productName}`}
               aria-pressed={saved}
-              onClick={() => dispatch(toggleWishlist(product))}
+              onClick={() =>
+                dispatch(
+                  toggleWishlist({ ...product, quantity: stock ?? undefined }),
+                )
+              }
               className="size-12 rounded-sm aria-pressed:text-primary"
             >
               <Heart
