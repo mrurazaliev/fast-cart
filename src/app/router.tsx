@@ -10,6 +10,7 @@ import Account from '@/pages/Account'
 import Checkout from '@/pages/Checkout'
 import About from '@/pages/About'
 import Contact from '@/pages/Contact'
+import NotFound from '@/pages/NotFound'
 import Home from '@/pages/Home'
 import RouteError from '@/pages/RouteError'
 
@@ -30,7 +31,7 @@ export const router = createBrowserRouter([
       { path: 'checkout', element: <Checkout /> },
       { path: 'about', element: <About /> },
       { path: 'contact', element: <Contact /> },
-      { path: '*', element: <RouteError /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ])
