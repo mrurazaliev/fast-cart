@@ -32,15 +32,15 @@ const Footer = () => {
           <h2 id="footer-support" className="text-xl font-medium">
             Support
           </h2>
-          <address className="space-y-4 text-sm leading-6 not-italic">
-            <p>
-              111 Bijoy sarani, Dhaka,
-              <br />
-              DH 1515, Bangladesh.
-            </p>
-            <p className="break-words">exclusive@gmail.com</p>
-            <p>+88015-88888-9999</p>
-          </address>
+          <p className="text-sm leading-6 text-neutral-300">
+            Verified support contact details are not available yet.
+          </p>
+          <Link
+            to="/contact"
+            className="inline-block rounded-sm text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          >
+            Contact information
+          </Link>
         </section>
         <nav aria-labelledby="footer-account" className="space-y-6">
           <h2 id="footer-account" className="text-xl font-medium">
