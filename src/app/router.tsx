@@ -8,6 +8,7 @@ import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Account from '@/pages/Account'
 import Checkout from '@/pages/Checkout'
+import About from '@/pages/About'
 import Home from '@/pages/Home'
 import RouteError from '@/pages/RouteError'
 
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
       { path: 'register', element: <Register /> },
       { path: 'account', element: <Account /> },
       { path: 'checkout', element: <Checkout /> },
+      { path: 'about', element: <About /> },
       { path: '*', element: <RouteError /> },
     ],
   },
