@@ -1,5 +1,6 @@
 import { useRef } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import type { FormEvent } from 'react'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -13,13 +14,20 @@ import { Button } from '@/components/ui/button'
 
 const Login = () => {
   const dispatch = useAppDispatch()
+  const location = useLocation()
+  const navigationState: unknown = location.state
+  const registrationComplete =
+    typeof navigationState === 'object' &&
+    navigationState !== null &&
+    'registrationComplete' in navigationState &&
+    navigationState.registrationComplete === true
   const session = useAppSelector((state) => state.auth.session)
   const submitting = useRef(false)
   const {
     register,
     handleSubmit,
     setError,
-    resetField,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -27,10 +35,9 @@ const Login = () => {
   })
 
   const onSubmit = async (values: LoginValues) => {
-    if (submitting.current) return
-    submitting.current = true
     try {
       const session = await loginAccount(values)
+      reset()
       dispatch(sessionStarted(session))
     } catch (error) {
       const result = getAuthErrors(error)
@@ -39,8 +46,25 @@ const Login = () => {
         if (result.fields[field])
           setError(field, { message: result.fields[field] })
       }
+    }
+  }
+
+  const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (submitting.current) return
+    submitting.current = true
+    try {
+      await handleSubmit(onSubmit, () => {
+        setError('root', {
+          message:
+            'Please correct the highlighted fields. No sign-in request was sent.',
+        })
+      })(event)
+    } catch {
+      setError('root', {
+        message: 'The form could not be submitted. Please try again.',
+      })
     } finally {
-      resetField('password', { keepError: true })
       submitting.current = false
     }
   }
@@ -49,9 +73,14 @@ const Login = () => {
 
   return (
     <AuthLayout title="Log in to FastCart">
+      {registrationComplete && (
+        <p role="status" className="text-sm">
+          Your account has been created. Log in to continue.
+        </p>
+      )}
       <form
         noValidate
-        onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+        onSubmit={(event) => void handleFormSubmit(event)}
         className="space-y-6"
         aria-busy={isSubmitting}
       >
@@ -69,11 +98,6 @@ const Login = () => {
             autoComplete="current-password"
             error={errors.password?.message}
           />
-          {errors.root?.message && (
-            <p role="alert" className="text-sm text-destructive">
-              {errors.root.message}
-            </p>
-          )}
           <Button
             type="submit"
             disabled={isSubmitting}
@@ -82,6 +106,20 @@ const Login = () => {
             {isSubmitting ? 'Signing in…' : 'Log In'}
           </Button>
         </fieldset>
+        {isSubmitting && (
+          <p
+            role="status"
+            aria-live="polite"
+            className="text-sm text-muted-foreground"
+          >
+            Sending sign-in request. Please wait…
+          </p>
+        )}
+        {errors.root?.message && (
+          <p role="alert" className="text-sm text-destructive">
+            {errors.root.message}
+          </p>
+        )}
       </form>
       <p className="text-sm text-muted-foreground">
         Don’t have an account?{' '}

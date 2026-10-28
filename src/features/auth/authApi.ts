@@ -32,25 +32,45 @@ export const getAuthErrors = (error: unknown) => {
       ? error.message
       : 'Unable to complete this request. Please try again.'
   const body = error instanceof ApiError ? error.details : undefined
-  if (typeof body === 'object' && body !== null && 'errors' in body) {
-    const errors = body.errors
-    if (Array.isArray(errors)) {
-      const messages = errors.filter(
-        (item): item is string => typeof item === 'string',
+  if (typeof body === 'object' && body !== null) {
+    const errors = 'errors' in body ? body.errors : undefined
+    const readMessage = (value: unknown): string => {
+      if (typeof value === 'string') return value
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        'description' in value &&
+        typeof value.description === 'string'
       )
+        return value.description
+      return ''
+    }
+    if (Array.isArray(errors)) {
+      const messages = errors.map(readMessage).filter(Boolean)
       if (messages.length) message = messages.join(' ')
     } else if (typeof errors === 'object' && errors !== null) {
+      const messages: string[] = []
       for (const [key, value] of Object.entries(errors)) {
         const text = Array.isArray(value)
-          ? value
-              .filter((item): item is string => typeof item === 'string')
-              .join(' ')
-          : typeof value === 'string'
-            ? value
-            : ''
-        if (text) fields[key.charAt(0).toLowerCase() + key.slice(1)] = text
+          ? value.map(readMessage).filter(Boolean).join(' ')
+          : readMessage(value)
+        if (text) {
+          fields[key.charAt(0).toLowerCase() + key.slice(1)] = text
+          messages.push(text)
+        }
       }
-    }
+      if (messages.length) message = messages.join(' ')
+    } else if (typeof errors === 'string' && errors) message = errors
+    else if (
+      'message' in body &&
+      typeof body.message === 'string' &&
+      body.message
+    )
+      message = body.message
+    else if ('title' in body && typeof body.title === 'string' && body.title)
+      message = body.title
   }
+  if (error instanceof ApiError && error.status && message === error.message)
+    message = `${message} (HTTP ${error.status})`
   return { message, fields }
 }
