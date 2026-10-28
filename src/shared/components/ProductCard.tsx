@@ -6,6 +6,7 @@ import { getImageUrl } from '@/shared/api/imageUrl'
 import { formatPrice, hasValidDiscount } from '@/shared/productPrice'
 import { Button } from '@/components/ui/button'
 import ProductRating from '@/shared/components/ProductRating'
+import AddToCartButton from '@/features/cart/AddToCartButton'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import {
   toggleWishlist,
@@ -98,14 +99,13 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
             </Button>
           )}
         </div>
-        <Button
-          type="button"
-          disabled
-          title="Cart is not available yet"
-          className="absolute inset-x-0 bottom-0 h-10 w-full rounded-none bg-black text-white disabled:opacity-70"
-        >
-          Cart unavailable
-        </Button>
+        <AddToCartButton
+          productId={product.id}
+          disabled={product.quantity === 0}
+          moveFromWishlist={wishlist}
+          wrapperClassName="absolute inset-x-0 bottom-0"
+          className="h-10 w-full rounded-none bg-black text-white hover:bg-black/90 disabled:opacity-70"
+        />
       </div>
       <h3 className="line-clamp-2 min-h-12 text-base leading-6 font-medium">
         <Link

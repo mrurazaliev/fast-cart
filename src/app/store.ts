@@ -14,6 +14,8 @@ import { saveWishlistIds } from '@/features/wishlist/wishlistStorage'
 import { api, configureApiSession } from '@/shared/api/client'
 import authReducer, { loggedOut } from '@/features/auth/authSlice'
 import { saveAuthSession } from '@/features/auth/authSession'
+import cartReducer from '@/features/cart/cartSlice'
+import { cancelCartRequests } from '@/features/cart/cartApi'
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +27,7 @@ export const store = configureStore({
     catalog: catalogReducer,
     wishlist: wishlistReducer,
     auth: authReducer,
+    cart: cartReducer,
   },
 })
 
@@ -53,6 +56,7 @@ store.subscribe(() => {
   const session = store.getState().auth.session
   if (session === previousSession) return
   previousSession = session
+  cancelCartRequests()
   updateSession()
 })
 

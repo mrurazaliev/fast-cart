@@ -8,6 +8,7 @@ export const productSchema = z.object({
   price: z.number().nonnegative(),
   hasDiscount: z.boolean(),
   discountPrice: z.number().nonnegative(),
+  quantity: z.number().int().nonnegative().nullish(),
 })
 
 const productsResponseSchema = z.object({

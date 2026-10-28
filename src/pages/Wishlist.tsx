@@ -8,11 +8,13 @@ import ProductCard from '@/shared/components/ProductCard'
 import RequestState from '@/shared/components/RequestState'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import MoveWishlistToCart from '@/features/cart/MoveWishlistToCart'
 
 const Wishlist = () => {
   const dispatch = useAppDispatch()
   const ids = useAppSelector((state) => state.wishlist.ids)
   const products = useAppSelector((state) => state.products)
+  const { mutationError, message } = useAppSelector((state) => state.cart)
   const suggestions = products.items
     .filter((product) => !ids.includes(product.id))
     .sort((first, second) => first.id - second.id)
@@ -35,19 +37,22 @@ const Wishlist = () => {
           <h1 id="wishlist-heading" className="text-xl">
             Wishlist ({ids.length})
           </h1>
-          <Button
-            variant="outline"
-            disabled
-            aria-describedby="wishlist-cart-note"
-            className="h-12 rounded-sm px-8"
-          >
-            Move All To Bag
-          </Button>
+          <MoveWishlistToCart />
         </div>
-        <p id="wishlist-cart-note" className="text-sm text-muted-foreground">
-          Add To Cart and Move All To Bag are unavailable until the server cart
-          is connected.
+        <p className="text-sm text-muted-foreground">
+          Products leave your wishlist only after their addition to the server
+          cart is confirmed.
         </p>
+        {message && (
+          <p role="status" className="text-sm">
+            {message}
+          </p>
+        )}
+        {mutationError && (
+          <p role="alert" className="text-sm text-destructive">
+            {mutationError}
+          </p>
+        )}
         {ids.length === 0 ? (
           <div role="status" className="space-y-5 py-8">
             <p className="text-muted-foreground">

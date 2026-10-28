@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Heart,
@@ -30,12 +30,22 @@ import Navigation from '@/shared/components/header/Navigation'
 import SearchForm from '@/shared/components/header/SearchForm'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { loggedOut } from '@/features/auth/authSlice'
+import { fetchCart } from '@/features/cart/cartSlice'
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const wishlistCount = useAppSelector((state) => state.wishlist.ids.length)
   const session = useAppSelector((state) => state.auth.session)
   const dispatch = useAppDispatch()
+  const cartCount = useAppSelector((state) =>
+    state.auth.session
+      ? new Set(state.cart.items.map((item) => item.product.id)).size
+      : 0,
+  )
+
+  useEffect(() => {
+    if (session) void dispatch(fetchCart())
+  }, [dispatch, session])
 
   return (
     <header className="border-b border-border bg-background">
@@ -76,12 +86,24 @@ const Header = () => {
             size="icon"
             className="size-8 sm:size-9 rounded-full [&_svg]:size-6"
           >
-            <Link to="/cart" aria-label="Cart">
+            <Link
+              to="/cart"
+              aria-label={`Cart (${cartCount} items)`}
+              className="relative"
+            >
               <ShoppingCart
                 className="size-6"
                 strokeWidth={1.7}
                 aria-hidden="true"
               />
+              {cartCount > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-1 -right-1 flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-4 text-white"
+                >
+                  {cartCount}
+                </span>
+              )}
             </Link>
           </Button>
           <DropdownMenu>

@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import ProductRating from '@/shared/components/ProductRating'
 import ProductDelivery from '@/features/products/ProductDelivery'
 import { getColorSwatch } from '@/shared/productColor'
+import AddToCartButton from '@/features/cart/AddToCartButton'
 
 const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
   const dispatch = useAppDispatch()
@@ -155,13 +156,13 @@ const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
             </p>
           )}
           <div className="flex gap-4">
-            <Button
-              disabled
-              aria-describedby="product-cart-note"
-              className="h-12 flex-1 rounded-sm"
-            >
-              Add to Cart unavailable
-            </Button>
+            <AddToCartButton
+              productId={product.id}
+              quantity={quantity}
+              disabled={!quantityAvailable}
+              wrapperClassName="min-w-0 flex-1"
+              className="h-12 w-full rounded-sm"
+            />
             <Button
               type="button"
               variant="outline"
@@ -177,8 +178,9 @@ const ProductDetailsContent = ({ product }: { product: ProductDetails }) => {
               />
             </Button>
           </div>
-          <p id="product-cart-note" className="text-sm text-muted-foreground">
-            Add to Cart is unavailable until the server cart is connected.
+          <p className="text-sm text-muted-foreground">
+            The selected quantity is added to your server cart after
+            confirmation.
           </p>
         </div>
         <ProductDelivery />
