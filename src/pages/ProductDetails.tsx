@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { parseProductId } from '@/features/products/productDetailsApi'
 import { fetchProductDetails } from '@/features/products/productDetailsSlice'
 import ProductDetailsContent from '@/features/products/ProductDetailsContent'
+import RelatedItems from '@/features/products/RelatedItems'
 import RequestState from '@/shared/components/RequestState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -81,10 +82,17 @@ const ProductDetails = () => {
           {current &&
             details.status === 'succeeded' &&
             (details.item ? (
-              <ProductDetailsContent
-                key={details.item.id}
-                product={details.item}
-              />
+              <>
+                <ProductDetailsContent
+                  key={details.item.id}
+                  product={details.item}
+                />
+                <RelatedItems
+                  key={`related-${details.item.id}`}
+                  productId={details.item.id}
+                  subcategoryId={details.item.subCategoryId}
+                />
+              </>
             ) : (
               <div role="status" className="space-y-5 py-10">
                 <h1 className="text-2xl font-semibold">Product not found</h1>

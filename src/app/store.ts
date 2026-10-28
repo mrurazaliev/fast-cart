@@ -8,6 +8,7 @@ import categoriesReducer from '@/features/categories/categoriesSlice'
 import catalogReducer from '@/features/products/catalogSlice'
 import productsReducer from '@/features/products/productsSlice'
 import productDetailsReducer from '@/features/products/productDetailsSlice'
+import relatedProductsReducer from '@/features/products/relatedProductsSlice'
 import wishlistReducer from '@/features/wishlist/wishlistSlice'
 import { saveWishlistIds } from '@/features/wishlist/wishlistStorage'
 import { api, configureApiSession } from '@/shared/api/client'
@@ -20,6 +21,7 @@ export const store = configureStore({
     categories: categoriesReducer,
     products: productsReducer,
     productDetails: productDetailsReducer,
+    relatedProducts: relatedProductsReducer,
     catalog: catalogReducer,
     wishlist: wishlistReducer,
     auth: authReducer,
