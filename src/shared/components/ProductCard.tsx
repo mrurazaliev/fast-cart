@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom'
 import { Eye, Heart, ImageOff, Trash2 } from 'lucide-react'
 import type { Product } from '@/features/products/productsApi'
 import { getImageUrl } from '@/shared/api/imageUrl'
-import { formatPrice, hasValidDiscount } from '@/shared/productPrice'
+import {
+  formatPrice,
+  getDiscountPercentage,
+  hasValidDiscount,
+} from '@/shared/productPrice'
 import { Button } from '@/components/ui/button'
 import ProductRating from '@/shared/components/ProductRating'
 import AddToCartButton from '@/features/cart/AddToCartButton'
@@ -23,12 +27,13 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
   const [failedImage, setFailedImage] = useState<string | null>(null)
   const imageUrl = getImageUrl(product.image)
   const discounted = hasValidDiscount(product)
+  const discountPercentage = getDiscountPercentage(product)
   const detailsUrl = `/products/${product.id}`
 
   return (
     <article
       aria-label={product.productName}
-      className="relative min-w-0 space-y-3"
+      className="product-card relative min-w-0 space-y-3"
     >
       <div className="relative overflow-hidden rounded-sm bg-secondary">
         <Link
@@ -53,9 +58,9 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
             </span>
           )}
         </Link>
-        {discounted && (
+        {discountPercentage !== null && (
           <span className="absolute top-3 left-3 rounded-sm bg-primary px-3 py-1 text-xs text-white">
-            Sale
+            -{discountPercentage}%
           </span>
         )}
         <div className="absolute top-3 right-3 flex flex-col gap-2">
@@ -103,7 +108,7 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
           productId={product.id}
           disabled={product.quantity === 0}
           moveFromWishlist={wishlist}
-          wrapperClassName="absolute inset-x-0 bottom-0"
+          wrapperClassName="product-card-cart absolute inset-x-0 bottom-0"
           className="h-10 w-full rounded-none bg-black text-white hover:bg-black/90 disabled:opacity-70"
         />
       </div>
@@ -129,7 +134,7 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
           </span>
         )}
       </p>
-      <ProductRating />
+      <ProductRating hideLabel />
     </article>
   )
 }

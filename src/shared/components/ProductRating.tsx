@@ -1,6 +1,6 @@
 import { Star } from 'lucide-react'
 
-const ProductRating = () => (
+const ProductRating = ({ hideLabel = false }: { hideLabel?: boolean }) => (
   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
     <span className="flex gap-1" aria-hidden="true">
       {Array.from({ length: 5 }, (_, index) => (
@@ -11,7 +11,9 @@ const ProductRating = () => (
         />
       ))}
     </span>
-    <span>Rating unavailable</span>
+    <span className={hideLabel ? 'sr-only' : undefined}>
+      Rating unavailable
+    </span>
   </div>
 )
 

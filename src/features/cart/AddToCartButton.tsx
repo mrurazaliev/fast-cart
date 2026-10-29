@@ -82,7 +82,11 @@ const AddToCartButton = ({
   const currentResult = result?.requestId === mutationRequestId ? result : null
 
   return (
-    <div className={wrapperClassName}>
+    <div
+      className={wrapperClassName}
+      data-cart-pending={mutating}
+      data-cart-feedback={!!(currentResult?.message || currentResult?.error)}
+    >
       <Button
         type="button"
         disabled={disabled || mutating}
@@ -92,21 +96,30 @@ const AddToCartButton = ({
       >
         {disabled ? 'Unavailable' : mutating ? 'Updating cart…' : 'Add To Cart'}
       </Button>
-      {currentResult?.message && (
-        <p
-          role="status"
-          className="bg-background px-2 py-1 text-xs text-foreground"
+      {(currentResult?.message || currentResult?.error) && (
+        <div
+          className="cart-feedback focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
+          role="region"
+          aria-label="Cart feedback"
+          tabIndex={0}
         >
-          {currentResult.message}
-        </p>
-      )}
-      {currentResult?.error && (
-        <p
-          role="alert"
-          className="bg-background px-2 py-1 text-xs text-destructive"
-        >
-          {currentResult.error}
-        </p>
+          {currentResult?.message && (
+            <p
+              role="status"
+              className="bg-background px-2 py-1 text-xs break-words text-foreground"
+            >
+              {currentResult.message}
+            </p>
+          )}
+          {currentResult?.error && (
+            <p
+              role="alert"
+              className="bg-background px-2 py-1 text-xs break-words text-destructive"
+            >
+              {currentResult.error}
+            </p>
+          )}
+        </div>
       )}
     </div>
   )
