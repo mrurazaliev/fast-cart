@@ -9,6 +9,7 @@ import NotFound from '@/pages/NotFound'
 import Products from '@/pages/Products'
 import ProductCreate from '@/pages/ProductCreate'
 import ProductEdit from '@/pages/ProductEdit'
+import Categories from '@/pages/Categories'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -56,12 +57,7 @@ const router = createBrowserRouter([
               { path: 'products/:id/edit', element: <ProductEdit /> },
               {
                 path: 'categories',
-                element: (
-                  <SectionUnavailable
-                    title="Categories"
-                    description="Category management is not implemented in this stage."
-                  />
-                ),
+                element: <Categories />,
               },
               {
                 path: 'subcategories',

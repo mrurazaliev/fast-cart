@@ -2,14 +2,9 @@ import { z } from 'zod'
 import { api } from '@/shared/api/client'
 import { ApiError } from '@/shared/api/types'
 import type { ProductFormValues } from './productFormSchema'
+import { getCategories } from '@/features/categories/categoriesApi'
+import type { Category } from '@/features/categories/categoriesApi'
 
-const categorySchema = z.object({
-  id: z.number().int().positive(),
-  categoryName: z.string(),
-  subCategories: z.array(
-    z.object({ id: z.number().int().positive(), subCategoryName: z.string() }),
-  ),
-})
 const brandsSchema = z.object({
   pageNumber: z.number().int().positive(),
   totalPage: z.number().int().nonnegative(),
@@ -26,7 +21,7 @@ const colorsSchema = z.object({
 })
 
 export type ProductLookups = {
-  categories: z.infer<typeof categorySchema>[]
+  categories: Category[]
   brands: z.infer<typeof brandsSchema>['data']
   colors: z.infer<typeof colorsSchema>['data']
 }
@@ -70,17 +65,12 @@ const getColors = async (signal: AbortSignal) => {
 export const getProductLookups = async (
   signal: AbortSignal,
 ): Promise<ProductLookups> => {
-  const [categoriesResponse, brands, colors] = await Promise.all([
-    api.get<unknown>('/Category/get-categories', { signal }),
+  const [categories, brands, colors] = await Promise.all([
+    getCategories(signal),
     getBrands(signal),
     getColors(signal),
   ])
-  const categories = z
-    .object({ data: z.array(categorySchema) })
-    .safeParse(categoriesResponse.data)
-  if (!categories.success)
-    throw new Error('Unable to read categories and subcategories.')
-  return { categories: categories.data.data, brands, colors }
+  return { categories, brands, colors }
 }
 
 export const getProductParameters = (values: ProductFormValues) => ({
