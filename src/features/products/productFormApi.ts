@@ -4,14 +4,9 @@ import { ApiError } from '@/shared/api/types'
 import type { ProductFormValues } from './productFormSchema'
 import { getCategories } from '@/features/categories/categoriesApi'
 import type { Category } from '@/features/categories/categoriesApi'
+import { getBrands } from '@/features/brands/brandsApi'
+import type { Brand } from '@/features/brands/brandsApi'
 
-const brandsSchema = z.object({
-  pageNumber: z.number().int().positive(),
-  totalPage: z.number().int().nonnegative(),
-  data: z.array(
-    z.object({ id: z.number().int().positive(), brandName: z.string() }),
-  ),
-})
 const colorsSchema = z.object({
   pageNumber: z.number().int().positive(),
   totalPage: z.number().int().nonnegative(),
@@ -22,26 +17,8 @@ const colorsSchema = z.object({
 
 export type ProductLookups = {
   categories: Category[]
-  brands: z.infer<typeof brandsSchema>['data']
+  brands: Brand[]
   colors: z.infer<typeof colorsSchema>['data']
-}
-
-const getBrands = async (signal: AbortSignal) => {
-  const items: ProductLookups['brands'] = []
-  let page = 1
-  while (true) {
-    const response = await api.get<unknown>('/Brand/get-brands', {
-      params: { PageNumber: page, PageSize: 100 },
-      signal,
-    })
-    if (response.status === 204) return items
-    const result = brandsSchema.safeParse(response.data)
-    if (!result.success || result.data.pageNumber !== page)
-      throw new Error('Unable to read brands.')
-    items.push(...result.data.data)
-    if (page >= result.data.totalPage) return items
-    page++
-  }
 }
 
 const getColors = async (signal: AbortSignal) => {

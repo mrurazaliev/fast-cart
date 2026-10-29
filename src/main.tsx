@@ -11,6 +11,7 @@ import ProductCreate from '@/pages/ProductCreate'
 import ProductEdit from '@/pages/ProductEdit'
 import Categories from '@/pages/Categories'
 import Subcategories from '@/pages/Subcategories'
+import Brands from '@/pages/Brands'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -66,12 +67,7 @@ const router = createBrowserRouter([
               },
               {
                 path: 'brands',
-                element: (
-                  <SectionUnavailable
-                    title="Brands"
-                    description="Brand management is not implemented in this stage."
-                  />
-                ),
+                element: <Brands />,
               },
               {
                 path: 'colors',
