@@ -8,11 +8,11 @@ const RouteError = () => {
     <main className="container space-y-6 py-24">
       <h1 className="text-3xl font-semibold">
         {notFound
-          ? 'This page is not available yet.'
+          ? 'This admin page does not exist.'
           : 'Unable to open this page.'}
       </h1>
       <Button asChild>
-        <Link to="/">Back to home</Link>
+        <Link to="/">Back to admin</Link>
       </Button>
     </main>
   )

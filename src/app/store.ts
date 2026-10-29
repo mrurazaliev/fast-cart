@@ -7,9 +7,14 @@ import {
 import authReducer, { loggedOut } from '@/features/auth/authSlice'
 import { saveAuthSession } from '@/features/auth/authSession'
 import { api, configureApiSession } from '@/shared/api/client'
+import adminAccessReducer from '@/features/auth/adminAccessSlice'
 
 export const store = configureStore({
-  reducer: { requests: requestsReducer, auth: authReducer },
+  reducer: {
+    requests: requestsReducer,
+    auth: authReducer,
+    adminAccess: adminAccessReducer,
+  },
 })
 
 let previousSession = store.getState().auth.session

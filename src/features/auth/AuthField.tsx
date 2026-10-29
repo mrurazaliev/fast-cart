@@ -17,7 +17,7 @@ const AuthField = ({
   error,
 }: AuthFieldProps) => (
   <div className="space-y-2">
-    <label htmlFor={field.name} className="text-sm font-medium">
+    <label htmlFor={field.name} className="sr-only">
       {label}
     </label>
     <Input
@@ -25,9 +25,10 @@ const AuthField = ({
       id={field.name}
       type={type}
       autoComplete={autoComplete}
+      placeholder={label}
       aria-invalid={!!error}
       aria-describedby={error ? `${field.name}-error` : undefined}
-      className="h-12 rounded-none border-0 border-b px-0 shadow-none"
+      className="h-14 rounded-sm px-4 pr-14 shadow-none"
     />
     {error && (
       <p

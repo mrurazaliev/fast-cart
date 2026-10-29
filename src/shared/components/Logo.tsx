@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom'
 
-const Logo = () => {
+const Logo = ({ large = false }: { large?: boolean }) => {
   return (
     <Link
       to="/"
-      aria-label="FastCart home"
+      aria-label="FastCart admin"
       className="inline-flex shrink-0 items-center gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
     >
       <svg
         viewBox="0 0 48 40"
         fill="none"
-        className="h-8 w-10 sm:h-9 sm:w-11"
+        className={
+          large ? 'h-12 w-14 sm:h-16 sm:w-20' : 'h-8 w-10 sm:h-9 sm:w-11'
+        }
         aria-hidden="true"
       >
         <path
@@ -29,7 +31,13 @@ const Logo = () => {
         <circle cx="21" cy="35" r="3" stroke="#F4BC25" strokeWidth="2.5" />
         <circle cx="37" cy="35" r="3" stroke="#F4BC25" strokeWidth="2.5" />
       </svg>
-      <span className="text-[22px] font-semibold tracking-[-1.2px] sm:text-[28px]">
+      <span
+        className={
+          large
+            ? 'text-4xl font-bold tracking-tight sm:text-5xl'
+            : 'text-[22px] font-semibold tracking-[-1.2px] sm:text-[28px]'
+        }
+      >
         fastcart
       </span>
     </Link>
