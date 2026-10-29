@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -27,12 +26,15 @@ const getStockLabel = (quantity: Product['quantity']) => {
 
 const ProductsTable = ({
   products,
-  unavailableId,
+  selectedIds,
+  onSelectionChange,
+  onDelete,
 }: {
   products: Product[]
-  unavailableId: string
+  selectedIds: number[]
+  onSelectionChange: (ids: number[]) => void
+  onDelete: (product: Product) => void
 }) => {
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
   const location = useLocation()
   const allSelected =
     products.length > 0 && selectedIds.length === products.length
@@ -40,10 +42,10 @@ const ProductsTable = ({
   if (allSelected) pageSelection = true
   else if (selectedIds.length > 0) pageSelection = 'indeterminate'
   const handleSelect = (id: number, selected: boolean) => {
-    setSelectedIds((ids) =>
+    onSelectionChange(
       selected
-        ? [...ids.filter((item) => item !== id), id]
-        : ids.filter((item) => item !== id),
+        ? [...selectedIds.filter((item) => item !== id), id]
+        : selectedIds.filter((item) => item !== id),
     )
   }
   return (
@@ -57,7 +59,7 @@ const ProductsTable = ({
                 aria-label="Select all products on this page"
                 checked={pageSelection}
                 onCheckedChange={(checked) =>
-                  setSelectedIds(
+                  onSelectionChange(
                     checked === true
                       ? products.map((product) => product.id)
                       : [],
@@ -139,10 +141,8 @@ const ProductsTable = ({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    disabled
                     aria-label={`Delete ${product.productName}`}
-                    aria-describedby={unavailableId}
-                    title="Deleting products is unavailable at this stage"
+                    onClick={() => onDelete(product)}
                     className="text-destructive"
                   >
                     <Trash2 aria-hidden="true" />
