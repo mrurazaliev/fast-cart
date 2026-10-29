@@ -12,6 +12,7 @@ type CatalogState = {
   pageNumber: number
   totalPage: number
   totalRecord: number
+  priceBounds: { minPrice: number; maxPrice: number } | null
 }
 
 const initialState: CatalogState = {
@@ -23,6 +24,7 @@ const initialState: CatalogState = {
   pageNumber: 1,
   totalPage: 0,
   totalRecord: 0,
+  priceBounds: null,
 }
 
 export const fetchCatalog = createAsyncThunk(
@@ -50,6 +52,7 @@ const catalogSlice = createSlice({
         state.status = 'pending'
         state.error = null
         state.items = []
+        state.priceBounds = null
         state.requestId = action.meta.requestId
         state.queryKey = JSON.stringify(action.meta.arg)
       })
@@ -60,6 +63,7 @@ const catalogSlice = createSlice({
         state.pageNumber = action.payload.pageNumber
         state.totalPage = action.payload.totalPage
         state.totalRecord = action.payload.totalRecord
+        state.priceBounds = action.payload.data.minMaxPrice || null
       })
       .addCase(fetchCatalog.rejected, (state, action) => {
         if (state.requestId !== action.meta.requestId) return

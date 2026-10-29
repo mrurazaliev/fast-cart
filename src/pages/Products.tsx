@@ -8,6 +8,8 @@ import ProductCard from '@/shared/components/ProductCard'
 import RequestState from '@/shared/components/RequestState'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import PriceRange from '@/features/products/PriceRange'
+import UnavailableFilters from '@/features/products/UnavailableFilters'
 
 const Products = () => {
   const [params, setParams] = useSearchParams()
@@ -44,6 +46,16 @@ const Products = () => {
     setParams(next)
   }
 
+  const changePrice = (minPrice?: number, maxPrice?: number) => {
+    const next = new URLSearchParams(params)
+    next.delete('PageNumber')
+    if (minPrice !== undefined) next.set('MinPrice', String(minPrice))
+    else next.delete('MinPrice')
+    if (maxPrice !== undefined) next.set('MaxPrice', String(maxPrice))
+    else next.delete('MaxPrice')
+    setParams(next)
+  }
+
   return (
     <div className="container py-10 sm:py-16">
       <nav
@@ -57,10 +69,7 @@ const Products = () => {
         <span>Explore Our Products</span>
       </nav>
       <div className="grid min-w-0 gap-8 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-12">
-        <aside
-          aria-label="Product categories"
-          className="space-y-4 border-t pt-4"
-        >
+        <aside aria-label="Product filters" className="space-y-4 border-t pt-4">
           <h2 className="font-semibold">Category</h2>
           <Button
             variant="ghost"
@@ -96,6 +105,14 @@ const Products = () => {
               </li>
             ))}
           </ul>
+          <PriceRange
+            key={`${query.MinPrice ?? ''}:${query.MaxPrice ?? ''}`}
+            minPrice={query.MinPrice}
+            maxPrice={query.MaxPrice}
+            bounds={current ? catalog.priceBounds : null}
+            onApply={changePrice}
+          />
+          <UnavailableFilters />
         </aside>
         <section
           aria-labelledby="catalog-heading"
@@ -108,7 +125,7 @@ const Products = () => {
                 className="text-2xl font-semibold break-words"
               >
                 {query.ProductName
-                  ? `Results for �${query.ProductName}�`
+                  ? `Results for “${query.ProductName}”`
                   : 'Explore Our Products'}
               </h1>
               {current && catalog.status === 'succeeded' && (
@@ -117,7 +134,11 @@ const Products = () => {
                 </p>
               )}
             </div>
-            {(query.ProductName || query.CategoryId || query.SubcategoryId) && (
+            {(query.ProductName ||
+              query.CategoryId ||
+              query.SubcategoryId ||
+              query.MinPrice !== undefined ||
+              query.MaxPrice !== undefined) && (
               <Button variant="outline" onClick={() => setParams({})}>
                 Clear search and filters
               </Button>
