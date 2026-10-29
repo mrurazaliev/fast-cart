@@ -7,6 +7,7 @@ import RouteError from '@/pages/RouteError'
 import Login from '@/pages/Login'
 import NotFound from '@/pages/NotFound'
 import Products from '@/pages/Products'
+import ProductCreate from '@/pages/ProductCreate'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
                 path: 'products',
                 element: <Products />,
               },
+              { path: 'products/new', element: <ProductCreate /> },
               {
                 path: 'categories',
                 element: (

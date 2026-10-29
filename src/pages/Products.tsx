@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { PackageOpen, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { readProductsQuery } from '@/features/products/productsApi'
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 
 const Products = () => {
   const [params, setParams] = useSearchParams()
+  const location = useLocation()
   const query = useMemo(() => readProductsQuery(params), [params])
   const queryKey = JSON.stringify(query)
   const dispatch = useAppDispatch()
@@ -50,13 +51,18 @@ const Products = () => {
         <h1 id="products-heading" className="text-2xl font-semibold">
           Products
         </h1>
-        <Button type="button" disabled aria-describedby={unavailableId}>
-          <Plus aria-hidden="true" />
-          Add product
+        <Button asChild>
+          <Link
+            to="/products/new"
+            state={{ returnTo: `${location.pathname}${location.search}` }}
+          >
+            <Plus aria-hidden="true" />
+            Add product
+          </Link>
         </Button>
       </div>
       <p id={unavailableId} className="text-sm text-muted-foreground">
-        Adding, editing and deleting products are unavailable at this stage.
+        Editing and deleting products are unavailable at this stage.
       </p>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-1 flex-wrap items-center gap-3">

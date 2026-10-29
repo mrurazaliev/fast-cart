@@ -24,7 +24,10 @@ const Header = () => {
   const loading = useAppSelector((state) => state.requests.pending > 0)
   const title =
     [...adminNavigation, ...otherNavigation].find(
-      (item) => item.path === location.pathname.replace(/\/+$/, ''),
+      (item) =>
+        item.path === location.pathname.replace(/\/+$/, '') ||
+        (item.path === '/products' &&
+          location.pathname.startsWith('/products/')),
     )?.label || 'Administration'
 
   return (

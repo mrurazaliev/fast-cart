@@ -50,7 +50,7 @@ export const fetchProducts = createAsyncThunk<
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: { productsInvalidated: () => ({ ...initialState }) },
   extraReducers: (builder) => {
     builder
       .addCase(loggedOut, () => ({ ...initialState }))
@@ -87,4 +87,5 @@ const productsSlice = createSlice({
   },
 })
 
+export const { productsInvalidated } = productsSlice.actions
 export default productsSlice.reducer
