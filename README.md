@@ -25,7 +25,8 @@ npm run format:check
 
 ## Structure
 
-- `src/app`: router and Redux store
+- `src/main.tsx`: all route declarations and application entry
+- `src/app`: Redux store and typed hooks
 - `src/pages`: admin screens and route error handling
 - `src/features`: authentication and Redux request state
 - `src/shared/api`: Axios client with timeout and error handling
