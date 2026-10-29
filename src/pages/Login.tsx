@@ -1,14 +1,17 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useStore } from 'react-redux'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import type { RootState } from '@/app/store'
 import { loginSchema } from '@/features/auth/authSchemas'
 import type { LoginValues } from '@/features/auth/authSchemas'
 import { getAuthErrors, loginAccount } from '@/features/auth/authApi'
 import { sessionStarted } from '@/features/auth/authSlice'
+import type { AuthSession } from '@/features/auth/authSession'
 import { getAdminReturnPath } from '@/features/auth/loginReturn'
 import AuthField from '@/features/auth/AuthField'
 import Logo from '@/shared/components/Logo'
@@ -17,10 +20,12 @@ import { productSaveNoticeSet } from '@/features/products/productsSlice'
 
 const Login = () => {
   const dispatch = useAppDispatch()
+  const store = useStore<RootState>()
   const session = useAppSelector((state) => state.auth.session)
   const saveNotice = useAppSelector((state) => state.products.saveNotice)
   const location = useLocation()
   const submitting = useRef(false)
+  const controller = useRef<AbortController | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const {
     register,
@@ -33,12 +38,24 @@ const Login = () => {
     defaultValues: { userName: '', password: '' },
   })
 
-  const onSubmit = async (values: LoginValues) => {
+  useEffect(() => () => controller.current?.abort(), [])
+
+  const onSubmit = async (
+    values: LoginValues,
+    signal: AbortSignal,
+    previousSession: AuthSession | null,
+  ) => {
+    if (signal.aborted || store.getState().auth.session !== previousSession)
+      return
     try {
-      const nextSession = await loginAccount(values)
+      const nextSession = await loginAccount(values, signal)
+      if (signal.aborted || store.getState().auth.session !== previousSession)
+        return
       reset()
       dispatch(sessionStarted(nextSession))
     } catch (error) {
+      if (signal.aborted || store.getState().auth.session !== previousSession)
+        return
       const result = getAuthErrors(error)
       setError('root', { message: result.message })
       for (const field of ['userName', 'password'] as const) {
@@ -50,11 +67,21 @@ const Login = () => {
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (submitting.current) return
+    if (submitting.current || store.getState().auth.session) return
     submitting.current = true
+    const request = new AbortController()
+    controller.current = request
+    const previousSession = store.getState().auth.session
+    const unsubscribe = store.subscribe(() => {
+      if (store.getState().auth.session !== previousSession) request.abort()
+    })
     try {
-      await handleSubmit(onSubmit)(event)
+      await handleSubmit((values) =>
+        onSubmit(values, request.signal, previousSession),
+      )(event)
     } finally {
+      unsubscribe()
+      controller.current = null
       submitting.current = false
     }
   }

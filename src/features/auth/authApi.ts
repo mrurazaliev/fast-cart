@@ -10,8 +10,11 @@ const accountResponseSchema = z.object({
   statusCode: z.literal(200),
 })
 
-export const loginAccount = async (values: LoginValues) => {
-  const response = await api.post<unknown>('/Account/login', values)
+export const loginAccount = async (
+  values: LoginValues,
+  signal?: AbortSignal,
+) => {
+  const response = await api.post<unknown>('/Account/login', values, { signal })
   const result = accountResponseSchema.safeParse(response.data)
   if (!result.success)
     throw new Error('Unable to read the sign-in response. Please try again.')
