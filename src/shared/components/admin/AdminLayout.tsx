@@ -3,7 +3,7 @@ import Sidebar from './Sidebar'
 import Header from './Header'
 
 const AdminLayout = () => (
-  <div className="min-h-svh bg-secondary lg:pl-64">
+  <div className="min-h-svh bg-background lg:pl-[254px]">
     <a
       href="#admin-main"
       className="sr-only z-50 rounded-md bg-background p-3 focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
@@ -15,7 +15,7 @@ const AdminLayout = () => (
     <main
       id="admin-main"
       tabIndex={-1}
-      className="mx-auto max-w-7xl space-y-6 p-5 outline-none sm:p-8 lg:p-10"
+      className="min-w-0 space-y-6 p-5 outline-none sm:p-7"
     >
       <Outlet />
     </main>

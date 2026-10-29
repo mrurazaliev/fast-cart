@@ -1,7 +1,20 @@
-import { Boxes, FolderTree, Layers, Palette, Tags } from 'lucide-react'
+import {
+  FolderTree,
+  House,
+  Layers,
+  List,
+  Palette,
+  Tag,
+  Tags,
+} from 'lucide-react'
 
 export const adminNavigation = [
-  { path: '/products', label: 'Products', icon: Boxes },
+  { path: '/dashboard', label: 'Dashboard', icon: House },
+  { path: '/orders', label: 'Orders', icon: List },
+  { path: '/products', label: 'Products', icon: Tag },
+]
+
+export const otherNavigation = [
   { path: '/categories', label: 'Categories', icon: FolderTree },
   { path: '/subcategories', label: 'Subcategories', icon: Layers },
   { path: '/brands', label: 'Brands', icon: Tags },

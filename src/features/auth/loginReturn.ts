@@ -1,4 +1,6 @@
 const adminPaths = [
+  '/dashboard',
+  '/orders',
   '/products',
   '/categories',
   '/subcategories',

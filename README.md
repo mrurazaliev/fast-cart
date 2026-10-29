@@ -41,4 +41,4 @@ Buyer storefront work remains in `marketplace`. Do not merge its complete applic
 
 `/login` uses the existing API username/password flow. Every protected route separately requests the signed-in user's profile and requires a matching user ID and a server-returned role named `Admin` (case insensitive). Errors, missing roles and denied access keep the workspace closed. This conservative UI role rule still needs confirmation against the backend policy with a valid admin account; it does not establish permissions for future CRUD endpoints.
 
-The workspace contains navigation for products, categories, subcategories, brands and colors. These sections currently show explicit unavailable states. Registration, role assignment and password recovery are not implemented.
+The dark Sidebar and Header surround a white workspace. Navigation contains Dashboard, Orders, Products and an Other group for categories, subcategories, brands and colors. All sections currently show explicit unavailable states; Dashboard and Orders contain no simulated data. Registration, role assignment and password recovery are not implemented.

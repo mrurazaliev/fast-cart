@@ -28,6 +28,24 @@ const router = createBrowserRouter([
             children: [
               { index: true, element: <Navigate to="/products" replace /> },
               {
+                path: 'dashboard',
+                element: (
+                  <SectionUnavailable
+                    title="Dashboard"
+                    description="Sales data and statistics are currently unavailable."
+                  />
+                ),
+              },
+              {
+                path: 'orders',
+                element: (
+                  <SectionUnavailable
+                    title="Orders"
+                    description="Order information is currently unavailable."
+                  />
+                ),
+              },
+              {
                 path: 'products',
                 element: (
                   <SectionUnavailable
