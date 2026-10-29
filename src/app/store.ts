@@ -8,12 +8,14 @@ import authReducer, { loggedOut } from '@/features/auth/authSlice'
 import { saveAuthSession } from '@/features/auth/authSession'
 import { api, configureApiSession } from '@/shared/api/client'
 import adminAccessReducer from '@/features/auth/adminAccessSlice'
+import productsReducer from '@/features/products/productsSlice'
 
 export const store = configureStore({
   reducer: {
     requests: requestsReducer,
     auth: authReducer,
     adminAccess: adminAccessReducer,
+    products: productsReducer,
   },
 })
 

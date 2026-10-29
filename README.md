@@ -41,4 +41,8 @@ Buyer storefront work remains in `marketplace`. Do not merge its complete applic
 
 `/login` uses the existing API username/password flow. Every protected route separately requests the signed-in user's profile and requires a matching user ID and a server-returned role named `Admin` (case insensitive). Errors, missing roles and denied access keep the workspace closed. This conservative UI role rule still needs confirmation against the backend policy with a valid admin account; it does not establish permissions for future CRUD endpoints.
 
-The dark Sidebar and Header surround a white workspace. Navigation contains Dashboard, Orders, Products and an Other group for categories, subcategories, brands and colors. All sections currently show explicit unavailable states; Dashboard and Orders contain no simulated data. Registration, role assignment and password recovery are not implemented.
+The dark Sidebar and Header surround a white workspace. Navigation contains Dashboard, Orders, Products and an Other group for categories, subcategories, brands and colors. Dashboard, Orders and the reference sections currently show explicit unavailable states with no simulated data.
+
+Products loads the real API list with name search and pagination stored in the URL. Only the outgoing search value is lowercased. Redux tracks request IDs, cancels obsolete requests and clears list state on session changes. Table selection applies only to the current page and resets when the list is reloaded. Inventory comes from the list response; missing stock remains unknown. Prices use the API price without an assumed currency. Images use `/images/{filename}` with an unavailable fallback.
+
+Product creation, editing and deletion are visibly unavailable until the next stage. Date sorting, registration, role assignment and password recovery are not implemented.

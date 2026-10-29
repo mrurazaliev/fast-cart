@@ -6,6 +6,7 @@ import { store } from '@/app/store'
 import RouteError from '@/pages/RouteError'
 import Login from '@/pages/Login'
 import NotFound from '@/pages/NotFound'
+import Products from '@/pages/Products'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -47,12 +48,7 @@ const router = createBrowserRouter([
               },
               {
                 path: 'products',
-                element: (
-                  <SectionUnavailable
-                    title="Products"
-                    description="Product management is not implemented in this stage."
-                  />
-                ),
+                element: <Products />,
               },
               {
                 path: 'categories',
