@@ -6,37 +6,13 @@ import { getCategories } from '@/features/categories/categoriesApi'
 import type { Category } from '@/features/categories/categoriesApi'
 import { getBrands } from '@/features/brands/brandsApi'
 import type { Brand } from '@/features/brands/brandsApi'
-
-const colorsSchema = z.object({
-  pageNumber: z.number().int().positive(),
-  totalPage: z.number().int().nonnegative(),
-  data: z.array(
-    z.object({ id: z.number().int().positive(), colorName: z.string() }),
-  ),
-})
+import { getColors } from '@/features/colors/colorsApi'
+import type { Color } from '@/features/colors/colorsApi'
 
 export type ProductLookups = {
   categories: Category[]
   brands: Brand[]
-  colors: z.infer<typeof colorsSchema>['data']
-}
-
-const getColors = async (signal: AbortSignal) => {
-  const items: ProductLookups['colors'] = []
-  let page = 1
-  while (true) {
-    const response = await api.get<unknown>('/Color/get-colors', {
-      params: { PageNumber: page, PageSize: 100 },
-      signal,
-    })
-    if (response.status === 204) return items
-    const result = colorsSchema.safeParse(response.data)
-    if (!result.success || result.data.pageNumber !== page)
-      throw new Error('Unable to read colors.')
-    items.push(...result.data.data)
-    if (page >= result.data.totalPage) return items
-    page++
-  }
+  colors: Color[]
 }
 
 export const getProductLookups = async (

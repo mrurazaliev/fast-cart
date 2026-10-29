@@ -12,6 +12,7 @@ import ProductEdit from '@/pages/ProductEdit'
 import Categories from '@/pages/Categories'
 import Subcategories from '@/pages/Subcategories'
 import Brands from '@/pages/Brands'
+import Colors from '@/pages/Colors'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -71,12 +72,7 @@ const router = createBrowserRouter([
               },
               {
                 path: 'colors',
-                element: (
-                  <SectionUnavailable
-                    title="Colors"
-                    description="Color management is not implemented in this stage."
-                  />
-                ),
+                element: <Colors />,
               },
               { path: '*', element: <NotFound /> },
             ],
