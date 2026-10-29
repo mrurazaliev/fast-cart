@@ -18,6 +18,8 @@ export const getAdminReturnPath = (state: unknown): string => {
     return '/products'
   const path = state.returnTo
   if (path.split('?')[0] === '/products/new') return path
+  const edit = path.split('?')[0]?.match(/^\/products\/([1-9]\d*)\/edit$/)
+  if (edit && Number(edit[1]) <= 2147483647) return path
   if (!adminPaths.includes(path.split('?')[0] || '')) return '/products'
   return path
 }

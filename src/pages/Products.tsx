@@ -3,7 +3,10 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { PackageOpen, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { readProductsQuery } from '@/features/products/productsApi'
-import { fetchProducts } from '@/features/products/productsSlice'
+import {
+  fetchProducts,
+  productSaveNoticeSet,
+} from '@/features/products/productsSlice'
 import ProductSearch from '@/features/products/ProductSearch'
 import ProductsTable from '@/features/products/ProductsTable'
 import ProductsPagination from '@/features/products/ProductsPagination'
@@ -62,8 +65,23 @@ const Products = () => {
         </Button>
       </div>
       <p id={unavailableId} className="text-sm text-muted-foreground">
-        Editing and deleting products are unavailable at this stage.
+        Bulk editing and product deletion are unavailable. Use a row's Edit
+        action to edit one product.
       </p>
+      {products.saveNotice && (
+        <div
+          role="alert"
+          className="space-y-3 rounded-sm border border-amber-300 p-4 text-sm"
+        >
+          <p>{products.saveNotice}</p>
+          <Button
+            variant="outline"
+            onClick={() => dispatch(productSaveNoticeSet(null))}
+          >
+            Dismiss save notice
+          </Button>
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-1 flex-wrap items-center gap-3">
           <ProductSearch

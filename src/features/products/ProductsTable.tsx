@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,7 @@ const ProductsTable = ({
   unavailableId: string
 }) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const location = useLocation()
   const allSelected =
     products.length > 0 && selectedIds.length === products.length
   let pageSelection: boolean | 'indeterminate' = false
@@ -118,16 +120,20 @@ const ProductsTable = ({
               <TableCell>
                 <div className="flex justify-end gap-2">
                   <Button
-                    type="button"
+                    asChild
                     variant="ghost"
                     size="icon"
-                    disabled
-                    aria-label={`Edit ${product.productName}`}
-                    aria-describedby={unavailableId}
-                    title="Editing products is unavailable at this stage"
                     className="text-primary"
                   >
-                    <Pencil aria-hidden="true" />
+                    <Link
+                      to={`/products/${product.id}/edit`}
+                      state={{
+                        returnTo: `${location.pathname}${location.search}`,
+                      }}
+                      aria-label={`Edit ${product.productName}`}
+                    >
+                      <Pencil aria-hidden="true" />
+                    </Link>
                   </Button>
                   <Button
                     type="button"

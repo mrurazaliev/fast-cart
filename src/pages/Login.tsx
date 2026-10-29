@@ -13,10 +13,12 @@ import { getAdminReturnPath } from '@/features/auth/loginReturn'
 import AuthField from '@/features/auth/AuthField'
 import Logo from '@/shared/components/Logo'
 import { Button } from '@/components/ui/button'
+import { productSaveNoticeSet } from '@/features/products/productsSlice'
 
 const Login = () => {
   const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.auth.session)
+  const saveNotice = useAppSelector((state) => state.products.saveNotice)
   const location = useLocation()
   const submitting = useRef(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -79,6 +81,21 @@ const Login = () => {
           <h1 id="login-heading" className="text-2xl font-semibold">
             Log in
           </h1>
+          {saveNotice && (
+            <div
+              role="alert"
+              className="space-y-2 rounded-sm border border-amber-300 p-3 text-sm"
+            >
+              <p>{saveNotice}</p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => dispatch(productSaveNoticeSet(null))}
+              >
+                Dismiss save notice
+              </Button>
+            </div>
+          )}
           <form
             noValidate
             onSubmit={(event) => void handleFormSubmit(event)}

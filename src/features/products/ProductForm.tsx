@@ -10,14 +10,21 @@ import type { RootState } from '@/app/store'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { getAuthErrors } from '@/features/auth/authApi'
-import { productsInvalidated } from './productsSlice'
-import { createProductSchema, emptyProductValues } from './productFormSchema'
+import { productsInvalidated, productSaveNoticeSet } from './productsSlice'
+import {
+  createProductSchema,
+  productFormSchema,
+  emptyProductValues,
+} from './productFormSchema'
 import type { ProductFormValues } from './productFormSchema'
 import { createProduct, isUncertainProductError } from './productFormApi'
 import type { ProductLookups } from './productFormApi'
 import ProductField from './ProductField'
 import ProductFiles from './ProductFiles'
 import ProductSavedDialog from './ProductSavedDialog'
+import { saveProductChanges } from './productEditApi'
+import type { EditableProduct } from './productEditApi'
+import ExistingProductImages from './ExistingProductImages'
 
 const selectClassName =
   'h-12 w-full min-w-0 rounded-sm border bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-primary'
@@ -25,9 +32,13 @@ const selectClassName =
 const ProductForm = ({
   lookups,
   backTo,
+  product,
+  onReload,
 }: {
   lookups: ProductLookups
   backTo: string
+  product?: EditableProduct
+  onReload?: () => void
 }) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -36,6 +47,9 @@ const ProductForm = ({
   const controller = useRef<AbortController | null>(null)
   const [saved, setSaved] = useState(false)
   const [unconfirmed, setUnconfirmed] = useState(false)
+  const [fieldsSaved, setFieldsSaved] = useState(false)
+  const [removedImageIds, setRemovedImageIds] = useState<number[]>([])
+  const savedLabel = product ? 'Product updated' : 'Product created'
   const {
     register,
     control,
@@ -44,14 +58,14 @@ const ProductForm = ({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ProductFormValues>({
-    resolver: zodResolver(createProductSchema),
-    defaultValues: emptyProductValues,
+    resolver: zodResolver(product ? productFormSchema : createProductSchema),
+    defaultValues: product?.values || emptyProductValues,
   })
   const categoryId = useWatch({ control, name: 'categoryId' })
   const hasDiscount = useWatch({ control, name: 'hasDiscount' })
   const files = useWatch({ control, name: 'newImages' })
   const category = lookups.categories.find((item) => item.id === categoryId)
-  const disabled = isSubmitting || saved || unconfirmed
+  const disabled = isSubmitting || saved || unconfirmed || fieldsSaved
 
   useEffect(() => () => controller.current?.abort(), [])
 
@@ -80,7 +94,44 @@ const ProductForm = ({
     }
     const request = new AbortController()
     controller.current = request
+    const unsubscribe = store.subscribe(() => {
+      if (session !== store.getState().auth.session) request.abort()
+    })
     try {
+      if (product) {
+        const imageIds = removedImageIds.filter((id) =>
+          product.images.some((image) => image.id === id),
+        )
+        const result = await saveProductChanges(
+          product.id,
+          values,
+          imageIds,
+          request.signal,
+          () =>
+            dispatch(
+              productSaveNoticeSet(
+                'Product fields were saved. Image changes have not yet been confirmed.',
+              ),
+            ),
+        )
+        dispatch(productsInvalidated())
+        if (result.status !== 'saved')
+          dispatch(productSaveNoticeSet(result.message))
+        if (request.signal.aborted || session !== store.getState().auth.session)
+          return
+        if (result.status === 'partial') {
+          setFieldsSaved(true)
+          setError('root', { message: result.message })
+          return
+        }
+        if (result.status === 'unconfirmed') {
+          setUnconfirmed(true)
+          setError('root', { message: result.message })
+          return
+        }
+        setSaved(true)
+        return
+      }
       const confirmed = await createProduct(values, request.signal)
       if (request.signal.aborted || session !== store.getState().auth.session)
         return
@@ -101,6 +152,13 @@ const ProductForm = ({
       if (isUncertainProductError(error)) {
         setUnconfirmed(true)
         dispatch(productsInvalidated())
+        dispatch(
+          productSaveNoticeSet(
+            'A product save could not be confirmed. Check the product list before retrying.',
+          ),
+        )
+        result.message +=
+          ' The save could not be confirmed. Check the product list before retrying.'
       }
       setError('root', { message: result.message })
       for (const field of Object.keys(
@@ -109,12 +167,14 @@ const ProductForm = ({
         if (result.fields[field])
           setError(field, { message: result.fields[field] })
       }
+    } finally {
+      unsubscribe()
     }
   }
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (submitting.current || saved || unconfirmed) return
+    if (submitting.current || saved || unconfirmed || fieldsSaved) return
     submitting.current = true
     try {
       await handleSubmit(onSubmit)(event)
@@ -134,7 +194,7 @@ const ProductForm = ({
             className="size-5 text-muted-foreground"
             aria-hidden="true"
           />
-          Products / Add new
+          {product ? 'Products / Edit product' : 'Products / Add new'}
         </h1>
         <div className="flex gap-3">
           <Button
@@ -155,12 +215,27 @@ const ProductForm = ({
           {errors.root.message}
         </p>
       )}
+      {product && product.warnings.length > 0 && (
+        <div
+          role="alert"
+          className="space-y-2 rounded-sm border border-amber-300 bg-amber-50 p-4 text-sm"
+        >
+          {product.warnings.map((warning) => (
+            <p key={warning}>{warning}</p>
+          ))}
+        </div>
+      )}
+      {fieldsSaved && onReload && (
+        <Button type="button" variant="outline" onClick={onReload}>
+          Reload saved product
+        </Button>
+      )}
       {saved && (
         <div
           role="status"
           className="space-y-3 rounded-sm border border-primary/30 p-4"
         >
-          <p>Product created. The server confirmed the save.</p>
+          <p>{savedLabel}. The server confirmed the save.</p>
           <Button asChild>
             <Link to={backTo}>Back to products</Link>
           </Button>
@@ -393,6 +468,20 @@ const ProductForm = ({
               Tags, tax, HEX colors and multiple variants are unavailable. The
               description is saved as plain text.
             </p>
+            {product && (
+              <ExistingProductImages
+                images={product.images}
+                removedIds={removedImageIds}
+                disabled={disabled}
+                onToggle={(id) =>
+                  setRemovedImageIds((ids) =>
+                    ids.includes(id)
+                      ? ids.filter((item) => item !== id)
+                      : [...ids, id],
+                  )
+                }
+              />
+            )}
             <ProductFiles
               files={files}
               onChange={(value) =>
@@ -404,9 +493,7 @@ const ProductForm = ({
           </div>
         </fieldset>
       </form>
-      {saved && (
-        <ProductSavedDialog message="Product created" backTo={backTo} />
-      )}
+      {saved && <ProductSavedDialog message={savedLabel} backTo={backTo} />}
     </section>
   )
 }

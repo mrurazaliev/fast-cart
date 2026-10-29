@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { getProducts } from './productsApi'
 import type { Product, ProductsPage, ProductsQuery } from './productsApi'
 import { ApiError } from '@/shared/api/types'
@@ -14,6 +15,7 @@ type ProductsState = {
   pageNumber: number
   totalPage: number
   totalRecord: number
+  saveNotice: string | null
 }
 
 const initialState: ProductsState = {
@@ -26,6 +28,7 @@ const initialState: ProductsState = {
   pageNumber: 1,
   totalPage: 0,
   totalRecord: 0,
+  saveNotice: null,
 }
 
 export const fetchProducts = createAsyncThunk<
@@ -50,11 +53,22 @@ export const fetchProducts = createAsyncThunk<
 const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: { productsInvalidated: () => ({ ...initialState }) },
+  reducers: {
+    productsInvalidated: () => ({ ...initialState }),
+    productSaveNoticeSet: (state, action: PayloadAction<string | null>) => {
+      state.saveNotice = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(loggedOut, () => ({ ...initialState }))
-      .addCase(sessionStarted, () => ({ ...initialState }))
+      .addCase(loggedOut, (state) => ({
+        ...initialState,
+        saveNotice: state.saveNotice,
+      }))
+      .addCase(sessionStarted, (state) => ({
+        ...initialState,
+        saveNotice: state.saveNotice,
+      }))
       .addCase(fetchProducts.pending, (state, action) => {
         state.status = 'pending'
         state.items = []
@@ -87,5 +101,6 @@ const productsSlice = createSlice({
   },
 })
 
-export const { productsInvalidated } = productsSlice.actions
+export const { productsInvalidated, productSaveNoticeSet } =
+  productsSlice.actions
 export default productsSlice.reducer
