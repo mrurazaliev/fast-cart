@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import ProductCard from '@/shared/components/ProductCard'
 import RequestState from '@/shared/components/RequestState'
+import FlashSaleCountdown from './FlashSaleCountdown'
 
 const FlashSales = () => {
   const dispatch = useAppDispatch()
@@ -59,13 +60,16 @@ const FlashSales = () => {
         <span className="h-10 w-5 rounded-sm bg-primary" aria-hidden="true" />
         Today's
       </p>
-      <div className="flex items-end justify-between gap-4">
-        <h2
-          id="flash-sales-title"
-          className="text-3xl font-semibold tracking-wide sm:text-4xl"
-        >
-          Flash Sales
-        </h2>
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div className="flex flex-wrap items-end gap-6 sm:gap-12">
+          <h2
+            id="flash-sales-title"
+            className="text-3xl font-semibold tracking-wide sm:text-4xl"
+          >
+            Flash Sales
+          </h2>
+          <FlashSaleCountdown />
+        </div>
         <div className="flex shrink-0 gap-2">
           <Button
             type="button"
@@ -148,9 +152,6 @@ const FlashSales = () => {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-muted-foreground">
-            Cart and wishlist are not available yet.
-          </p>
         </>
       )}
       <div className="pt-2 text-center">
