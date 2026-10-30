@@ -48,7 +48,7 @@ const Header = () => {
   }, [dispatch, session])
 
   return (
-    <header className="border-b border-border bg-background">
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="container flex flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:gap-x-4 py-5 lg:flex-nowrap lg:gap-6 lg:py-5">
         <Logo />
         <div className="hidden lg:block">
