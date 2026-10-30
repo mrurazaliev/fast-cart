@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Layers, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { deleteSubcategory } from '@/features/categories/subcategoriesApi'
 import type { Subcategory } from '@/features/categories/subcategoriesApi'
 import RequestState from '@/shared/components/RequestState'
 import CategoryPagination from '@/features/categories/CategoryPagination'
+import OtherTabs from '@/shared/components/admin/OtherTabs'
 
 const Subcategories = () => {
   const dispatch = useAppDispatch()
@@ -68,18 +69,7 @@ const Subcategories = () => {
   return (
     <section aria-labelledby="subcategories-heading" className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <nav aria-label="Other sections" className="flex flex-wrap gap-2">
-          <Button variant="ghost" asChild>
-            <NavLink to="/categories">Categories</NavLink>
-          </Button>
-          <Button
-            variant="ghost"
-            className="bg-primary/10 text-primary"
-            asChild
-          >
-            <NavLink to="/subcategories">Subcategories</NavLink>
-          </Button>
-        </nav>
+        <OtherTabs />
         <Button
           onClick={() => setForm({ categoryId })}
           disabled={

@@ -5,7 +5,7 @@ const adminPaths = [
   '/categories',
   '/subcategories',
   '/brands',
-  '/colors',
+  '/banners',
 ]
 
 export const getAdminReturnPath = (state: unknown): string => {

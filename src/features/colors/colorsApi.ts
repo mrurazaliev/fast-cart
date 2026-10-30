@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { api } from '@/shared/api/client'
 import { ApiError } from '@/shared/api/types'
 import { getAuthErrors } from '@/features/auth/authApi'
-import type { ColorFormValues } from './colorFormSchema'
+export type ColorValues = { colorName: string }
 
 const idSchema = z.number().int().positive().max(2147483647)
 const colorSchema = z.object({ id: idSchema, colorName: z.string() })
@@ -78,10 +78,7 @@ export const getColor = async (id: number, signal: AbortSignal) => {
   return result.data.data
 }
 
-export const createColor = async (
-  values: ColorFormValues,
-  signal: AbortSignal,
-) => {
+export const createColor = async (values: ColorValues, signal: AbortSignal) => {
   const response = await api.post<unknown>('/Color/add-color', null, {
     params: { ColorName: values.colorName },
     signal,
@@ -91,7 +88,7 @@ export const createColor = async (
 
 export const updateColor = async (
   id: number,
-  values: ColorFormValues,
+  values: ColorValues,
   signal: AbortSignal,
 ) => {
   idSchema.parse(id)

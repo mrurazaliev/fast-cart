@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { Button } from '@/components/ui/button'
@@ -9,6 +8,7 @@ import { fetchBrands } from '@/features/brands/brandsSlice'
 import type { Brand } from '@/features/brands/brandsApi'
 import BrandForm from '@/features/brands/BrandForm'
 import BrandDeleteDialog from '@/features/brands/BrandDeleteDialog'
+import OtherTabs from '@/shared/components/admin/OtherTabs'
 
 const Brands = () => {
   const dispatch = useAppDispatch()
@@ -34,19 +34,7 @@ const Brands = () => {
       <h1 id="brands-heading" className="text-2xl font-semibold">
         Brands
       </h1>
-      <nav aria-label="Other sections" className="flex flex-wrap gap-2">
-        <Button asChild variant="ghost">
-          <Link to="/categories">Categories</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/brands" aria-current="page">
-            Brands
-          </Link>
-        </Button>
-        <Button asChild variant="ghost">
-          <Link to="/colors">Colors</Link>
-        </Button>
-      </nav>
+      <OtherTabs />
       <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="min-w-0 space-y-4">
           <label htmlFor="brand-search" className="sr-only">

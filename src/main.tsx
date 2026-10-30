@@ -12,7 +12,7 @@ import ProductEdit from '@/pages/ProductEdit'
 import Categories from '@/pages/Categories'
 import Subcategories from '@/pages/Subcategories'
 import Brands from '@/pages/Brands'
-import Colors from '@/pages/Colors'
+import Banners from '@/pages/Banners'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -71,8 +71,8 @@ const router = createBrowserRouter([
                 element: <Brands />,
               },
               {
-                path: 'colors',
-                element: <Colors />,
+                path: 'banners',
+                element: <Banners />,
               },
               { path: '*', element: <NotFound /> },
             ],

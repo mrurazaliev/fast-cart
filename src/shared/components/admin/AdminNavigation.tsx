@@ -1,15 +1,15 @@
-import { NavLink, useLocation } from 'react-router-dom'
-import type { NavLinkRenderProps } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, Folder } from 'lucide-react'
 import { adminNavigation, otherNavigation } from './navigationItems'
 
-const getLinkClassName = ({ isActive }: NavLinkRenderProps) =>
+const getLinkClassName = ({ isActive }: { isActive: boolean }) =>
   `flex min-h-11 items-center gap-4 rounded-sm px-4 py-3 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${isActive ? 'bg-white text-admin-surface' : 'text-white/90 hover:bg-white/10 hover:text-white'}`
 
 const AdminNavigation = ({ onNavigate }: { onNavigate?: () => void }) => {
   const location = useLocation()
   const pathname = location.pathname.replace(/\/+$/, '')
-  const otherActive = otherNavigation.some((item) => item.path === pathname)
+  const otherPath = pathname === '/subcategories' ? '/categories' : pathname
+  const otherActive = otherNavigation.some((item) => item.path === otherPath)
 
   return (
     <nav aria-label="Admin navigation" className="space-y-2">
@@ -37,15 +37,16 @@ const AdminNavigation = ({ onNavigate }: { onNavigate?: () => void }) => {
         </summary>
         <div className="ml-6 space-y-1 border-l border-white/20 pl-3">
           {otherNavigation.map(({ path, label, icon: Icon }) => (
-            <NavLink
+            <Link
               key={path}
               to={path}
               onClick={onNavigate}
-              className={getLinkClassName}
+              className={getLinkClassName({ isActive: path === otherPath })}
+              aria-current={path === otherPath ? 'page' : undefined}
             >
               <Icon className="size-4 shrink-0" aria-hidden="true" />
               {label}
-            </NavLink>
+            </Link>
           ))}
         </div>
       </details>

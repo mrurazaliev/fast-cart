@@ -12,6 +12,7 @@ import CategoryForm from '@/features/categories/CategoryForm'
 import CategoryDeleteDialog from '@/features/categories/CategoryDeleteDialog'
 import CategoryImage from '@/features/categories/CategoryImage'
 import CategoryPagination from '@/features/categories/CategoryPagination'
+import OtherTabs from '@/shared/components/admin/OtherTabs'
 
 const Categories = () => {
   const dispatch = useAppDispatch()
@@ -57,16 +58,7 @@ const Categories = () => {
           Add category
         </Button>
       </div>
-      <nav aria-label="Category sections" className="flex gap-3">
-        <Button asChild variant="secondary">
-          <Link to="/categories" aria-current="page">
-            Categories
-          </Link>
-        </Button>
-        <Button asChild variant="ghost">
-          <Link to="/subcategories">Subcategories</Link>
-        </Button>
-      </nav>
+      <OtherTabs />
       <div className="max-w-xs space-y-2">
         <label htmlFor="category-search" className="sr-only">
           Search categories

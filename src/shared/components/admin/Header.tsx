@@ -19,16 +19,18 @@ import { adminNavigation, otherNavigation } from './navigationItems'
 const Header = () => {
   const [open, setOpen] = useState(false)
   const location = useLocation()
+  const pathname = location.pathname.replace(/\/+$/, '')
   const dispatch = useAppDispatch()
   const userName = useAppSelector((state) => state.auth.session?.userName)
   const loading = useAppSelector((state) => state.requests.pending > 0)
   const title =
-    [...adminNavigation, ...otherNavigation].find(
-      (item) =>
-        item.path === location.pathname.replace(/\/+$/, '') ||
-        (item.path === '/products' &&
-          location.pathname.startsWith('/products/')),
-    )?.label || 'Administration'
+    pathname === '/subcategories'
+      ? 'Subcategories'
+      : [...adminNavigation, ...otherNavigation].find(
+          (item) =>
+            item.path === pathname ||
+            (item.path === '/products' && pathname.startsWith('/products/')),
+        )?.label || 'Administration'
 
   return (
     <header className="sticky top-0 z-20 flex min-h-[67px] items-center justify-between gap-4 bg-admin-surface px-5 py-3 text-white sm:px-7">
