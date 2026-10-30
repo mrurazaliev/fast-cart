@@ -14,7 +14,7 @@ import Subcategories from '@/pages/Subcategories'
 import Brands from '@/pages/Brands'
 import Banners from '@/pages/Banners'
 import Dashboard from '@/pages/Dashboard'
-import SectionUnavailable from '@/pages/SectionUnavailable'
+import Orders from '@/pages/Orders'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
 import '@fontsource/poppins/400.css'
@@ -41,12 +41,7 @@ const router = createBrowserRouter([
               },
               {
                 path: 'orders',
-                element: (
-                  <SectionUnavailable
-                    title="Orders"
-                    description="Order information is currently unavailable."
-                  />
-                ),
+                element: <Orders />,
               },
               {
                 path: 'products',
