@@ -14,6 +14,7 @@ coverage/
 /.agents/
 /.aws/
 /.setup-tools/
+/.vercel/
 .vscode/
 .idea/
 .DS_Store
