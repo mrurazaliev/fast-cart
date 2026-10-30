@@ -7,7 +7,17 @@ export const loginSchema = z.object({
 
 export const registerSchema = loginSchema
   .extend({
-    phoneNumber: z.string().trim().min(1, 'Enter your phone number.'),
+    phoneNumber: z
+      .string()
+      .trim()
+      .min(1, 'Enter your phone number.')
+      .refine(
+        (value) =>
+          /^\+?[\d\s()-]+$/.test(value) &&
+          value.replace(/\D/g, '').length >= 7 &&
+          value.replace(/\D/g, '').length <= 15,
+        'Enter a valid phone number (7–15 digits).',
+      ),
     email: z
       .string()
       .trim()
