@@ -13,6 +13,7 @@ import Categories from '@/pages/Categories'
 import Subcategories from '@/pages/Subcategories'
 import Brands from '@/pages/Brands'
 import Banners from '@/pages/Banners'
+import Dashboard from '@/pages/Dashboard'
 import SectionUnavailable from '@/pages/SectionUnavailable'
 import RequireAdmin from '@/features/auth/RequireAdmin'
 import AdminLayout from '@/shared/components/admin/AdminLayout'
@@ -36,12 +37,7 @@ const router = createBrowserRouter([
               { index: true, element: <Navigate to="/products" replace /> },
               {
                 path: 'dashboard',
-                element: (
-                  <SectionUnavailable
-                    title="Dashboard"
-                    description="Sales data and statistics are currently unavailable."
-                  />
-                ),
+                element: <Dashboard />,
               },
               {
                 path: 'orders',
