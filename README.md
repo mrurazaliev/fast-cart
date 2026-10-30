@@ -14,6 +14,33 @@ npm run dev
 On Windows PowerShell use `npm.cmd` if script execution is restricted.
 Copy `.env.example` to `.env.local` to override the public API URL. Never put secrets in VITE_ variables.
 
+`npm run build` runs TypeScript checks and creates the production site in `dist`. `npm run preview` serves that build locally; it does not verify a Vercel deployment. Dependencies are pinned by the committed `package-lock.json`; use `npm ci` without regenerating the lockfile.
+
+## Vercel preparation
+
+The same repository contains two independent applications at its root, each in its own branch. Configure a separate Vercel project for this admin application and select `admin` as its Production Branch. The storefront project must use `marketplace`. Do not deploy `main` or merge the application branches to publish them.
+
+| Setting                     | Admin project                                |
+| --------------------------- | -------------------------------------------- |
+| Production Branch           | `admin`                                      |
+| Framework Preset            | Vite                                         |
+| Root Directory              | `.` (repository root)                        |
+| Install Command             | `npm ci`                                     |
+| Build Command               | `npm run build`                              |
+| Output Directory            | `dist`                                       |
+| Node.js Version             | 24.x                                         |
+| Public environment variable | `VITE_API_URL=https://store-api.softclub.tj` |
+
+`VITE_API_URL` is the only application environment variable. It is a public, build-time Axios base URL, defaults to the URL above and has no `/api` suffix. Set it for Production and any enabled Preview environment. A changed value requires a new build. Images use the same backend at `/images/{filename}`. No account, password or token belongs in this configuration.
+
+`vercel.json` uses the SPA rewrite from the [official Vercel Vite documentation](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas). It sends deep links to `/index.html`, including `/dashboard`, `/orders`, `/products`, `/products/new`, `/products/:id/edit`, `/categories`, `/subcategories`, `/brands` and `/banners`. React Router still handles unknown routes and the existing authentication guard still controls protected pages.
+
+Keep the two projects' branch builds separate: set each project's Production Branch explicitly and prevent Preview builds of the other application's branch. A project-specific Ignored Build Step can use `if [ "$VERCEL_GIT_COMMIT_REF" = "admin" ]; then exit 1; else exit 0; fi` for this project; in the storefront project use `marketplace` instead. Vercel's ignored-build convention is exit 0 to skip and exit 1 to continue. Configure this in each project's settings, rather than sharing one branch filter between both projects. See [Ignored Build Step](https://vercel.com/docs/project-configuration/git-settings#ignored-build-step).
+
+Local context, design archives, session files, `.env.local`, `.vercel`, dependencies and build output are ignored. They are outside `public` and are not production assets. Commit only public `.env.example`, source, configuration and the lockfile.
+
+After publication, verify direct navigation and refresh on nested routes, asset loading, API images, login/reload/logout and protected-page redirects. Check browser CORS/preflight for both Production and enabled Preview origins, including Authorization and multipart POST/PUT/DELETE operations. The backend must allow those origins; the SPA rewrite does not proxy the API or configure its CORS. Test mutations only on owned test records. A successful local build does not confirm hosting or browser interactions.
+
 ## Checks
 
 ```sh
@@ -65,4 +92,4 @@ Editing matches brand/color names only when unique and verifies stock against an
 
 Row deletion and current-page selection deletion require confirmation with the product name or exact count. Each product is checked by ID, then deleted sequentially through `DELETE /Product/delete-product?id=...`; there is no bulk endpoint. Cancel sends no request. Pending blocks repeated confirmation. Results distinguish confirmed deletions, verified absence, errors, unverified outcomes and unattempted items. An ambiguous response is followed by a server read before any further deletion; failed verification stops the batch. Every new attempt checks server state again. Successful items are excluded from the remaining selection. The list and server result count reload; an empty page returns to the previous available page. Session changes abort the operation and stop further requests. HTTP 401 clears the session; 403 shows permission denial and keeps the session.
 
-Bulk editing, tags, tax, HEX colors, multiple variants, date sorting, registration, role assignment and password recovery are not implemented. The user manually checked and accepted the existing admin functions before the Banners/Dashboard stage. This does not establish the backend's formal role policy; automated live mutations require an authorized session.
+Bulk editing, tags, tax, HEX colors, multiple variants, date sorting, registration, role assignment and password recovery are not implemented. Server orders, payment processing, financial analytics and banner saving have no confirmed API contract. The user manually checked Dashboard, Orders and the previously implemented functions and accepted their appearance. This does not establish the backend's formal role policy; automated live mutations require an authorized session.
