@@ -41,6 +41,7 @@ type CartState = Cart & {
   message: string | null
   fetchRequestId: string | null
   mutationRequestId: string | null
+  operation: CartOperation | null
 }
 
 const initialState: CartState = {
@@ -56,6 +57,7 @@ const initialState: CartState = {
   message: null,
   fetchRequestId: null,
   mutationRequestId: null,
+  operation: null,
 }
 
 export const fetchCart = createAsyncThunk<
@@ -100,7 +102,13 @@ export const mutateCart = createAsyncThunk<
     let cart: Cart | null
     try {
       ensureSession()
-      cart = await getCart(requestSignal)
+      const current = getState().cart
+      cart =
+        current.status === 'succeeded' &&
+        operation.type !== 'add' &&
+        operation.type !== 'moveWishlist'
+          ? current
+          : await getCart(requestSignal)
       ensureSession()
     } catch (error) {
       return rejectWithValue(getAuthErrors(error).message)
@@ -129,7 +137,9 @@ export const mutateCart = createAsyncThunk<
       } catch {
         cart = null
         errors.push(
-          'The cart may have changed, but could not be refreshed. Refresh the cart and check quantities before trying again.',
+          confirmed > 0
+            ? 'A cart change was confirmed, but the cart could not be refreshed. Refresh the cart before trying again.'
+            : 'The cart may have changed, but could not be refreshed. Refresh the cart and check quantities before trying again.',
         )
         return false
       }
@@ -223,8 +233,12 @@ export const mutateCart = createAsyncThunk<
     return { cart, confirmed, requested, errors, message }
   },
   {
-    condition: (_, { getState }) =>
-      !!getState().auth.session && !getState().cart.mutating,
+    condition: (operation, { getState }) =>
+      !!getState().auth.session &&
+      !getState().cart.mutating &&
+      (operation.type === 'add' ||
+        operation.type === 'moveWishlist' ||
+        getState().cart.status === 'succeeded'),
   },
 )
 
@@ -241,6 +255,7 @@ const cartSlice = createSlice({
         state.error = null
         state.mutationError = null
         state.message = null
+        state.operation = null
         state.fetchRequestId = action.meta.requestId
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
@@ -261,12 +276,15 @@ const cartSlice = createSlice({
         state.mutationRequestId = action.meta.requestId
         state.mutationError = null
         state.message = null
+        state.operation = action.meta.arg
       })
       .addCase(mutateCart.fulfilled, (state, action) => {
         if (state.mutationRequestId !== action.meta.requestId) return
         state.mutating = false
         state.mutationError = action.payload.errors.join(' ') || null
-        state.message = action.payload.message
+        state.message = action.payload.errors.length
+          ? null
+          : action.payload.message
         if (action.payload.cart) {
           Object.assign(state, action.payload.cart)
           state.status = 'succeeded'

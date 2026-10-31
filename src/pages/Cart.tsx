@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ImageOff, Minus, Plus, X } from 'lucide-react'
+import { ImageOff, LoaderCircle, Minus, Plus, X } from 'lucide-react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { fetchCart, mutateCart } from '@/features/cart/cartSlice'
@@ -37,6 +37,10 @@ const Cart = () => {
   const cart = useAppSelector((state) => state.cart)
   const loading = cart.status === 'idle' || cart.status === 'pending'
   const busy = cart.mutating || cart.status === 'pending'
+  const canChange = cart.status === 'succeeded' && !cart.mutating
+  const operationLineId =
+    cart.operation && 'lineId' in cart.operation ? cart.operation.lineId : null
+  const lineOperation = cart.items.some((line) => line.id === operationLineId)
   const discount = Math.max(0, cart.totalPrice - cart.total)
 
   useEffect(() => {
@@ -73,7 +77,7 @@ const Cart = () => {
           error={cart.error}
           onRetry={() => void dispatch(fetchCart())}
         />
-        {cart.mutationError && (
+        {cart.mutationError && !lineOperation && (
           <p
             role="alert"
             className="text-sm whitespace-pre-line text-destructive"
@@ -86,7 +90,7 @@ const Cart = () => {
             {cart.message}
           </p>
         )}
-        {cart.mutating && (
+        {cart.mutating && !lineOperation && (
           <p role="status" className="text-sm text-muted-foreground">
             Updating cart. Please wait…
           </p>
@@ -121,10 +125,18 @@ const Cart = () => {
                 const outOfStock = stock === 0
                 const atStockLimit =
                   typeof stock === 'number' && line.quantity >= stock
+                const operation =
+                  cart.operation &&
+                  'lineId' in cart.operation &&
+                  cart.operation.lineId === line.id
+                    ? cart.operation
+                    : null
+                const pending = cart.mutating ? operation?.type : null
 
                 return (
                   <li
                     key={line.id}
+                    aria-busy={!!pending}
                     className="relative grid min-w-0 grid-cols-2 items-center gap-5 rounded-sm border px-5 py-6 shadow-sm md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_32px] md:border-0 md:px-6"
                   >
                     <div className="col-span-2 min-w-0 pr-8 md:col-span-1 md:pr-0">
@@ -171,7 +183,8 @@ const Cart = () => {
                           type="button"
                           variant="outline"
                           size="icon"
-                          disabled={busy || line.quantity <= 1}
+                          disabled={!canChange || line.quantity <= 1}
+                          aria-busy={pending === 'reduce'}
                           aria-label={`Decrease quantity of ${line.product.productName}`}
                           onClick={() =>
                             void dispatch(
@@ -180,7 +193,14 @@ const Cart = () => {
                           }
                           className="size-8 rounded-r-none"
                         >
-                          <Minus className="size-3" aria-hidden="true" />
+                          {pending === 'reduce' ? (
+                            <LoaderCircle
+                              className="size-3 animate-spin"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <Minus className="size-3" aria-hidden="true" />
+                          )}
                         </Button>
                         <Input
                           readOnly
@@ -194,7 +214,8 @@ const Cart = () => {
                           type="button"
                           variant="outline"
                           size="icon"
-                          disabled={busy || outOfStock || atStockLimit}
+                          disabled={!canChange || outOfStock || atStockLimit}
+                          aria-busy={pending === 'increase'}
                           aria-label={`Increase quantity of ${line.product.productName}`}
                           onClick={() =>
                             void dispatch(
@@ -203,9 +224,32 @@ const Cart = () => {
                           }
                           className="size-8 rounded-l-none"
                         >
-                          <Plus className="size-3" aria-hidden="true" />
+                          {pending === 'increase' ? (
+                            <LoaderCircle
+                              className="size-3 animate-spin"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <Plus className="size-3" aria-hidden="true" />
+                          )}
                         </Button>
                       </div>
+                      <p
+                        role="status"
+                        aria-live="polite"
+                        className="min-h-4 text-xs text-muted-foreground"
+                      >
+                        {pending === 'remove'
+                          ? 'Removing item…'
+                          : pending
+                            ? 'Updating quantity…'
+                            : ''}
+                      </p>
+                      {!cart.mutating && operation && cart.mutationError && (
+                        <p role="alert" className="text-xs text-destructive">
+                          {cart.mutationError}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-1 text-sm font-medium">
                       <span className="block text-xs font-normal text-muted-foreground md:hidden">
@@ -217,7 +261,8 @@ const Cart = () => {
                       type="button"
                       variant="ghost"
                       size="icon"
-                      disabled={busy}
+                      disabled={!canChange}
+                      aria-busy={pending === 'remove'}
                       aria-label={`Remove ${line.product.productName} from cart`}
                       onClick={() =>
                         void dispatch(
@@ -226,7 +271,14 @@ const Cart = () => {
                       }
                       className="absolute top-3 right-3 size-8 rounded-full text-primary md:static"
                     >
-                      <X className="size-5" aria-hidden="true" />
+                      {pending === 'remove' ? (
+                        <LoaderCircle
+                          className="size-5 animate-spin"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <X className="size-5" aria-hidden="true" />
+                      )}
                     </Button>
                   </li>
                 )
@@ -245,6 +297,7 @@ const Cart = () => {
                   type="button"
                   variant="outline"
                   disabled={busy}
+                  aria-busy={cart.status === 'pending'}
                   onClick={() => void dispatch(fetchCart())}
                   className="h-12 rounded-sm px-8"
                 >
@@ -253,11 +306,14 @@ const Cart = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  disabled={busy}
+                  disabled={!canChange}
+                  aria-busy={cart.mutating && cart.operation?.type === 'clear'}
                   onClick={() => void dispatch(mutateCart({ type: 'clear' }))}
                   className="h-12 rounded-sm border-primary px-8 text-primary"
                 >
-                  Remove all
+                  {cart.mutating && cart.operation?.type === 'clear'
+                    ? 'Removing all…'
+                    : 'Remove all'}
                 </Button>
               </div>
             </div>
@@ -289,13 +345,23 @@ const Cart = () => {
                   </div>
                 </dl>
                 <div className="space-y-3 text-center">
-                  <Button
-                    asChild
-                    aria-describedby="checkout-note"
-                    className="h-12 w-full rounded-sm"
-                  >
-                    <Link to="/checkout">Proceed to checkout</Link>
-                  </Button>
+                  {canChange ? (
+                    <Button
+                      asChild
+                      aria-describedby="checkout-note"
+                      className="h-12 w-full rounded-sm"
+                    >
+                      <Link to="/checkout">Proceed to checkout</Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      disabled
+                      aria-describedby="checkout-note"
+                      className="h-12 w-full rounded-sm"
+                    >
+                      Proceed to checkout
+                    </Button>
+                  )}
                   <p
                     id="checkout-note"
                     className="text-xs text-muted-foreground"
