@@ -418,5 +418,10 @@
   "{{value0}} in stock": "В наличии: {{value0}}",
   "{{value0}} selected on this page": "Выбрано на странице: {{value0}}",
   "{{value0}} unavailable": "Нет данных: {{value0}}",
-  "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s": "{{value0}}д / {{value1}}ч / {{value2}}м / {{value3}}с"
+  "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s": "{{value0}}д / {{value1}}ч / {{value2}}м / {{value3}}с",
+  "Too big: expected string to have <={{value0}} characters": "Используйте не более {{value0}} символов.",
+  "Invalid input: expected number, received NaN": "Введите корректное число.",
+  "Invalid input: expected int, received number": "Введите целое число.",
+  "Too small: expected number to be >={{value0}}": "Введите значение не меньше {{value0}}.",
+  "Too big: expected number to be <={{value0}}": "Введите значение не больше {{value0}}."
 }

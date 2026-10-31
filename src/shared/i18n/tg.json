@@ -418,5 +418,10 @@
   "{{value0}} in stock": "Мавҷуд аст: {{value0}}",
   "{{value0}} selected on this page": "Дар саҳифа интихоб шудааст: {{value0}}",
   "{{value0}} unavailable": "{{value0}} дастрас нест",
-  "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s": "{{value0}}р / {{value1}}с / {{value2}}д / {{value3}}с"
+  "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s": "{{value0}}р / {{value1}}с / {{value2}}д / {{value3}}с",
+  "Too big: expected string to have <={{value0}} characters": "На бештар аз {{value0}} аломат ворид кунед.",
+  "Invalid input: expected number, received NaN": "Рақами дуруст ворид кунед.",
+  "Invalid input: expected int, received number": "Рақами бутун ворид кунед.",
+  "Too small: expected number to be >={{value0}}": "Қимат бояд {{value0}} ё бештар бошад.",
+  "Too big: expected number to be <={{value0}}": "Қимат бояд {{value0}} ё камтар бошад."
 }

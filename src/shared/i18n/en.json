@@ -418,5 +418,10 @@
   "{{value0}} in stock": "{{value0}} in stock",
   "{{value0}} selected on this page": "{{value0}} selected on this page",
   "{{value0}} unavailable": "{{value0}} unavailable",
-  "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s": "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s"
+  "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s": "{{value0}}d / {{value1}}h / {{value2}}m / {{value3}}s",
+  "Too big: expected string to have <={{value0}} characters": "Use no more than {{value0}} characters.",
+  "Invalid input: expected number, received NaN": "Enter a valid number.",
+  "Invalid input: expected int, received number": "Use a whole number.",
+  "Too small: expected number to be >={{value0}}": "Use a value of {{value0}} or more.",
+  "Too big: expected number to be <={{value0}}": "Use a value of {{value0}} or less."
 }

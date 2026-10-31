@@ -4,6 +4,18 @@ import en from './en.json'
 
 type Values = Record<string, string | number | boolean | null | undefined>
 
+const messageVariables: Record<string, string> = {
+  'Product #{{value0}}: {{value1}}': 'value1',
+  '{{value0}} (HTTP {{value1}})': 'value0',
+  'You do not have permission for this action. {{value0}}': 'value0',
+  '{{value0}} The result is unverified. Check the list before retrying.':
+    'value0',
+  '{{value0}} The result is unverified. Reload and check the list before retrying.':
+    'value0',
+  'Product fields were saved. Confirmed image uploads: {{value0}}; removals: {{value1}}. Remaining image changes were not confirmed. Reload this product before retrying. {{value2}}':
+    'value2',
+}
+
 const patterns = Object.keys(en)
   .filter((key) => key.includes('{{'))
   .map((key) => {
@@ -27,7 +39,10 @@ export const translateText = (value: unknown, values?: Values): string => {
     const variables: Values = {}
     pattern.names.forEach((name, index) => {
       const captured = match[index + 1] || ''
-      variables[name] = i18n.exists(captured) ? i18n.t(captured) : captured
+      variables[name] =
+        messageVariables[pattern.key] === name
+          ? translateText(captured)
+          : captured
     })
     return i18n.t(pattern.key, { ...variables, defaultValue: value })
   }
