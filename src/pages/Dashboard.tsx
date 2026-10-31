@@ -1,5 +1,5 @@
 import DashboardMetric from '@/features/dashboard/DashboardMetric'
-import SalesRevenue from '@/features/dashboard/SalesRevenue'
+import ProductsByCategory from '@/features/dashboard/ProductsByCategory'
 import TopSellingProducts from '@/features/dashboard/TopSellingProducts'
 import DashboardTable from '@/features/dashboard/DashboardTable'
 
@@ -15,7 +15,7 @@ const Dashboard = () => (
           <DashboardMetric label="Cost" />
           <DashboardMetric label="Profit" />
         </div>
-        <SalesRevenue />
+        <ProductsByCategory />
       </div>
       <TopSellingProducts />
     </div>

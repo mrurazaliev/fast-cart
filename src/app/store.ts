@@ -11,6 +11,7 @@ import adminAccessReducer from '@/features/auth/adminAccessSlice'
 import productsReducer from '@/features/products/productsSlice'
 import categoriesReducer from '@/features/categories/categoriesSlice'
 import brandsReducer from '@/features/brands/brandsSlice'
+import categoryCountsReducer from '@/features/dashboard/categoryCountsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     products: productsReducer,
     categories: categoriesReducer,
     brands: brandsReducer,
+    categoryCounts: categoryCountsReducer,
   },
 })
 
