@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useId, useState } from 'react'
 import { Link, createSearchParams } from 'react-router-dom'
 import { ChevronDown, ChevronRight } from 'lucide-react'
@@ -7,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import RequestState from '@/shared/components/RequestState'
 
 const CategoryMenu = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const { items, status, error } = useAppSelector((state) => state.categories)
   const [expandedId, setExpandedId] = useState<number | null>(null)
@@ -21,7 +24,7 @@ const CategoryMenu = () => {
   }
 
   return (
-    <nav aria-label="Product categories" className="min-w-0">
+    <nav aria-label={t('Product categories')} className="min-w-0">
       <RequestState
         loading={status === 'idle' || status === 'pending'}
         error={error}
@@ -29,7 +32,7 @@ const CategoryMenu = () => {
       />
       {status === 'succeeded' && items.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          No categories available yet.
+          {t('No categories available yet.')}
         </p>
       )}
       {status === 'succeeded' && items.length > 0 && (
@@ -53,7 +56,9 @@ const CategoryMenu = () => {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label={`Subcategories of ${category.categoryName}`}
+                    aria-label={t('Subcategories of {{value0}}', {
+                      value0: category.categoryName,
+                    })}
                     aria-expanded={expandedId === category.id}
                     aria-controls={`${menuId}-subcategories-${category.id}`}
                     className="size-8 shrink-0"

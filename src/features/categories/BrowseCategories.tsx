@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useId, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -9,6 +10,8 @@ import RequestState from '@/shared/components/RequestState'
 import SectionHeading from '@/shared/components/home/SectionHeading'
 
 const BrowseCategories = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const { items, status, error } = useAppSelector((state) => state.categories)
   const rowRef = useRef<HTMLUListElement>(null)
@@ -57,8 +60,8 @@ const BrowseCategories = () => {
     >
       <SectionHeading
         id="browse-categories-title"
-        label="Categories"
-        title="Browse By Category"
+        label={t('Categories')}
+        title={t('Browse By Category')}
       >
         <div className="flex gap-2">
           <Button
@@ -66,7 +69,7 @@ const BrowseCategories = () => {
             variant="secondary"
             size="icon"
             className="rounded-full"
-            aria-label="Previous categories"
+            aria-label={t('Previous categories')}
             aria-controls={hasCategories ? rowId : undefined}
             disabled={!hasCategories || !canScrollLeft}
             onClick={() => handleScroll(-1)}
@@ -78,7 +81,7 @@ const BrowseCategories = () => {
             variant="secondary"
             size="icon"
             className="rounded-full"
-            aria-label="Next categories"
+            aria-label={t('Next categories')}
             aria-controls={hasCategories ? rowId : undefined}
             disabled={!hasCategories || !canScrollRight}
             onClick={() => handleScroll(1)}
@@ -89,7 +92,7 @@ const BrowseCategories = () => {
       </SectionHeading>
       {loading && (
         <div role="status" aria-busy="true" className="relative">
-          <span className="sr-only">Loading categories…</span>
+          <span className="sr-only">{t('Loading categories…')}</span>
           <div
             aria-hidden="true"
             className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
@@ -108,14 +111,14 @@ const BrowseCategories = () => {
       />
       {status === 'succeeded' && items.length === 0 && (
         <p role="status" className="py-6 text-muted-foreground">
-          No categories available yet.
+          {t('No categories available yet.')}
         </p>
       )}
       {hasCategories && (
         <ul
           ref={rowRef}
           id={rowId}
-          aria-label="Browse categories"
+          aria-label={t('Browse categories')}
           tabIndex={0}
           className="flex snap-x snap-mandatory scroll-px-1 gap-4 overflow-x-auto overscroll-x-contain p-1 pb-4 focus-visible:outline-2 focus-visible:outline-primary [scrollbar-width:thin] sm:gap-6"
         >

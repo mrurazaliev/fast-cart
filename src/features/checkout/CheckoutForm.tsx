@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -46,6 +47,8 @@ const CheckoutForm = ({
   disabled: boolean
   onSave: (values: CheckoutValues) => void
 }) => {
+  const { t } = useText()
+
   const [saveError, setSaveError] = useState<string | null>(null)
   const submitting = useRef(false)
   const {
@@ -96,14 +99,14 @@ const CheckoutForm = ({
         disabled={disabled || isSubmitting}
         className="min-w-0 space-y-5"
       >
-        <legend className="sr-only">Contact and billing address</legend>
+        <legend className="sr-only">{t('Contact and billing address')}</legend>
         {fields.map((field) => {
           const error = errors[field.name]?.message
           const id = `checkout-${field.name}`
           return (
             <div key={field.name} className="space-y-2">
               <label htmlFor={id} className="text-sm text-muted-foreground">
-                {field.label}
+                {t(field.label || '')}
               </label>
               <Input
                 {...register(field.name)}
@@ -121,30 +124,30 @@ const CheckoutForm = ({
                   role="alert"
                   className="text-sm text-destructive"
                 >
-                  {error}
+                  {t(error || '')}
                 </p>
               )}
             </div>
           )
         })}
         <Button type="submit" className="h-12 w-full rounded-sm">
-          {isSubmitting ? 'Saving locally…' : 'Save local order'}
+          {isSubmitting ? t('Saving locally…') : t('Save local order')}
         </Button>
       </fieldset>
       {isSubmitted && !isValid && (
         <p role="alert" className="text-sm text-destructive">
-          Please correct the highlighted fields. No information was sent.
+          {t('Please correct the highlighted fields. No information was sent.')}
         </p>
       )}
       {saveError && (
         <p role="alert" className="text-sm text-destructive">
-          {saveError}
+          {t(saveError || '')}
         </p>
       )}
       <p id="checkout-form-note" className="text-xs text-muted-foreground">
-        Saving stores your billing details and a cart snapshot in this browser
-        for this account. No real order or payment is submitted. You can delete
-        the saved local order afterwards.
+        {t(
+          'Saving stores your billing details and a cart snapshot in this browser for this account. No real order or payment is submitted. You can delete the saved local order afterwards.',
+        )}
       </p>
     </form>
   )

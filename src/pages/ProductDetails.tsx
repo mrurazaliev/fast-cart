@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -11,6 +12,8 @@ import { Button } from '@/components/ui/button'
 import { getCartQuantityIntent } from '@/shared/loginReturn'
 
 const ProductDetails = () => {
+  const { t } = useText()
+
   const { id } = useParams()
   const location = useLocation()
   const productId = parseProductId(id)
@@ -32,38 +35,38 @@ const ProductDetails = () => {
   return (
     <div className="py-4 sm:py-8">
       <nav
-        aria-label="Breadcrumb"
+        aria-label={t('Breadcrumb')}
         className="mb-8 flex min-w-0 flex-wrap gap-3 text-sm sm:mb-12"
       >
         <Link to="/" className="text-muted-foreground hover:underline">
-          Home
+          {t('Home')}
         </Link>
         <span aria-hidden="true">/</span>
         <Link to="/products" className="text-muted-foreground hover:underline">
-          Products
+          {t('Products')}
         </Link>
         <span aria-hidden="true">/</span>
         <span className="break-words">
           {productId && current && details.item
             ? details.item.productName
-            : 'Product details'}
+            : t('Product details')}
         </span>
       </nav>
       {!productId ? (
         <div role="alert" className="space-y-5 py-10">
-          <h1 className="text-2xl font-semibold">Invalid product ID</h1>
+          <h1 className="text-2xl font-semibold">{t('Invalid product ID')}</h1>
           <p className="text-muted-foreground">
-            Check the product link or return to the catalog.
+            {t('Check the product link or return to the catalog.')}
           </p>
           <Button asChild>
-            <Link to="/products">Browse Products</Link>
+            <Link to="/products">{t('Browse Products')}</Link>
           </Button>
         </div>
       ) : (
         <>
           {loading && (
             <div role="status" aria-busy="true">
-              <span className="sr-only">Loading product details</span>
+              <span className="sr-only">{t('Loading product details')}</span>
               <div
                 aria-hidden="true"
                 className="grid gap-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
@@ -106,12 +109,14 @@ const ProductDetails = () => {
               </>
             ) : (
               <div role="status" className="space-y-5 py-10">
-                <h1 className="text-2xl font-semibold">Product not found</h1>
+                <h1 className="text-2xl font-semibold">
+                  {t('Product not found')}
+                </h1>
                 <p className="text-muted-foreground">
-                  This product is no longer available.
+                  {t('This product is no longer available.')}
                 </p>
                 <Button asChild>
-                  <Link to="/products">Browse Products</Link>
+                  <Link to="/products">{t('Browse Products')}</Link>
                 </Button>
               </div>
             ))}

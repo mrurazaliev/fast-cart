@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { fetchRelatedProducts } from '@/features/products/relatedProductsSlice'
@@ -12,6 +13,8 @@ const RelatedItems = ({
   productId: number
   subcategoryId?: number | null
 }) => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const related = useAppSelector((state) => state.relatedProducts)
   const current =
@@ -36,11 +39,11 @@ const RelatedItems = ({
         className="flex items-center gap-4 text-lg font-semibold text-primary"
       >
         <span className="h-10 w-5 rounded-sm bg-primary" aria-hidden="true" />
-        Related Items
+        {t('Related Items')}
       </h2>
       {loading && (
         <div role="status">
-          <span className="sr-only">Loading related products</span>
+          <span className="sr-only">{t('Loading related products')}</span>
           <div
             aria-hidden="true"
             className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-4"
@@ -64,8 +67,9 @@ const RelatedItems = ({
       )}
       {!subcategoryId && (
         <p role="status" className="text-sm text-muted-foreground">
-          Related products are unavailable because this product has no confirmed
-          subcategory.
+          {t(
+            'Related products are unavailable because this product has no confirmed subcategory.',
+          )}
         </p>
       )}
       {subcategoryId &&
@@ -73,7 +77,7 @@ const RelatedItems = ({
         related.status === 'succeeded' &&
         (related.items.length > 0 ? (
           <ul
-            aria-label="Related products"
+            aria-label={t('Related products')}
             className="grid min-w-0 grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
           >
             {related.items.map((product) => (
@@ -84,7 +88,7 @@ const RelatedItems = ({
           </ul>
         ) : (
           <p role="status" className="text-sm text-muted-foreground">
-            No other products available in this subcategory.
+            {t('No other products available in this subcategory.')}
           </p>
         ))}
     </section>

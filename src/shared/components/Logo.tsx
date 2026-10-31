@@ -1,10 +1,13 @@
+import { useText } from '@/shared/i18n/useText'
 import { Link } from 'react-router-dom'
 
 const Logo = () => {
+  const { t } = useText()
+
   return (
     <Link
       to="/"
-      aria-label="FastCart home"
+      aria-label={t('FastCart home')}
       className="inline-flex shrink-0 items-center gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
     >
       <svg

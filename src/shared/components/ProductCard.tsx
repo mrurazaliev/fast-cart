@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, Heart, ImageOff, Trash2 } from 'lucide-react'
@@ -28,6 +29,8 @@ const ProductCard = ({
   wishlist = false,
   carousel = false,
 }: ProductCardProps) => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const saved = useAppSelector((state) =>
     state.wishlist.ids.includes(product.id),
@@ -48,7 +51,7 @@ const ProductCard = ({
       >
         <Link
           to={detailsUrl}
-          aria-label={`View ${product.productName}`}
+          aria-label={t('View {{value0}}', { value0: product.productName })}
           className={`flex items-center justify-center focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary ${carousel ? 'h-56 p-6 pb-12 sm:h-60' : 'h-64 p-8 pb-12'}`}
         >
           {imageUrl && failedImage !== imageUrl ? (
@@ -59,12 +62,12 @@ const ProductCard = ({
               width="220"
               height="200"
               onError={() => setFailedImage(imageUrl)}
-              className="size-full object-contain mix-blend-multiply"
+              className="size-full object-contain mix-blend-multiply dark:mix-blend-normal"
             />
           ) : (
             <span className="flex flex-col items-center gap-2 text-xs text-muted-foreground">
               <ImageOff className="size-8" aria-hidden="true" />
-              Image unavailable
+              {t('Image unavailable')}
             </span>
           )}
         </Link>
@@ -85,9 +88,14 @@ const ProductCard = ({
                   : toggleWishlist(product),
               )
             }
-            aria-label={`${saved ? 'Remove from' : 'Add to'} wishlist: ${product.productName}`}
+            aria-label={t(
+              saved
+                ? 'Remove {{value0}} from wishlist'
+                : 'Add {{value0}} to wishlist',
+              { value0: product.productName },
+            )}
             aria-pressed={saved}
-            className="size-9 rounded-full bg-white aria-pressed:text-primary"
+            className="size-9 rounded-full bg-background aria-pressed:text-primary"
           >
             {wishlist ? (
               <Trash2 className="size-5" aria-hidden="true" />
@@ -103,11 +111,13 @@ const ProductCard = ({
               asChild
               variant="ghost"
               size="icon"
-              className="size-9 rounded-full bg-white hover:bg-white/90"
+              className="size-9 rounded-full bg-background hover:bg-accent"
             >
               <Link
                 to={detailsUrl}
-                aria-label={`Quick view ${product.productName}`}
+                aria-label={t('Quick view {{value0}}', {
+                  value0: product.productName,
+                })}
               >
                 <Eye className="size-5" aria-hidden="true" />
               </Link>
@@ -135,13 +145,13 @@ const ProductCard = ({
       <p className="flex flex-wrap gap-3 text-base font-medium">
         <span className="text-primary">
           <span className="sr-only">
-            {discounted ? 'Discount price: ' : 'Price: '}
+            {discounted ? t('Discount price: ') : t('Price: ')}
           </span>
           {formatPrice(discounted ? product.discountPrice : product.price)}
         </span>
         {discounted && (
           <span className="text-muted-foreground">
-            <span className="sr-only">Original price: </span>
+            <span className="sr-only">{t('Original price:')} </span>
             <del>{formatPrice(product.price)}</del>
           </span>
         )}

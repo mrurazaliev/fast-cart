@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from 'react-redux'
 import type { RootState } from '@/app/store'
@@ -6,6 +7,8 @@ import { mutateCart } from '@/features/cart/cartSlice'
 import { Button } from '@/components/ui/button'
 
 const MoveWishlistToCart = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const location = useLocation()
@@ -41,7 +44,7 @@ const MoveWishlistToCart = () => {
       onClick={() => void handleMove()}
       className="h-12 rounded-sm px-8"
     >
-      {mutating ? 'Updating cart…' : 'Move All To Bag'}
+      {mutating ? t('Updating cart…') : t('Move All To Bag')}
     </Button>
   )
 }

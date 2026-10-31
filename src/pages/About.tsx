@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Link } from 'react-router-dom'
 import { Heart, ShoppingBag, Store, UserRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -32,22 +33,24 @@ const shoppingLinks = [
 ]
 
 const About = () => {
+  const { t } = useText()
+
   return (
     <div className="pt-2 sm:pt-6">
-      <nav aria-label="Breadcrumb" className="mb-10 text-sm sm:mb-14">
+      <nav aria-label={t('Breadcrumb')} className="mb-10 text-sm sm:mb-14">
         <ol className="flex flex-wrap items-center gap-3">
           <li>
             <Link
               to="/"
               className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
-              Home
+              {t('Home')}
             </Link>
           </li>
           <li aria-hidden="true" className="text-muted-foreground">
             /
           </li>
-          <li aria-current="page">About</li>
+          <li aria-current="page">{t('About')}</li>
         </ol>
       </nav>
       <section
@@ -59,38 +62,40 @@ const About = () => {
             id="about-title"
             className="text-4xl font-semibold tracking-wide sm:text-5xl"
           >
-            Our Story
+            {t('Our Story')}
           </h1>
           <p className="text-sm leading-7 sm:text-base">
-            FastCart brings product discovery, your favourites and your shopping
-            cart together in one place. Explore the catalogue by category or
-            search for something specific, then take a closer look at the
-            product details.
+            {t(
+              'FastCart brings product discovery, your favourites and your shopping cart together in one place. Explore the catalogue by category or search for something specific, then take a closer look at the product details.',
+            )}
           </p>
           <p className="text-sm leading-7 sm:text-base">
-            Save the items you want to revisit, compare the available details
-            and choose what belongs in your cart. Your next find starts with a
-            look around.
+            {t(
+              'Save the items you want to revisit, compare the available details and choose what belongs in your cart. Your next find starts with a look around.',
+            )}
           </p>
           <Button asChild className="h-12 rounded-sm px-8">
-            <Link to="/products">Explore Our Products</Link>
+            <Link to="/products">{t('Explore Our Products')}</Link>
           </Button>
         </div>
         <div className="overflow-hidden rounded-sm bg-black">
           <img
             src={storyImage}
-            alt="Fashion editorial featuring a wide-brimmed hat"
+            alt={t('Fashion editorial featuring a wide-brimmed hat')}
             className="aspect-[1.35] w-full object-cover"
           />
         </div>
       </section>
-      <section aria-label="Shopping with FastCart" className="py-16 sm:py-24">
+      <section
+        aria-label={t('Shopping with FastCart')}
+        className="py-16 sm:py-24"
+      >
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {shoppingLinks.map(({ title, description, to, icon: Icon }) => (
             <li key={to} className="min-w-0">
               <Link
                 to={to}
-                className="group flex h-full flex-col items-center rounded-sm border px-5 py-8 text-center transition-colors hover:border-primary hover:bg-primary hover:text-white focus-visible:border-primary focus-visible:bg-primary focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                className="group flex h-full flex-col items-center rounded-sm border px-5 py-8 text-center transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground focus-visible:border-primary focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               >
                 <span
                   aria-hidden="true"
@@ -100,8 +105,8 @@ const About = () => {
                     <Icon className="size-6" strokeWidth={1.75} />
                   </span>
                 </span>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <p className="mt-3 text-sm leading-6">{description}</p>
+                <h2 className="text-xl font-semibold">{t(title || '')}</h2>
+                <p className="mt-3 text-sm leading-6">{t(description || '')}</p>
               </Link>
             </li>
           ))}

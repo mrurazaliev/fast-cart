@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import type { UseFormRegisterReturn } from 'react-hook-form'
 import { Eye, EyeOff } from 'lucide-react'
@@ -19,13 +20,15 @@ const AuthField = ({
   autoComplete,
   error,
 }: AuthFieldProps) => {
+  const { t } = useText()
+
   const [visible, setVisible] = useState(false)
   const password = type === 'password'
 
   return (
     <div className="space-y-2">
       <label htmlFor={field.name} className="text-sm font-medium">
-        {label}
+        {t(label || '')}
       </label>
       <div className="relative">
         <Input
@@ -43,11 +46,7 @@ const AuthField = ({
             variant="ghost"
             size="icon"
             onClick={() => setVisible((value) => !value)}
-            aria-label={
-              visible
-                ? `Hide ${label.toLowerCase()}`
-                : `Show ${label.toLowerCase()}`
-            }
+            aria-label={visible ? t('Hide password') : t('Show password')}
             aria-pressed={visible}
             aria-controls={field.name}
             className="absolute right-0 top-1 size-10"
@@ -66,7 +65,7 @@ const AuthField = ({
           role="alert"
           className="text-sm text-destructive"
         >
-          {error}
+          {t(error || '')}
         </p>
       )}
     </div>

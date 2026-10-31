@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import {
@@ -10,6 +11,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
 const SearchFields = ({ initialQuery }: { initialQuery: string }) => {
+  const { t } = useText()
+
   const [query, setQuery] = useState(initialQuery)
   const navigate = useNavigate()
 
@@ -29,24 +32,24 @@ const SearchFields = ({ initialQuery }: { initialQuery: string }) => {
   return (
     <form
       role="search"
-      aria-label="Product search"
+      aria-label={t('Product search')}
       onSubmit={handleSearch}
       className="relative w-full lg:w-[245px]"
     >
       <Input
-        aria-label="Search products"
+        aria-label={t('Search products')}
         name="ProductName"
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="What are you looking for?"
+        placeholder={t('What are you looking for?')}
         className="h-10 rounded-sm border-0 bg-secondary pr-12 pl-4 text-xs shadow-none md:text-xs [&::-webkit-search-cancel-button]:appearance-none"
       />
       <Button
         type="submit"
         variant="ghost"
         size="icon"
-        aria-label="Search"
+        aria-label={t('Search')}
         className="absolute top-0 right-0 size-10 rounded-sm hover:bg-black/5 [&_svg]:size-5"
       >
         <Search className="size-5" strokeWidth={1.7} aria-hidden="true" />

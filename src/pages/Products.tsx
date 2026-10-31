@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -12,6 +13,8 @@ import PriceRange from '@/features/products/PriceRange'
 import UnavailableFilters from '@/features/products/UnavailableFilters'
 
 const Products = () => {
+  const { t } = useText()
+
   const [params, setParams] = useSearchParams()
   const query = useMemo(() => readCatalogQuery(params), [params])
   const queryKey = JSON.stringify(query)
@@ -59,18 +62,21 @@ const Products = () => {
   return (
     <div className="container py-10 sm:py-16">
       <nav
-        aria-label="Breadcrumb"
+        aria-label={t('Breadcrumb')}
         className="mb-10 flex gap-3 text-sm sm:mb-14"
       >
         <Link to="/" className="text-muted-foreground hover:underline">
-          Home
+          {t('Home')}
         </Link>
         <span aria-hidden="true">/</span>
-        <span>Explore Our Products</span>
+        <span>{t('Explore Our Products')}</span>
       </nav>
       <div className="grid min-w-0 gap-8 lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-12">
-        <aside aria-label="Product filters" className="space-y-4 border-t pt-4">
-          <h2 className="font-semibold">Category</h2>
+        <aside
+          aria-label={t('Product filters')}
+          className="space-y-4 border-t pt-4"
+        >
+          <h2 className="font-semibold">{t('Category')}</h2>
           <Button
             variant="ghost"
             onClick={() => changeCategory()}
@@ -78,7 +84,7 @@ const Products = () => {
               !query.CategoryId && !query.SubcategoryId ? 'text-primary' : ''
             }
           >
-            All products
+            {t('All products')}
           </Button>
           <RequestState
             loading={categories.status === 'pending'}
@@ -88,7 +94,7 @@ const Products = () => {
           {categories.status === 'succeeded' &&
             categories.items.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                No categories available.
+                {t('No categories available.')}
               </p>
             )}
           <ul className="flex flex-wrap gap-2 lg:flex-col lg:items-start">
@@ -125,12 +131,12 @@ const Products = () => {
                 className="text-2xl font-semibold break-words"
               >
                 {query.ProductName
-                  ? `Results for “${query.ProductName}”`
-                  : 'Explore Our Products'}
+                  ? t('Results for “{{value0}}”', { value0: query.ProductName })
+                  : t('Explore Our Products')}
               </h1>
               {current && catalog.status === 'succeeded' && (
                 <p role="status" className="text-sm text-muted-foreground">
-                  {catalog.totalRecord} products
+                  {t('Products: {{value0}}', { value0: catalog.totalRecord })}
                 </p>
               )}
             </div>
@@ -140,13 +146,13 @@ const Products = () => {
               query.MinPrice !== undefined ||
               query.MaxPrice !== undefined) && (
               <Button variant="outline" onClick={() => setParams({})}>
-                Clear search and filters
+                {t('Clear search and filters')}
               </Button>
             )}
           </div>
           {loading && (
             <div role="status" aria-busy="true">
-              <span className="sr-only">Loading products</span>
+              <span className="sr-only">{t('Loading products')}</span>
               <div
                 aria-hidden="true"
                 className="grid grid-cols-1 gap-7 sm:grid-cols-2 xl:grid-cols-3"
@@ -171,12 +177,13 @@ const Products = () => {
             <>
               {catalog.items.length === 0 ? (
                 <p role="status" className="py-12 text-muted-foreground">
-                  No products found. Try a different search or clear the
-                  filters.
+                  {t(
+                    'No products found. Try a different search or clear the filters.',
+                  )}
                 </p>
               ) : (
                 <ul
-                  aria-label="Products"
+                  aria-label={t('Products')}
                   className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 xl:grid-cols-3"
                 >
                   {catalog.items.map((product) => (
@@ -188,7 +195,7 @@ const Products = () => {
               )}
               {catalog.totalPage > 1 && (
                 <nav
-                  aria-label="Catalog pages"
+                  aria-label={t('Catalog pages')}
                   className="flex flex-wrap items-center justify-center gap-4 pt-6"
                 >
                   <Button
@@ -196,16 +203,19 @@ const Products = () => {
                     disabled={catalog.pageNumber <= 1}
                     onClick={() => changePage(catalog.pageNumber - 1)}
                   >
-                    Previous
+                    {t('Previous')}
                   </Button>
                   <span className="text-sm">
-                    Page {catalog.pageNumber} of {catalog.totalPage}
+                    {t('Page {{value0}} of {{value1}}', {
+                      value0: catalog.pageNumber,
+                      value1: catalog.totalPage,
+                    })}
                   </span>
                   <Button
                     disabled={catalog.pageNumber >= catalog.totalPage}
                     onClick={() => changePage(catalog.pageNumber + 1)}
                   >
-                    Next
+                    {t('Next')}
                   </Button>
                 </nav>
               )}

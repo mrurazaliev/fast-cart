@@ -1,11 +1,11 @@
+import { getLocale } from '@/shared/i18n/i18n'
 import type { Product } from '@/features/products/productsApi'
 
-const priceFormatter = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
-
-export const formatPrice = (price: number) => priceFormatter.format(price)
+export const formatPrice = (price: number) =>
+  new Intl.NumberFormat(getLocale(), {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price)
 
 export const hasValidDiscount = (product: Product) =>
   product.hasDiscount &&

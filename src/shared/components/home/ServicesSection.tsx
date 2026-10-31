@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Headset, ShieldCheck, Truck } from 'lucide-react'
 
 const services = [
@@ -19,8 +20,10 @@ const services = [
 ]
 
 const ServicesSection = () => {
+  const { t } = useText()
+
   return (
-    <section aria-label="Shopping services" className="py-16 sm:py-24">
+    <section aria-label={t('Shopping services')} className="py-16 sm:py-24">
       <ul className="mx-auto grid max-w-5xl gap-12 sm:grid-cols-3 sm:gap-6">
         {services.map(({ title, description, icon }) => (
           <li
@@ -35,8 +38,12 @@ const ServicesSection = () => {
                 {icon}
               </span>
             </div>
-            <h2 className="text-base font-semibold lg:text-lg">{title}</h2>
-            <p className="mt-2 max-w-64 text-sm leading-6">{description}</p>
+            <h2 className="text-base font-semibold lg:text-lg">
+              {t(title || '')}
+            </h2>
+            <p className="mt-2 max-w-64 text-sm leading-6">
+              {t(description || '')}
+            </p>
           </li>
         ))}
       </ul>

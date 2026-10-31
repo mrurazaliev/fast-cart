@@ -1,7 +1,10 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { flashSaleEndsAt, getFlashSaleTime } from './flashSaleTime'
 
 const FlashSaleCountdown = () => {
+  const { t } = useText()
+
   const [now, setNow] = useState(Date.now)
   const remaining = getFlashSaleTime(now)
   const ended = now >= Date.parse(flashSaleEndsAt)
@@ -18,7 +21,7 @@ const FlashSaleCountdown = () => {
   return (
     <div className="space-y-2">
       <dl
-        aria-label="Flash Sales countdown"
+        aria-label={t('Flash Sales countdown')}
         className="flex items-end gap-3 sm:gap-4"
       >
         {Object.entries(remaining).map(([label, value], index) => (
@@ -32,7 +35,7 @@ const FlashSaleCountdown = () => {
               </span>
             )}
             <div className="space-y-1">
-              <dt className="text-xs font-medium">{label}</dt>
+              <dt className="text-xs font-medium">{t(label || '')}</dt>
               <dd className="text-2xl leading-none font-bold tabular-nums sm:text-3xl">
                 {String(value).padStart(2, '0')}
               </dd>
@@ -41,7 +44,7 @@ const FlashSaleCountdown = () => {
         ))}
       </dl>
       {ended && (
-        <p className="text-xs text-muted-foreground">Countdown ended</p>
+        <p className="text-xs text-muted-foreground">{t('Countdown ended')}</p>
       )}
     </div>
   )

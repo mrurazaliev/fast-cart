@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useId, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Slider } from 'radix-ui'
@@ -17,6 +18,8 @@ const PriceRange = ({
   bounds,
   onApply,
 }: PriceRangeProps) => {
+  const { t } = useText()
+
   const [minimum, setMinimum] = useState(minPrice?.toString() || '')
   const [maximum, setMaximum] = useState(maxPrice?.toString() || '')
   const [error, setError] = useState<string | null>(null)
@@ -55,7 +58,7 @@ const PriceRange = ({
       className="space-y-4 border-t pt-4"
     >
       <h2 id={`${id}-heading`} className="font-semibold">
-        Price range
+        {t('Price range')}
       </h2>
       <form noValidate onSubmit={handleSubmit} className="space-y-4">
         {bounds && sliderMax > 0 && (
@@ -84,7 +87,7 @@ const PriceRange = ({
             {['Minimum price', 'Maximum price'].map((label) => (
               <Slider.Thumb
                 key={label}
-                aria-label={label}
+                aria-label={t(label || '')}
                 className="block size-4 rounded-full border border-primary bg-background shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               />
             ))}
@@ -95,7 +98,7 @@ const PriceRange = ({
             htmlFor={`${id}-min`}
             className="min-w-0 space-y-1 text-xs text-muted-foreground"
           >
-            <span>Min</span>
+            <span>{t('Min')}</span>
             <Input
               id={`${id}-min`}
               name="MinPrice"
@@ -114,13 +117,13 @@ const PriceRange = ({
             htmlFor={`${id}-max`}
             className="min-w-0 space-y-1 text-xs text-muted-foreground"
           >
-            <span>Max</span>
+            <span>{t('Max')}</span>
             <Input
               id={`${id}-max`}
               name="MaxPrice"
               inputMode="decimal"
               value={maximum}
-              placeholder={bounds?.maxPrice.toString() || 'Any'}
+              placeholder={bounds?.maxPrice.toString() || t('Any')}
               aria-invalid={!!error}
               aria-describedby={error ? `${id}-error` : undefined}
               onChange={(event) => {
@@ -136,7 +139,7 @@ const PriceRange = ({
             role="alert"
             className="text-xs text-destructive"
           >
-            {error}
+            {t(error || '')}
           </p>
         )}
         <Button
@@ -144,7 +147,7 @@ const PriceRange = ({
           variant="outline"
           className="w-full border-primary text-primary"
         >
-          Apply
+          {t('Apply')}
         </Button>
         {(minPrice !== undefined || maxPrice !== undefined) && (
           <Button
@@ -153,7 +156,7 @@ const PriceRange = ({
             className="w-full"
             onClick={() => onApply()}
           >
-            Reset price
+            {t('Reset price')}
           </Button>
         )}
       </form>

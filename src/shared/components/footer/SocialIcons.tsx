@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 const socials = [
   {
     name: 'Facebook',
@@ -33,14 +34,16 @@ const socials = [
 ]
 
 const SocialIcons = () => {
+  const { t } = useText()
+
   return (
-    <ul aria-label="Social networks" className="flex items-center gap-5">
+    <ul aria-label={t('Social networks')} className="flex items-center gap-5">
       {socials.map(({ name, path }) => (
         <li key={name}>
           <span
             role="img"
-            aria-label={`${name} — link not available`}
-            title={`${name}: link not available`}
+            aria-label={t('{{value0}} — link not available', { value0: name })}
+            title={t('{{value0}}: link not available', { value0: name })}
             className="inline-flex size-6 items-center justify-center text-neutral-200"
           >
             <svg

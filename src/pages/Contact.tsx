@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Phone } from 'lucide-react'
@@ -9,6 +10,8 @@ import { contactSchema } from '@/features/contact/contactSchema'
 import type { ContactValues } from '@/features/contact/contactSchema'
 
 const Contact = () => {
+  const { t } = useText()
+
   const [detailsChecked, setDetailsChecked] = useState(false)
   const {
     register,
@@ -21,26 +24,26 @@ const Contact = () => {
 
   return (
     <div className="pt-2 pb-16 sm:pt-6 sm:pb-24">
-      <nav aria-label="Breadcrumb" className="mb-10 text-sm sm:mb-14">
+      <nav aria-label={t('Breadcrumb')} className="mb-10 text-sm sm:mb-14">
         <ol className="flex flex-wrap items-center gap-3">
           <li>
             <Link
               to="/"
               className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
-              Home
+              {t('Home')}
             </Link>
           </li>
           <li aria-hidden="true" className="text-muted-foreground">
             /
           </li>
-          <li aria-current="page">Contact</li>
+          <li aria-current="page">{t('Contact')}</li>
         </ol>
       </nav>
-      <h1 className="sr-only">Contact FastCart</h1>
+      <h1 className="sr-only">{t('Contact FastCart')}</h1>
       <div className="grid items-start gap-7 lg:grid-cols-[.8fr_1.8fr]">
         <aside
-          aria-label="Contact information"
+          aria-label={t('Contact information')}
           className="rounded-sm p-6 shadow-[0_1px_16px_0_#0000000f] sm:p-8"
         >
           <section aria-labelledby="contact-call" className="space-y-5 pb-7">
@@ -51,10 +54,12 @@ const Contact = () => {
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                 <Phone className="size-5" aria-hidden="true" />
               </span>
-              Call To Us
+              {t('Call To Us')}
             </h2>
             <p className="text-sm leading-6 text-muted-foreground">
-              A verified customer support phone number is not available yet.
+              {t(
+                'A verified customer support phone number is not available yet.',
+              )}
             </p>
           </section>
           <section
@@ -68,11 +73,12 @@ const Contact = () => {
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                 <Mail className="size-5" aria-hidden="true" />
               </span>
-              Write To Us
+              {t('Write To Us')}
             </h2>
             <p className="text-sm leading-6 text-muted-foreground">
-              Message delivery and a verified support email are not available
-              yet. No response time has been confirmed.
+              {t(
+                'Message delivery and a verified support email are not available yet. No response time has been confirmed.',
+              )}
             </p>
           </section>
         </aside>
@@ -83,14 +89,14 @@ const Contact = () => {
             () => setDetailsChecked(false),
           )}
           onChange={() => setDetailsChecked(false)}
-          aria-label="Contact message"
+          aria-label={t('Contact message')}
           aria-describedby="contact-unavailable"
           className="min-w-0 space-y-6 rounded-sm p-6 shadow-[0_1px_16px_0_#0000000f] sm:p-8"
         >
           <div className="grid gap-5 sm:grid-cols-3">
             <div className="min-w-0 space-y-2">
               <label htmlFor="contact-name" className="text-sm">
-                Name <span aria-hidden="true">*</span>
+                {t('Your name')} <span aria-hidden="true">*</span>
               </label>
               <Input
                 {...register('name')}
@@ -109,13 +115,13 @@ const Contact = () => {
                   role="alert"
                   className="text-sm text-destructive"
                 >
-                  {errors.name.message}
+                  {t(errors.name.message || '')}
                 </p>
               )}
             </div>
             <div className="min-w-0 space-y-2">
               <label htmlFor="contact-email" className="text-sm">
-                Email <span aria-hidden="true">*</span>
+                {t('Email')} <span aria-hidden="true">*</span>
               </label>
               <Input
                 {...register('email')}
@@ -135,13 +141,13 @@ const Contact = () => {
                   role="alert"
                   className="text-sm text-destructive"
                 >
-                  {errors.email.message}
+                  {t(errors.email.message || '')}
                 </p>
               )}
             </div>
             <div className="min-w-0 space-y-2">
               <label htmlFor="contact-phone" className="text-sm">
-                Phone (optional)
+                {t('Phone (optional)')}
               </label>
               <Input
                 {...register('phone')}
@@ -154,7 +160,7 @@ const Contact = () => {
           </div>
           <div className="space-y-2">
             <label htmlFor="contact-message" className="text-sm">
-              Your Message <span aria-hidden="true">*</span>
+              {t('Your Message')} <span aria-hidden="true">*</span>
             </label>
             <textarea
               {...register('message')}
@@ -173,7 +179,7 @@ const Contact = () => {
                 role="alert"
                 className="text-sm text-destructive"
               >
-                {errors.message.message}
+                {t(errors.message.message || '')}
               </p>
             )}
           </div>
@@ -181,13 +187,13 @@ const Contact = () => {
             id="contact-unavailable"
             className="text-sm leading-6 text-muted-foreground"
           >
-            Message delivery is currently unavailable. You can check these
-            fields, but nothing will be sent or saved. Fields marked * are
-            required.
+            {t(
+              'Message delivery is currently unavailable. You can check these fields, but nothing will be sent or saved. Fields marked * are required.',
+            )}
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <Button type="submit" variant="outline" className="h-12 rounded-sm">
-              Check Details
+              {t('Check Details')}
             </Button>
             <Button
               type="button"
@@ -195,13 +201,14 @@ const Contact = () => {
               aria-describedby="contact-unavailable"
               className="h-12 rounded-sm px-8"
             >
-              Send Message
+              {t('Send Message')}
             </Button>
           </div>
           {detailsChecked && (
             <p role="status" className="text-sm leading-6">
-              The fields are valid. Nothing has been sent. Message delivery is
-              currently unavailable.
+              {t(
+                'The fields are valid. Nothing has been sent. Message delivery is currently unavailable.',
+              )}
             </p>
           )}
         </form>

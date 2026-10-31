@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { Heart, Minus, Plus } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -27,6 +28,8 @@ const ProductDetailsContent = ({
   onRetryStock?: () => void
   initialQuantity?: number
 }) => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const saved = useAppSelector((state) =>
     state.wishlist.ids.includes(product.id),
@@ -68,21 +71,23 @@ const ProductDetailsContent = ({
           <ProductRating />
           {stock !== null && stock !== undefined && (
             <p
-              className={`text-sm ${stock > 0 ? 'text-green-700' : 'text-muted-foreground'}`}
+              className={`text-sm ${stock > 0 ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'}`}
             >
-              {stock > 0 ? `In stock: ${stock}` : 'Out of stock'}
+              {stock > 0
+                ? t('In stock: {{value0}}', { value0: stock })
+                : t('Out of stock')}
             </p>
           )}
           <p className="flex flex-wrap items-center gap-4 text-2xl font-medium">
             <span>
               <span className="sr-only">
-                {discounted ? 'Discount price: ' : 'Price: '}
+                {discounted ? t('Discount price: ') : t('Price: ')}
               </span>
               {formatPrice(discounted ? product.discountPrice : product.price)}
             </span>
             {discounted && (
               <del className="text-lg text-muted-foreground">
-                <span className="sr-only">Original price: </span>
+                <span className="sr-only">{t('Original price:')} </span>
                 {formatPrice(product.price)}
               </del>
             )}
@@ -95,13 +100,15 @@ const ProductDetailsContent = ({
         </div>
         {product.color?.trim() && (
           <div className="flex flex-wrap items-center gap-3 border-t pt-6 text-sm">
-            <span className="text-muted-foreground">Colour:</span>
+            <span className="text-muted-foreground">{t('Colour:')}</span>
             <span
               aria-hidden="true"
               title={
                 colorSwatch
-                  ? `Illustrative sample: ${product.color}`
-                  : 'Color sample unavailable'
+                  ? t('Illustrative sample: {{value0}}', {
+                      value0: product.color,
+                    })
+                  : t('Color sample unavailable')
               }
               className={`size-6 rounded-full border ${colorSwatch ? 'border-neutral-400' : 'border-dashed'}`}
               style={colorSwatch ? { backgroundColor: colorSwatch } : undefined}
@@ -116,7 +123,7 @@ const ProductDetailsContent = ({
                 key={label}
                 className="grid grid-cols-[120px_minmax(0,1fr)] gap-3"
               >
-                <dt className="text-muted-foreground">{label}</dt>
+                <dt className="text-muted-foreground">{t(label || '')}</dt>
                 <dd className="break-words">{value}</dd>
               </div>
             ))}
@@ -126,7 +133,7 @@ const ProductDetailsContent = ({
           <RequestState error={stockError} onRetry={onRetryStock} />
           <div className="flex flex-wrap items-center gap-4">
             <label htmlFor="product-quantity" className="text-sm font-medium">
-              Quantity
+              {t('Quantity')}
             </label>
             <div className="flex items-center">
               <Button
@@ -134,7 +141,7 @@ const ProductDetailsContent = ({
                 variant="outline"
                 size="icon"
                 disabled={!quantityAvailable || quantity <= 1}
-                aria-label="Decrease quantity"
+                aria-label={t('Decrease quantity')}
                 onClick={() => changeQuantity(quantity - 1)}
                 className="size-11 rounded-r-none"
               >
@@ -155,7 +162,7 @@ const ProductDetailsContent = ({
                 type="button"
                 size="icon"
                 disabled={!quantityAvailable || quantity >= stock}
-                aria-label="Increase quantity"
+                aria-label={t('Increase quantity')}
                 onClick={() => changeQuantity(quantity + 1)}
                 className="size-11 rounded-l-none"
               >
@@ -166,8 +173,8 @@ const ProductDetailsContent = ({
           {!quantityAvailable && (
             <p className="text-sm text-muted-foreground">
               {stock === 0
-                ? 'This product is out of stock and cannot be purchased.'
-                : 'Availability has not been confirmed.'}
+                ? t('This product is out of stock and cannot be purchased.')
+                : t('Availability has not been confirmed.')}
             </p>
           )}
           <div className="flex gap-4">
@@ -182,7 +189,12 @@ const ProductDetailsContent = ({
               type="button"
               variant="outline"
               size="icon"
-              aria-label={`${saved ? 'Remove from' : 'Add to'} wishlist: ${product.productName}`}
+              aria-label={t(
+                saved
+                  ? 'Remove {{value0}} from wishlist'
+                  : 'Add {{value0}} to wishlist',
+                { value0: product.productName },
+              )}
               aria-pressed={saved}
               onClick={() =>
                 dispatch(
@@ -198,8 +210,9 @@ const ProductDetailsContent = ({
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            The selected quantity is added to your server cart after
-            confirmation.
+            {t(
+              'The selected quantity is added to your server cart after confirmation.',
+            )}
           </p>
         </div>
         <ProductDelivery />
@@ -208,7 +221,7 @@ const ProductDetailsContent = ({
             to={`/products?SubcategoryId=${product.subCategoryId}`}
             className="inline-block text-sm underline underline-offset-4"
           >
-            Browse this subcategory
+            {t('Browse this subcategory')}
           </Link>
         )}
       </section>

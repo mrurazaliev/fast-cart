@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { ImageOff, LoaderCircle, Minus, Plus, X } from 'lucide-react'
 import { Link, Navigate } from 'react-router-dom'
@@ -32,6 +33,8 @@ const CartImage = ({ line }: { line: CartLine }) => {
 }
 
 const Cart = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.auth.session)
   const cart = useAppSelector((state) => state.cart)
@@ -53,20 +56,20 @@ const Cart = () => {
   return (
     <div className="py-4 sm:py-8">
       <nav
-        aria-label="Breadcrumb"
+        aria-label={t('Breadcrumb')}
         className="mb-10 flex gap-3 text-sm sm:mb-14"
       >
         <Link to="/" className="text-muted-foreground hover:underline">
-          Home
+          {t('Home')}
         </Link>
         <span aria-hidden="true">/</span>
-        <span>Cart</span>
+        <span>{t('Cart')}</span>
       </nav>
-      <h1 className="sr-only">Shopping cart</h1>
+      <h1 className="sr-only">{t('Shopping cart')}</h1>
       <div className="space-y-6">
         {loading && cart.items.length === 0 && (
           <div role="status" aria-busy="true" className="space-y-5">
-            <span className="sr-only">Loading cart</span>
+            <span className="sr-only">{t('Loading cart')}</span>
             <Skeleton className="h-12" />
             <Skeleton className="h-28" />
             <Skeleton className="h-28" />
@@ -82,24 +85,24 @@ const Cart = () => {
             role="alert"
             className="text-sm whitespace-pre-line text-destructive"
           >
-            {cart.mutationError}
+            {t(cart.mutationError || '')}
           </p>
         )}
         {cart.message && (
           <p role="status" className="text-sm">
-            {cart.message}
+            {t(cart.message || '')}
           </p>
         )}
         {cart.mutating && !lineOperation && (
           <p role="status" className="text-sm text-muted-foreground">
-            Updating cart. Please wait…
+            {t('Updating cart. Please wait…')}
           </p>
         )}
         {cart.status === 'succeeded' && cart.items.length === 0 && (
           <div role="status" className="space-y-5 py-12 text-center">
-            <p className="text-xl">Your cart is empty.</p>
+            <p className="text-xl">{t('Your cart is empty.')}</p>
             <Button asChild className="h-12 rounded-sm px-8">
-              <Link to="/products">Return To Shop</Link>
+              <Link to="/products">{t('Return To Shop')}</Link>
             </Button>
           </div>
         )}
@@ -109,13 +112,13 @@ const Cart = () => {
               aria-hidden="true"
               className="hidden grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_32px] items-center gap-5 px-6 py-4 text-sm text-muted-foreground md:grid"
             >
-              <span>Product</span>
-              <span>Price</span>
-              <span>Quantity</span>
-              <span>Subtotal</span>
+              <span>{t('Product')}</span>
+              <span>{t('Price')}</span>
+              <span>{t('Quantity')}</span>
+              <span>{t('Subtotal')}</span>
               <span />
             </div>
-            <ul aria-label="Cart products" className="space-y-5">
+            <ul aria-label={t('Cart products')} className="space-y-5">
               {cart.items.map((line) => {
                 const discounted = hasValidDiscount(line.product)
                 const price = discounted
@@ -151,21 +154,23 @@ const Cart = () => {
                       </Link>
                       {outOfStock && (
                         <p className="mt-2 text-xs text-destructive">
-                          This product is out of stock. Remove it or reduce the
-                          quantity.
+                          {t(
+                            'This product is out of stock. Remove it or reduce the quantity.',
+                          )}
                         </p>
                       )}
                       {typeof stock === 'number' &&
                         stock > 0 &&
                         line.quantity > stock && (
                           <p className="mt-2 text-xs text-destructive">
-                            Only {stock} available. Reduce the quantity.
+                            {t('Only')} {t(stock || '')}{' '}
+                            {t('available. Reduce the quantity.')}
                           </p>
                         )}
                     </div>
                     <div className="space-y-1 text-sm">
                       <span className="block text-xs text-muted-foreground md:hidden">
-                        Price
+                        {t('Price')}
                       </span>
                       <span>{formatPrice(price)}</span>
                       {discounted && (
@@ -176,7 +181,7 @@ const Cart = () => {
                     </div>
                     <div className="space-y-1">
                       <span className="block text-xs text-muted-foreground md:hidden">
-                        Quantity
+                        {t('Quantity')}
                       </span>
                       <div className="flex w-fit items-center">
                         <Button
@@ -185,7 +190,9 @@ const Cart = () => {
                           size="icon"
                           disabled={!canChange || line.quantity <= 1}
                           aria-busy={pending === 'reduce'}
-                          aria-label={`Decrease quantity of ${line.product.productName}`}
+                          aria-label={t('Decrease quantity of {{value0}}', {
+                            value0: line.product.productName,
+                          })}
                           onClick={() =>
                             void dispatch(
                               mutateCart({ type: 'reduce', lineId: line.id }),
@@ -207,7 +214,9 @@ const Cart = () => {
                           type="number"
                           value={line.quantity}
                           min={1}
-                          aria-label={`Quantity of ${line.product.productName}`}
+                          aria-label={t('Quantity of {{value0}}', {
+                            value0: line.product.productName,
+                          })}
                           className="h-8 w-12 rounded-none border-x-0 px-1 text-center shadow-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                         <Button
@@ -216,7 +225,9 @@ const Cart = () => {
                           size="icon"
                           disabled={!canChange || outOfStock || atStockLimit}
                           aria-busy={pending === 'increase'}
-                          aria-label={`Increase quantity of ${line.product.productName}`}
+                          aria-label={t('Increase quantity of {{value0}}', {
+                            value0: line.product.productName,
+                          })}
                           onClick={() =>
                             void dispatch(
                               mutateCart({ type: 'increase', lineId: line.id }),
@@ -240,20 +251,20 @@ const Cart = () => {
                         className="min-h-4 text-xs text-muted-foreground"
                       >
                         {pending === 'remove'
-                          ? 'Removing item…'
+                          ? t('Removing item…')
                           : pending
-                            ? 'Updating quantity…'
+                            ? t('Updating quantity…')
                             : ''}
                       </p>
                       {!cart.mutating && operation && cart.mutationError && (
                         <p role="alert" className="text-xs text-destructive">
-                          {cart.mutationError}
+                          {t(cart.mutationError || '')}
                         </p>
                       )}
                     </div>
                     <div className="space-y-1 text-sm font-medium">
                       <span className="block text-xs font-normal text-muted-foreground md:hidden">
-                        Subtotal
+                        {t('Subtotal')}
                       </span>
                       {formatPrice(price * line.quantity)}
                     </div>
@@ -263,7 +274,9 @@ const Cart = () => {
                       size="icon"
                       disabled={!canChange}
                       aria-busy={pending === 'remove'}
-                      aria-label={`Remove ${line.product.productName} from cart`}
+                      aria-label={t('Remove {{value0}} from cart', {
+                        value0: line.product.productName,
+                      })}
                       onClick={() =>
                         void dispatch(
                           mutateCart({ type: 'remove', lineId: line.id }),
@@ -290,7 +303,7 @@ const Cart = () => {
                 variant="outline"
                 className="h-12 rounded-sm px-8"
               >
-                <Link to="/products">Return To Shop</Link>
+                <Link to="/products">{t('Return To Shop')}</Link>
               </Button>
               <div className="flex flex-wrap gap-4">
                 <Button
@@ -301,7 +314,7 @@ const Cart = () => {
                   onClick={() => void dispatch(fetchCart())}
                   className="h-12 rounded-sm px-8"
                 >
-                  Refresh Cart
+                  {t('Refresh Cart')}
                 </Button>
                 <Button
                   type="button"
@@ -312,35 +325,35 @@ const Cart = () => {
                   className="h-12 rounded-sm border-primary px-8 text-primary"
                 >
                   {cart.mutating && cart.operation?.type === 'clear'
-                    ? 'Removing all…'
-                    : 'Remove all'}
+                    ? t('Removing all…')
+                    : t('Remove all')}
                 </Button>
               </div>
             </div>
             <div className="mt-10 grid gap-8 pt-8 lg:grid-cols-2 lg:gap-16">
               <p className="text-sm text-muted-foreground">
-                Coupons and delivery pricing are not available yet.
+                {t('Coupons and delivery pricing are not available yet.')}
               </p>
               <section
                 aria-labelledby="cart-total-heading"
                 className="space-y-6 rounded-sm border border-foreground p-6"
               >
                 <h2 id="cart-total-heading" className="text-xl font-medium">
-                  Cart Total
+                  {t('Cart Total')}
                 </h2>
                 <dl className="divide-y text-sm">
                   <div className="flex justify-between gap-4 py-4">
-                    <dt>Subtotal</dt>
+                    <dt>{t('Subtotal')}</dt>
                     <dd>{formatPrice(cart.totalPrice)}</dd>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between gap-4 py-4">
-                      <dt>Discount</dt>
+                      <dt>{t('Discount')}</dt>
                       <dd>−{formatPrice(discount)}</dd>
                     </div>
                   )}
                   <div className="flex justify-between gap-4 py-4 text-base font-medium">
-                    <dt>Total</dt>
+                    <dt>{t('Total')}</dt>
                     <dd>{formatPrice(cart.total)}</dd>
                   </div>
                 </dl>
@@ -351,7 +364,7 @@ const Cart = () => {
                       aria-describedby="checkout-note"
                       className="h-12 w-full rounded-sm"
                     >
-                      <Link to="/checkout">Proceed to checkout</Link>
+                      <Link to="/checkout">{t('Proceed to checkout')}</Link>
                     </Button>
                   ) : (
                     <Button
@@ -359,15 +372,16 @@ const Cart = () => {
                       aria-describedby="checkout-note"
                       className="h-12 w-full rounded-sm"
                     >
-                      Proceed to checkout
+                      {t('Proceed to checkout')}
                     </Button>
                   )}
                   <p
                     id="checkout-note"
                     className="text-xs text-muted-foreground"
                   >
-                    Review your billing details next. Order submission and
-                    payment are not available yet.
+                    {t(
+                      'Review your billing details next. Order submission and payment are not available yet.',
+                    )}
                   </p>
                 </div>
               </section>

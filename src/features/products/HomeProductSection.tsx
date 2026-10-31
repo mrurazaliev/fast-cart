@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Link } from 'react-router-dom'
 import type { Product } from '@/features/products/productsApi'
 import { Button } from '@/components/ui/button'
@@ -29,23 +30,25 @@ const HomeProductSection = ({
   onRetry,
   actionInHeader = false,
 }: HomeProductSectionProps) => {
+  const { t } = useText()
+
   return (
     <section aria-labelledby={id} className="mt-12 space-y-8 sm:mt-16">
-      <SectionHeading id={id} label={label} title={title}>
+      <SectionHeading id={id} label={t(label || '')} title={t(title || '')}>
         {actionInHeader && (
           <Button asChild className="h-12 rounded-sm px-8">
-            <Link to="/products">View All</Link>
+            <Link to="/products">{t('View All')}</Link>
           </Button>
         )}
       </SectionHeading>
       {actionInHeader && (
         <p className="text-sm text-muted-foreground">
-          A curated selection from our catalog.
+          {t('A curated selection from our catalog.')}
         </p>
       )}
       {loading && (
         <div role="status" aria-busy="true" className="relative">
-          <span className="sr-only">Loading products…</span>
+          <span className="sr-only">{t('Loading products…')}</span>
           <div
             aria-hidden="true"
             className="grid grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
@@ -65,12 +68,12 @@ const HomeProductSection = ({
       <RequestState error={error} onRetry={onRetry} />
       {!loading && !error && products.length === 0 && (
         <p role="status" className="py-6 text-muted-foreground">
-          No products available in this selection.
+          {t('No products available in this selection.')}
         </p>
       )}
       {!loading && !error && products.length > 0 && (
         <ul
-          aria-label={title}
+          aria-label={t(title || '')}
           className="grid min-w-0 grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
         >
           {products.map((product) => (
@@ -83,7 +86,7 @@ const HomeProductSection = ({
       {!actionInHeader && (
         <div className="pt-2 text-center">
           <Button asChild className="h-12 rounded-sm px-10">
-            <Link to="/products">View All Products</Link>
+            <Link to="/products">{t('View All Products')}</Link>
           </Button>
         </div>
       )}

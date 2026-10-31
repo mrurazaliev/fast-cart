@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { Link } from 'react-router-dom'
@@ -15,6 +16,8 @@ const carouselLayout =
   'grid auto-cols-[82%] grid-flow-col gap-6 sm:auto-cols-[calc((100%_-_24px)/2)] lg:auto-cols-[calc((100%_-_72px)/4)]'
 
 const FlashSales = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const { items, status, error } = useAppSelector((state) => state.products)
   const products = items.filter(hasValidDiscount).slice(0, 12)
@@ -85,14 +88,14 @@ const FlashSales = () => {
     >
       <p className="flex items-center gap-4 text-sm font-semibold text-primary">
         <span className="h-10 w-5 rounded-sm bg-primary" aria-hidden="true" />
-        Today's
+        {t("Today's")}
       </p>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-12">
         <h2
           id="flash-sales-title"
           className="text-2xl font-semibold tracking-wide min-[360px]:text-3xl sm:text-4xl"
         >
-          Flash Sales
+          {t('Flash Sales')}
         </h2>
         <div className="col-span-2 row-start-2 lg:col-span-1 lg:col-start-2 lg:row-start-1">
           <FlashSaleCountdown />
@@ -103,7 +106,7 @@ const FlashSales = () => {
             variant="secondary"
             size="icon"
             className="size-11 rounded-full"
-            aria-label="Previous products"
+            aria-label={t('Previous products')}
             aria-controls={ready ? rowId : undefined}
             disabled={!ready || !canScrollLeft}
             onClick={() => handleScroll(-1)}
@@ -115,7 +118,7 @@ const FlashSales = () => {
             variant="secondary"
             size="icon"
             className="size-11 rounded-full"
-            aria-label="Next products"
+            aria-label={t('Next products')}
             aria-controls={ready ? rowId : undefined}
             disabled={!ready || !canScrollRight}
             onClick={() => handleScroll(1)}
@@ -126,7 +129,7 @@ const FlashSales = () => {
       </div>
       {(status === 'idle' || status === 'pending') && (
         <div role="status" aria-busy="true">
-          <span className="sr-only">Loading products…</span>
+          <span className="sr-only">{t('Loading products…')}</span>
           <div
             aria-hidden="true"
             className={`${carouselLayout} overflow-hidden p-1 pb-4`}
@@ -151,7 +154,7 @@ const FlashSales = () => {
       />
       {status === 'succeeded' && products.length === 0 && (
         <p role="status" className="py-8 text-muted-foreground">
-          No discounted products in this selection.
+          {t('No discounted products in this selection.')}
         </p>
       )}
       {ready && (
@@ -159,7 +162,7 @@ const FlashSales = () => {
           <ul
             ref={rowRef}
             id={rowId}
-            aria-label="Discounted products"
+            aria-label={t('Discounted products')}
             aria-describedby={`${rowId}-instructions`}
             tabIndex={0}
             onKeyDown={handleKeyDown}
@@ -172,11 +175,16 @@ const FlashSales = () => {
             ))}
           </ul>
           <p id={`${rowId}-instructions`} className="sr-only">
-            Swipe or use the previous and next buttons to browse. When the list
-            is focused, use the arrow keys, Home or End.
+            {t(
+              'Swipe or use the previous and next buttons to browse. When the list is focused, use the arrow keys, Home or End.',
+            )}
           </p>
           <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
-            <span>{products.length} discounted products in this selection</span>
+            <span>
+              {t('Discounted products: {{value0}}', {
+                value0: products.length,
+              })}
+            </span>
             {visibleFraction < 1 && (
               <div
                 aria-hidden="true"
@@ -196,7 +204,7 @@ const FlashSales = () => {
       )}
       <div className="pt-2 text-center">
         <Button asChild className="h-12 rounded-sm px-10">
-          <Link to="/products">View All Products</Link>
+          <Link to="/products">{t('View All Products')}</Link>
         </Button>
       </div>
     </section>

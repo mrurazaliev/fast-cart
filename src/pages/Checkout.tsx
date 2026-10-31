@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -18,6 +19,8 @@ import LocalOrderConfirmation from '@/features/checkout/LocalOrderConfirmation'
 import type { CheckoutValues } from '@/features/checkout/checkoutSchema'
 
 const CheckoutContent = ({ userName }: { userName: string }) => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.auth.session)
   const cart = useAppSelector((state) => state.cart)
@@ -80,32 +83,32 @@ const CheckoutContent = ({ userName }: { userName: string }) => {
   return (
     <div className="py-4 sm:py-8">
       <nav
-        aria-label="Breadcrumb"
+        aria-label={t('Breadcrumb')}
         className="mb-10 flex flex-wrap gap-3 text-sm sm:mb-12"
       >
         <Link to="/products" className="text-muted-foreground hover:underline">
-          Products
+          {t('Products')}
         </Link>
         <span aria-hidden="true">/</span>
         <Link to="/cart" className="text-muted-foreground hover:underline">
-          View Cart
+          {t('View Cart')}
         </Link>
         <span aria-hidden="true">/</span>
-        <span aria-current="page">Checkout</span>
+        <span aria-current="page">{t('Checkout')}</span>
       </nav>
       <h1 className="mb-7 text-3xl font-medium tracking-wide sm:text-4xl">
-        Billing Details
+        {t('Billing Details')}
       </h1>
       <div
         role="note"
         id="checkout-availability-note"
         className="mb-8 space-y-2 rounded-sm border border-primary/25 bg-primary/5 p-4 text-sm"
       >
-        <p className="font-medium">Local demo checkout</p>
+        <p className="font-medium">{t('Local demo checkout')}</p>
         <p>
-          Save a demo order in this browser and review its confirmation. Billing
-          details stay on this device. No real order, delivery or payment is
-          created, and your server cart is unchanged.
+          {t(
+            'Save a demo order in this browser and review its confirmation. Billing details stay on this device. No real order, delivery or payment is created, and your server cart is unchanged.',
+          )}
         </p>
       </div>
       <div className="space-y-6">
@@ -115,7 +118,7 @@ const CheckoutContent = ({ userName }: { userName: string }) => {
             aria-busy="true"
             className="grid gap-10 lg:grid-cols-2 lg:gap-28"
           >
-            <span className="sr-only">Loading your cart</span>
+            <span className="sr-only">{t('Loading your cart')}</span>
             <Skeleton className="h-96" />
             <Skeleton className="h-72" />
           </div>
@@ -129,12 +132,12 @@ const CheckoutContent = ({ userName }: { userName: string }) => {
         />
         {cart.status === 'succeeded' && cart.items.length === 0 && (
           <div role="status" className="space-y-5 py-12 text-center">
-            <p className="text-xl">Your cart is empty.</p>
+            <p className="text-xl">{t('Your cart is empty.')}</p>
             <p className="text-sm text-muted-foreground">
-              Add products to your cart before checking billing details.
+              {t('Add products to your cart before checking billing details.')}
             </p>
             <Button asChild className="h-12 rounded-sm px-8">
-              <Link to="/products">Return To Shop</Link>
+              <Link to="/products">{t('Return To Shop')}</Link>
             </Button>
           </div>
         )}

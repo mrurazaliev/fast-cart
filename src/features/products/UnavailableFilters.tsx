@@ -1,7 +1,10 @@
+import { useText } from '@/shared/i18n/useText'
 import { useId } from 'react'
 import { Star } from 'lucide-react'
 
 const UnavailableFilters = () => {
+  const { t } = useText()
+
   const id = useId()
 
   return (
@@ -12,7 +15,7 @@ const UnavailableFilters = () => {
         className="space-y-3 border-t pt-4"
       >
         <legend className="float-left mb-4 w-full font-semibold">
-          Condition
+          {t('Condition')}
         </legend>
         {['Any', 'Refurbished', 'Brand new', 'Old items'].map((condition) => (
           <label
@@ -26,11 +29,11 @@ const UnavailableFilters = () => {
               defaultChecked={condition === 'Any'}
               className="size-4 accent-primary"
             />
-            {condition}
+            {t(condition || '')}
           </label>
         ))}
         <p id={`${id}-condition`} className="text-xs text-muted-foreground">
-          Condition filtering is unavailable.
+          {t('Condition filtering is unavailable.')}
         </p>
       </fieldset>
       <fieldset
@@ -39,13 +42,13 @@ const UnavailableFilters = () => {
         className="space-y-3 border-t pt-4"
       >
         <legend className="float-left mb-4 w-full font-semibold">
-          Ratings
+          {t('Ratings')}
         </legend>
         {[5, 4, 3, 2].map((rating) => (
           <label key={rating} className="flex items-center gap-3">
             <input
               type="checkbox"
-              aria-label={`${rating} stars and up`}
+              aria-label={t('{{value0}} stars and up', { value0: rating })}
               className="size-4 accent-primary"
             />
             <span className="flex gap-0.5" aria-hidden="true">
@@ -63,7 +66,7 @@ const UnavailableFilters = () => {
           </label>
         ))}
         <p id={`${id}-ratings`} className="text-xs text-muted-foreground">
-          Rating filtering is unavailable.
+          {t('Rating filtering is unavailable.')}
         </p>
       </fieldset>
     </>

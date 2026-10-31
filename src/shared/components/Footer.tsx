@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Link } from 'react-router-dom'
 import { Copyright } from 'lucide-react'
 import SubscribeForm from '@/shared/components/footer/SubscribeForm'
@@ -11,6 +12,8 @@ const accountLinks = [
 ]
 
 const Footer = () => {
+  const { t } = useText()
+
   return (
     <footer className="bg-black text-neutral-100">
       <div className="container grid grid-cols-1 gap-x-8 gap-y-10 py-12 sm:grid-cols-2 sm:py-16 lg:grid-cols-[1.2fr_1fr_.65fr_.7fr_.85fr] lg:gap-x-12">
@@ -22,29 +25,29 @@ const Footer = () => {
             id="footer-exclusive"
             className="text-2xl font-semibold tracking-wide"
           >
-            Exclusive
+            {t('Exclusive')}
           </h2>
-          <h3 className="text-xl font-medium">Subscribe</h3>
-          <p className="text-sm">Get updates from our store</p>
+          <h3 className="text-xl font-medium">{t('Subscribe')}</h3>
+          <p className="text-sm">{t('Get updates from our store')}</p>
           <SubscribeForm />
         </section>
         <section aria-labelledby="footer-support" className="space-y-6">
           <h2 id="footer-support" className="text-xl font-medium">
-            Support
+            {t('Support')}
           </h2>
           <p className="text-sm leading-6 text-neutral-300">
-            Verified support contact details are not available yet.
+            {t('Verified support contact details are not available yet.')}
           </p>
           <Link
             to="/contact"
             className="inline-block rounded-sm text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            Contact information
+            {t('Contact information')}
           </Link>
         </section>
         <nav aria-labelledby="footer-account" className="space-y-6">
           <h2 id="footer-account" className="text-xl font-medium">
-            Account
+            {t('Account')}
           </h2>
           <ul className="space-y-4 text-sm">
             {accountLinks.map(({ label, to }) => (
@@ -53,7 +56,7 @@ const Footer = () => {
                   to={to}
                   className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
-                  {label}
+                  {t(label || '')}
                 </Link>
               </li>
             ))}
@@ -61,17 +64,17 @@ const Footer = () => {
         </nav>
         <nav aria-labelledby="footer-links" className="space-y-6">
           <h2 id="footer-links" className="text-xl font-medium">
-            Quick Link
+            {t('Quick Link')}
           </h2>
           <ul className="space-y-4 text-sm">
             {['Privacy Policy', 'Terms Of Use', 'FAQ'].map((label) => (
               <li key={label}>
                 <span
                   aria-disabled="true"
-                  title="Not available yet"
+                  title={t('Not available yet')}
                   className="text-neutral-400"
                 >
-                  {label}
+                  {t(label || '')}
                 </span>
               </li>
             ))}
@@ -80,14 +83,14 @@ const Footer = () => {
                 to="/contact"
                 className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
-                Contact
+                {t('Contact')}
               </Link>
             </li>
           </ul>
         </nav>
         <section aria-labelledby="footer-social" className="space-y-6">
           <h2 id="footer-social" className="text-xl font-medium">
-            Social
+            {t('Social')}
           </h2>
           <SocialIcons />
         </section>
@@ -95,7 +98,7 @@ const Footer = () => {
       <div className="border-t border-white/10">
         <p className="container flex items-start justify-center gap-2 py-5 text-center text-xs leading-5 text-neutral-500 sm:text-sm">
           <Copyright className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-          <span>Copyright Rimel 2022. All rights reserved</span>
+          <span>{t('Copyright Rimel 2022. All rights reserved')}</span>
         </p>
       </div>
     </footer>

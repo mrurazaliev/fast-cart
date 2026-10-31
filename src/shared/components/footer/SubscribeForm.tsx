@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -13,6 +14,8 @@ const subscribeSchema = z.object({
 type SubscribeValues = z.infer<typeof subscribeSchema>
 
 const SubscribeForm = () => {
+  const { t } = useText()
+
   const [message, setMessage] = useState(
     'Email subscription is not available yet.',
   )
@@ -33,7 +36,7 @@ const SubscribeForm = () => {
     <form
       noValidate
       onSubmit={handleSubmit(handleSubscribe)}
-      aria-label="Email subscription"
+      aria-label={t('Email subscription')}
       className="max-w-56 space-y-3"
     >
       <div className="relative">
@@ -41,17 +44,17 @@ const SubscribeForm = () => {
           {...register('email')}
           type="email"
           autoComplete="email"
-          aria-label="Your email for subscription"
+          aria-label={t('Your email for subscription')}
           aria-invalid={Boolean(errors.email)}
           aria-describedby="subscribe-message"
-          placeholder="Enter your email"
+          placeholder={t('Enter your email')}
           className="h-12 rounded-sm border-white bg-transparent pr-12 pl-3 text-sm text-white placeholder:text-neutral-400 focus-visible:border-white focus-visible:ring-white/40 md:text-sm"
         />
         <Button
           type="submit"
           variant="ghost"
           size="icon"
-          aria-label="Subscribe"
+          aria-label={t('Subscribe')}
           className="absolute top-1 right-1 size-10 rounded-sm text-white hover:bg-white/15 hover:text-white focus-visible:ring-white/40"
         >
           <Send className="size-5" strokeWidth={1.5} aria-hidden="true" />
@@ -62,7 +65,7 @@ const SubscribeForm = () => {
         role="status"
         className="text-xs leading-5 text-neutral-400"
       >
-        {errors.email?.message || message}
+        {errors.email?.message || t(message || '')}
       </p>
     </form>
   )

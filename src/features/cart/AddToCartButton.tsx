@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from 'react-redux'
@@ -24,6 +25,8 @@ const AddToCartButton = ({
   wrapperClassName,
   moveFromWishlist = false,
 }: AddToCartButtonProps) => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const location = useLocation()
@@ -91,16 +94,20 @@ const AddToCartButton = ({
         type="button"
         disabled={disabled || mutating}
         onClick={() => void handleAdd()}
-        title={disabled ? 'This product is unavailable' : undefined}
+        title={disabled ? t('This product is unavailable') : undefined}
         className={className}
       >
-        {disabled ? 'Unavailable' : mutating ? 'Updating cart…' : 'Add To Cart'}
+        {disabled
+          ? t('Unavailable')
+          : mutating
+            ? t('Updating cart…')
+            : t('Add To Cart')}
       </Button>
       {(currentResult?.message || currentResult?.error) && (
         <div
           className="cart-feedback focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
           role="region"
-          aria-label="Cart feedback"
+          aria-label={t('Cart feedback')}
           tabIndex={0}
         >
           {currentResult?.message && (
@@ -108,7 +115,7 @@ const AddToCartButton = ({
               role="status"
               className="bg-background px-2 py-1 text-xs break-words text-foreground"
             >
-              {currentResult.message}
+              {t(currentResult.message || '')}
             </p>
           )}
           {currentResult?.error && (
@@ -116,7 +123,7 @@ const AddToCartButton = ({
               role="alert"
               className="bg-background px-2 py-1 text-xs break-words text-destructive"
             >
-              {currentResult.error}
+              {t(currentResult.error || '')}
             </p>
           )}
         </div>

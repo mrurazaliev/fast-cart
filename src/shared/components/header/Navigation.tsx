@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/shared/utils'
 import { useAppSelector } from '@/app/hooks'
@@ -15,10 +16,12 @@ const links = [
 ]
 
 const Navigation = ({ mobile = false, onNavigate }: NavigationProps) => {
+  const { t } = useText()
+
   const signedIn = useAppSelector((state) => !!state.auth.session)
   return (
     <nav
-      aria-label={mobile ? 'Mobile navigation' : 'Main navigation'}
+      aria-label={mobile ? t('Mobile navigation') : t('Main navigation')}
       className={cn(
         'flex',
         mobile ? 'flex-col gap-2' : 'items-center gap-7 xl:gap-10',
@@ -40,7 +43,7 @@ const Navigation = ({ mobile = false, onNavigate }: NavigationProps) => {
               )
             }
           >
-            {label}
+            {t(label || '')}
           </NavLink>
         ))}
     </nav>

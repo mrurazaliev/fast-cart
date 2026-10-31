@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useRef } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
@@ -14,6 +15,8 @@ import { Button } from '@/components/ui/button'
 import { getCartQuantityIntent, getLoginReturnPath } from '@/shared/loginReturn'
 
 const Login = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const location = useLocation()
   const navigationState: unknown = location.state
@@ -82,10 +85,10 @@ const Login = () => {
   }
 
   return (
-    <AuthLayout title="Log in to FastCart">
+    <AuthLayout title={t('Log in to FastCart')}>
       {registrationComplete && (
         <p role="status" className="text-sm">
-          Your account has been created. Log in to continue.
+          {t('Your account has been created. Log in to continue.')}
         </p>
       )}
       <form
@@ -96,13 +99,13 @@ const Login = () => {
       >
         <fieldset disabled={isSubmitting} className="space-y-6">
           <AuthField
-            label="Username"
+            label={t('Username')}
             field={register('userName')}
             autoComplete="username"
             error={errors.userName?.message}
           />
           <AuthField
-            label="Password"
+            label={t('Password')}
             field={register('password')}
             type="password"
             autoComplete="current-password"
@@ -113,7 +116,7 @@ const Login = () => {
             disabled={isSubmitting}
             className="h-12 w-full rounded-sm"
           >
-            {isSubmitting ? 'Signing in…' : 'Log In'}
+            {isSubmitting ? t('Signing in…') : t('Log In')}
           </Button>
         </fieldset>
         {isSubmitting && (
@@ -122,22 +125,22 @@ const Login = () => {
             aria-live="polite"
             className="text-sm text-muted-foreground"
           >
-            Sending sign-in request. Please wait…
+            {t('Sending sign-in request. Please wait…')}
           </p>
         )}
         {errors.root?.message && (
           <p role="alert" className="text-sm text-destructive">
-            {errors.root.message}
+            {t(errors.root.message || '')}
           </p>
         )}
       </form>
       <p className="text-sm text-muted-foreground">
-        Don’t have an account?{' '}
+        {t('Don’t have an account?')}{' '}
         <Link
           to="/register"
           className="ml-3 text-foreground underline underline-offset-4"
         >
-          Sign Up
+          {t('Sign Up')}
         </Link>
       </p>
     </AuthLayout>

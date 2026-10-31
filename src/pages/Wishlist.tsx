@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -11,6 +12,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import MoveWishlistToCart from '@/features/cart/MoveWishlistToCart'
 
 const Wishlist = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const ids = useAppSelector((state) => state.wishlist.ids)
   const products = useAppSelector((state) => state.products)
@@ -35,36 +38,40 @@ const Wishlist = () => {
       <section aria-labelledby="wishlist-heading" className="space-y-8">
         <div className="flex flex-wrap items-center justify-between gap-5">
           <h1 id="wishlist-heading" className="text-xl">
-            Wishlist ({ids.length})
+            {t('Wishlist (')}
+            {ids.length})
           </h1>
           <MoveWishlistToCart />
         </div>
         <p className="text-sm text-muted-foreground">
-          Products leave your wishlist only after their addition to the server
-          cart is confirmed.
+          {t(
+            'Products leave your wishlist only after their addition to the server cart is confirmed.',
+          )}
         </p>
         {message && (
           <p role="status" className="text-sm">
-            {message}
+            {t(message || '')}
           </p>
         )}
         {mutationError && (
           <p role="alert" className="text-sm text-destructive">
-            {mutationError}
+            {t(mutationError || '')}
           </p>
         )}
         {ids.length === 0 ? (
           <div role="status" className="space-y-5 py-8">
             <p className="text-muted-foreground">
-              Your wishlist is empty. Save products using the heart button.
+              {t(
+                'Your wishlist is empty. Save products using the heart button.',
+              )}
             </p>
             <Button asChild className="h-12 rounded-sm px-8">
-              <Link to="/products">Browse Products</Link>
+              <Link to="/products">{t('Browse Products')}</Link>
             </Button>
           </div>
         ) : (
           <ul
-            aria-label="Wishlist products"
+            aria-label={t('Wishlist products')}
             className="grid min-w-0 grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
           >
             {ids.map((id) => (
@@ -88,18 +95,20 @@ const Wishlist = () => {
               aria-hidden="true"
               className="h-10 w-5 rounded-sm bg-primary"
             />
-            Just For You
+            {t('Just For You')}
           </h2>
           <Button asChild variant="outline" className="h-12 rounded-sm px-8">
-            <Link to="/products">See All</Link>
+            <Link to="/products">{t('See All')}</Link>
           </Button>
         </div>
         <p className="text-sm text-muted-foreground">
-          Explore more from our catalog. This selection is not personalized.
+          {t(
+            'Explore more from our catalog. This selection is not personalized.',
+          )}
         </p>
         {loading && (
           <div role="status">
-            <span className="sr-only">Loading products</span>
+            <span className="sr-only">{t('Loading products')}</span>
             <div
               aria-hidden="true"
               className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-4"
@@ -120,7 +129,7 @@ const Wishlist = () => {
         {products.status === 'succeeded' &&
           (suggestions.length > 0 ? (
             <ul
-              aria-label="More products"
+              aria-label={t('More products')}
               className="grid min-w-0 grid-cols-1 gap-x-7 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
             >
               {suggestions.map((product) => (
@@ -131,7 +140,7 @@ const Wishlist = () => {
             </ul>
           ) : (
             <p role="status" className="py-6 text-muted-foreground">
-              No more products available.
+              {t('No more products available.')}
             </p>
           ))}
       </section>

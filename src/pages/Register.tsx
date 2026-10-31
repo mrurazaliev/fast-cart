@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useRef } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
@@ -12,6 +13,8 @@ import AuthField from '@/features/auth/AuthField'
 import { Button } from '@/components/ui/button'
 
 const Register = () => {
+  const { t } = useText()
+
   const session = useAppSelector((state) => state.auth.session)
   const navigate = useNavigate()
   const submitting = useRef(false)
@@ -79,7 +82,7 @@ const Register = () => {
   if (session) return <Navigate to="/" replace />
 
   return (
-    <AuthLayout title="Create an account">
+    <AuthLayout title={t('Create an account')}>
       <form
         noValidate
         onSubmit={(event) => void handleFormSubmit(event)}
@@ -88,34 +91,34 @@ const Register = () => {
       >
         <fieldset disabled={isSubmitting} className="space-y-6">
           <AuthField
-            label="Username"
+            label={t('Username')}
             field={register('userName')}
             autoComplete="username"
             error={errors.userName?.message}
           />
           <AuthField
-            label="Phone number"
+            label={t('Phone number')}
             field={register('phoneNumber')}
             type="tel"
             autoComplete="tel"
             error={errors.phoneNumber?.message}
           />
           <AuthField
-            label="Email"
+            label={t('Email')}
             field={register('email')}
             type="email"
             autoComplete="email"
             error={errors.email?.message}
           />
           <AuthField
-            label="Password"
+            label={t('Password')}
             field={register('password')}
             type="password"
             autoComplete="new-password"
             error={errors.password?.message}
           />
           <AuthField
-            label="Confirm password"
+            label={t('Confirm password')}
             field={register('confirmPassword')}
             type="password"
             autoComplete="new-password"
@@ -126,7 +129,7 @@ const Register = () => {
             disabled={isSubmitting}
             className="h-12 w-full rounded-sm"
           >
-            {isSubmitting ? 'Creating account…' : 'Create Account'}
+            {isSubmitting ? t('Creating account…') : t('Create Account')}
           </Button>
         </fieldset>
         {isSubmitting && (
@@ -135,22 +138,22 @@ const Register = () => {
             aria-live="polite"
             className="text-sm text-muted-foreground"
           >
-            Sending registration request. Please wait…
+            {t('Sending registration request. Please wait…')}
           </p>
         )}
         {errors.root?.message && (
           <p role="alert" className="text-sm text-destructive">
-            {errors.root.message}
+            {t(errors.root.message || '')}
           </p>
         )}
       </form>
       <p className="text-sm text-muted-foreground">
-        Already have an account?{' '}
+        {t('Already have an account?')}{' '}
         <Link
           to="/login"
           className="ml-3 text-foreground underline underline-offset-4"
         >
-          Log In
+          {t('Log In')}
         </Link>
       </p>
     </AuthLayout>

@@ -79,3 +79,11 @@ Tailwind CSS uses the Vite plugin. shadcn/ui generates TypeScript components wit
 The local iPhone hero photograph comes from [Apple Newsroom](https://www.apple.com/ie/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/).
 
 The five standalone home promo images in `src/assets/home` come from the [EcommerceFigma reference assets](https://github.com/M-Subhan-Ali/EcommerceFigma/tree/6983d80593646fc51c6af60bd96bd715ac68cf24/src/Components): `MusicEnhance/image/jbl.png` and `Arrival/Images/{ps5,girl,speaker,gucci}.png`. No reference application code was copied. Promo links use existing category IDs from Redux. If category data is unavailable, links open the catalog without inventing an ID.
+
+## Languages and appearance
+
+The storefront and admin application support English, Russian and Tajik (EN / RU / TJ; language codes en / ru / tg). Language and light/dark controls are available in the header; the mobile storefront exposes them in its navigation sheet. Admin login and access-check screens also expose the controls. The initial defaults are English and light. Each application remembers the selection in its own browser origin and synchronizes it between tabs of that origin. Initial appearance is applied before React renders.
+
+UI copy, navigation, labels, accessibility descriptions, validation and known application errors are localized. Switching language preserves current form input and retranslates existing errors. Product/category names, descriptions, customer input and unknown server messages remain unchanged. Displayed prices and dates use the selected locale; no currency is assumed. The API contracts, session handling, Redux data reducers and validation rules are unchanged.
+
+Translation resources are in src/shared/i18n. English source phrases are used as keys. react-i18next drives React updates; a small text adapter also recognizes existing interpolated application messages without changing their stored values. Light/dark colors use semantic CSS variables. npm ci installs the added i18next and react-i18next dependencies from the committed lockfile.

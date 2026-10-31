@@ -1,3 +1,5 @@
+import AppearanceControls from '@/shared/preferences/AppearanceControls'
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -33,6 +35,8 @@ import { loggedOut } from '@/features/auth/authSlice'
 import { fetchCart } from '@/features/cart/cartSlice'
 
 const Header = () => {
+  const { t } = useText()
+
   const [menuOpen, setMenuOpen] = useState(false)
   const wishlistCount = useAppSelector((state) => state.wishlist.ids.length)
   const session = useAppSelector((state) => state.auth.session)
@@ -49,13 +53,14 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="container flex flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:gap-x-4 py-5 lg:flex-nowrap lg:gap-6 lg:py-5">
+      <div className="container flex flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:gap-x-4 py-5 xl:flex-nowrap lg:gap-6 lg:py-5">
         <Logo />
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <Navigation />
         </div>
         <div className="flex items-center gap-1 sm:gap-2 lg:gap-3">
-          <div className="mr-2 hidden lg:block">
+          <AppearanceControls className="hidden sm:flex" />
+          <div className="mr-2 hidden xl:block">
             <SearchForm />
           </div>
           <Button
@@ -66,7 +71,9 @@ const Header = () => {
           >
             <Link
               to="/wishlist"
-              aria-label={`Wishlist (${wishlistCount} items)`}
+              aria-label={t('Wishlist ({{value0}} items)', {
+                value0: wishlistCount,
+              })}
               className="relative"
             >
               <Heart className="size-6" strokeWidth={1.7} aria-hidden="true" />
@@ -88,7 +95,7 @@ const Header = () => {
           >
             <Link
               to="/cart"
-              aria-label={`Cart (${cartCount} items)`}
+              aria-label={t('Cart ({{value0}} items)', { value0: cartCount })}
               className="relative"
             >
               <ShoppingCart
@@ -111,7 +118,7 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Account menu"
+                aria-label={t('Account menu')}
                 className="size-8 sm:size-9 rounded-full data-[state=open]:bg-primary data-[state=open]:text-white [&_svg]:size-6"
               >
                 <UserRound
@@ -140,7 +147,7 @@ const Header = () => {
                         className="size-5 text-white"
                         aria-hidden="true"
                       />
-                      My Account
+                      {t('My Account')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -148,7 +155,7 @@ const Header = () => {
                     className="gap-3 px-3 py-3 focus:bg-white/15 focus:text-white"
                   >
                     <LogOut className="size-5 text-white" aria-hidden="true" />
-                    Log Out
+                    {t('Log Out')}
                   </DropdownMenuItem>
                 </>
               ) : (
@@ -159,7 +166,7 @@ const Header = () => {
                   >
                     <Link to="/login">
                       <LogIn className="size-5 text-white" aria-hidden="true" />
-                      Log In
+                      {t('Log In')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -171,7 +178,7 @@ const Header = () => {
                         className="size-5 text-white"
                         aria-hidden="true"
                       />
-                      Sign Up
+                      {t('Sign Up')}
                     </Link>
                   </DropdownMenuItem>
                 </>
@@ -183,24 +190,25 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Open navigation"
-                className="size-8 sm:size-9 lg:hidden [&_svg]:size-6"
+                aria-label={t('Open navigation')}
+                className="size-8 sm:size-9 xl:hidden [&_svg]:size-6"
               >
                 <Menu className="size-6" strokeWidth={1.7} aria-hidden="true" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[min(320px,85vw)]">
               <SheetHeader className="border-b px-6 py-6">
-                <SheetTitle>FastCart</SheetTitle>
-                <SheetDescription>Explore the store</SheetDescription>
+                <SheetTitle>{t('FastCart')}</SheetTitle>
+                <SheetDescription>{t('Explore the store')}</SheetDescription>
               </SheetHeader>
               <div className="px-6 py-4">
+                <AppearanceControls className="mb-5" />
                 <Navigation mobile onNavigate={() => setMenuOpen(false)} />
               </div>
             </SheetContent>
           </Sheet>
         </div>
-        <div className="w-full lg:hidden">
+        <div className="w-full xl:hidden">
           <SearchForm />
         </div>
       </div>

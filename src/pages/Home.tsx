@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { ChevronDown } from 'lucide-react'
 import CategoryMenu from '@/features/categories/CategoryMenu'
 import HeroBanner from '@/shared/components/home/HeroBanner'
@@ -8,6 +9,8 @@ import NewArrival from '@/features/products/NewArrival'
 import ServicesSection from '@/shared/components/home/ServicesSection'
 
 const Home = () => {
+  const { t } = useText()
+
   return (
     <>
       <div className="grid min-w-0 gap-6 lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-10">
@@ -17,7 +20,7 @@ const Home = () => {
           </div>
           <details className="rounded-sm border lg:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-medium [&::-webkit-details-marker]:hidden">
-              Browse categories
+              {t('Browse categories')}
               <ChevronDown className="size-4" aria-hidden="true" />
             </summary>
             <div className="border-t px-4 py-2">
