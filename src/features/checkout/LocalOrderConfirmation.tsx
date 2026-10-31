@@ -1,5 +1,6 @@
 import { getLocale } from '@/shared/i18n/i18n'
 import { useText } from '@/shared/i18n/useText'
+import { useEffect, useRef } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,12 @@ const LocalOrderConfirmation = ({
   error: string | null
 }) => {
   const { t } = useText()
+  const heading = useRef<HTMLHeadingElement>(null)
+
+  useEffect(() => {
+    heading.current?.focus()
+  }, [])
+
   return (
     <section
       aria-labelledby="local-order-heading"
@@ -29,9 +36,7 @@ const LocalOrderConfirmation = ({
         <h1
           id="local-order-heading"
           tabIndex={-1}
-          ref={(node) => {
-            node?.focus()
-          }}
+          ref={heading}
           className="text-2xl font-medium outline-none sm:text-3xl"
         >
           {t('Local order saved')}
@@ -115,13 +120,16 @@ const LocalOrderConfirmation = ({
         </p>
       )}
       <div className="flex flex-wrap gap-3">
-        <Button asChild className="min-h-12 rounded-sm">
+        <Button
+          asChild
+          className="h-auto min-h-12 max-w-full rounded-sm whitespace-normal"
+        >
           <Link to="/products">{t('Continue shopping')}</Link>
         </Button>
         <Button
           variant="outline"
           onClick={onDelete}
-          className="h-auto min-h-12 rounded-sm whitespace-normal"
+          className="h-auto min-h-12 max-w-full rounded-sm whitespace-normal"
         >
           {t('Delete local order & return to checkout')}
         </Button>
