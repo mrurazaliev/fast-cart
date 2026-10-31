@@ -40,6 +40,18 @@ const Checkout = () => {
       <h1 className="mb-7 text-3xl font-medium tracking-wide sm:text-4xl">
         Billing Details
       </h1>
+      <div
+        role="note"
+        id="checkout-availability-note"
+        className="mb-8 space-y-2 rounded-sm border border-primary/25 bg-primary/5 p-4 text-sm"
+      >
+        <p className="font-medium">Orders and payments are unavailable</p>
+        <p>
+          You can review your cart and check billing details locally. Nothing
+          entered here is sent or saved, and no order or payment will be
+          created.
+        </p>
+      </div>
       <div className="space-y-6">
         {loading && cart.items.length === 0 && (
           <div
@@ -71,12 +83,15 @@ const Checkout = () => {
           </div>
         )}
         {cart.items.length > 0 && (
-          <div className="grid items-start gap-10 pb-8 lg:grid-cols-2 lg:gap-28 lg:pb-16">
+          <div className="grid min-w-0 grid-cols-1 items-start gap-10 pb-8 lg:grid-cols-2 lg:gap-28 lg:pb-16">
             <CheckoutForm
               key={session.userName}
               disabled={cart.status !== 'succeeded' || cart.mutating}
             />
-            <CheckoutSummary cart={cart} />
+            <CheckoutSummary
+              cart={cart}
+              current={cart.status === 'succeeded' && !cart.mutating}
+            />
           </div>
         )}
       </div>

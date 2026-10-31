@@ -62,17 +62,22 @@ const CheckoutForm = ({ disabled }: { disabled: boolean }) => {
     <form
       noValidate
       onChange={() => setValidated(false)}
-      onSubmit={(event) =>
+      onSubmit={(event) => {
+        event.preventDefault()
+        if (disabled || isSubmitting) return
         void handleSubmit(
           () => setValidated(true),
           () => setValidated(false),
         )(event)
-      }
-      aria-describedby="checkout-form-note"
+      }}
+      aria-describedby="checkout-availability-note checkout-form-note"
       aria-busy={isSubmitting}
-      className="space-y-5 p-5 shadow-[0_1px_18px_0_rgb(0_0_0/8%)] sm:p-6"
+      className="min-w-0 space-y-5 p-5 shadow-[0_1px_18px_0_rgb(0_0_0/8%)] sm:p-6"
     >
-      <fieldset disabled={disabled || isSubmitting} className="space-y-5">
+      <fieldset
+        disabled={disabled || isSubmitting}
+        className="min-w-0 space-y-5"
+      >
         <legend className="sr-only">Contact and billing address</legend>
         {fields.map((field) => {
           const error = errors[field.name]?.message
@@ -113,7 +118,7 @@ const CheckoutForm = ({ disabled }: { disabled: boolean }) => {
           Please correct the highlighted fields. No information was sent.
         </p>
       )}
-      {validated && (
+      {validated && !disabled && (
         <p role="status" className="text-sm">
           Details checked locally. No order was created and no information was
           sent.

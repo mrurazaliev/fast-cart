@@ -26,19 +26,34 @@ const CheckoutImage = ({ line }: { line: CartLine }) => {
   )
 }
 
-const CheckoutSummary = ({ cart }: { cart: Cart }) => {
+const CheckoutSummary = ({
+  cart,
+  current,
+}: {
+  cart: Cart
+  current: boolean
+}) => {
   const discount = Math.max(0, cart.totalPrice - cart.total)
 
   return (
-    <section aria-labelledby="checkout-summary-heading" className="space-y-7">
+    <section
+      aria-labelledby="checkout-summary-heading"
+      className="min-w-0 space-y-7"
+    >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="checkout-summary-heading" className="text-lg font-medium">
-          Order summary
+          Cart summary
         </h2>
         <Link to="/cart" className="text-sm underline underline-offset-4">
           Edit cart
         </Link>
       </div>
+      {!current && (
+        <p role="status" className="text-sm text-muted-foreground">
+          These are the last confirmed cart amounts. Refresh the cart before
+          relying on them.
+        </p>
+      )}
       <ul aria-label="Products in your cart" className="space-y-5">
         {cart.items.map((line) => {
           const price = hasValidDiscount(line.product)
@@ -112,8 +127,8 @@ const CheckoutSummary = ({ cart }: { cart: Cart }) => {
           Place Order unavailable
         </Button>
         <p id="checkout-order-note" className="text-sm text-muted-foreground">
-          Order submission is not supported by the current API. No order or
-          payment can be created here. Your cart will be kept.
+          Orders cannot be submitted here yet. No order or payment will be
+          created. Your cart will be kept.
         </p>
       </div>
     </section>
