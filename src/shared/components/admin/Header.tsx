@@ -1,3 +1,5 @@
+import AppearanceControls from '@/shared/preferences/AppearanceControls'
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LogOut, Menu } from 'lucide-react'
@@ -17,6 +19,8 @@ import AdminNavigation from './AdminNavigation'
 import { adminNavigation, otherNavigation } from './navigationItems'
 
 const Header = () => {
+  const { t } = useText()
+
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const pathname = location.pathname.replace(/\/+$/, '')
@@ -40,7 +44,7 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Open navigation"
+              aria-label={t('Open navigation')}
               className="text-white hover:bg-white/10 hover:text-white lg:hidden"
             >
               <Menu aria-hidden="true" />
@@ -51,9 +55,9 @@ const Header = () => {
             className="w-[min(280px,90vw)] border-white/10 bg-admin-surface text-white [&>button]:hover:bg-white/10"
           >
             <SheetHeader>
-              <SheetTitle>FastCart Admin</SheetTitle>
+              <SheetTitle>{t('FastCart Admin')}</SheetTitle>
               <SheetDescription className="text-white/60">
-                Administration navigation.
+                {t('Administration navigation.')}
               </SheetDescription>
             </SheetHeader>
             <div className="min-h-0 flex-1 space-y-8 overflow-y-auto px-5 pb-6">
@@ -62,14 +66,15 @@ const Header = () => {
             </div>
           </SheetContent>
         </Sheet>
-        <p className="truncate font-semibold">{title}</p>
+        <p className="truncate font-semibold">{t(title || '')}</p>
         {loading && (
           <span role="status" className="sr-only">
-            Loading…
+            {t('Loading…')}
           </span>
         )}
       </div>
-      <div className="flex min-w-0 items-center gap-3 sm:gap-5">
+      <div className="flex min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-4">
+        <AppearanceControls />
         <span className="hidden max-w-48 truncate text-sm text-white/90 sm:block">
           {userName}
         </span>
@@ -77,10 +82,11 @@ const Header = () => {
           type="button"
           variant="ghost"
           className="text-white hover:bg-white/10 hover:text-white"
+          aria-label={t('Sign out')}
           onClick={() => dispatch(loggedOut())}
         >
           <LogOut aria-hidden="true" />
-          <span>Sign out</span>
+          <span className="hidden sm:inline">{t('Sign out')}</span>
         </Button>
       </div>
     </header>

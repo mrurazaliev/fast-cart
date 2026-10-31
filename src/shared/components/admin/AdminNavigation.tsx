@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, Folder } from 'lucide-react'
 import { adminNavigation, otherNavigation } from './navigationItems'
@@ -6,13 +7,15 @@ const getLinkClassName = ({ isActive }: { isActive: boolean }) =>
   `flex min-h-11 items-center gap-4 rounded-sm px-4 py-3 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${isActive ? 'bg-white text-admin-surface' : 'text-white/90 hover:bg-white/10 hover:text-white'}`
 
 const AdminNavigation = ({ onNavigate }: { onNavigate?: () => void }) => {
+  const { t } = useText()
+
   const location = useLocation()
   const pathname = location.pathname.replace(/\/+$/, '')
   const otherPath = pathname === '/subcategories' ? '/categories' : pathname
   const otherActive = otherNavigation.some((item) => item.path === otherPath)
 
   return (
-    <nav aria-label="Admin navigation" className="space-y-2">
+    <nav aria-label={t('Admin navigation')} className="space-y-2">
       {adminNavigation.map(({ path, label, icon: Icon }) => (
         <NavLink
           key={path}
@@ -21,7 +24,7 @@ const AdminNavigation = ({ onNavigate }: { onNavigate?: () => void }) => {
           className={getLinkClassName}
         >
           <Icon className="size-5" aria-hidden="true" />
-          {label}
+          {t(label || '')}
         </NavLink>
       ))}
       <details open={otherActive} className="group space-y-2">
@@ -29,7 +32,7 @@ const AdminNavigation = ({ onNavigate }: { onNavigate?: () => void }) => {
           className={`flex min-h-11 w-full cursor-pointer list-none items-center gap-4 rounded-sm px-4 py-3 text-left text-sm text-white/90 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white [&::-webkit-details-marker]:hidden ${otherActive ? 'bg-white/10 text-white' : ''}`}
         >
           <Folder className="size-5" aria-hidden="true" />
-          <span className="flex-1">Other</span>
+          <span className="flex-1">{t('Other')}</span>
           <ChevronDown
             className="size-4 transition-transform group-open:rotate-180"
             aria-hidden="true"
@@ -45,7 +48,7 @@ const AdminNavigation = ({ onNavigate }: { onNavigate?: () => void }) => {
               aria-current={path === otherPath ? 'page' : undefined}
             >
               <Icon className="size-4 shrink-0" aria-hidden="true" />
-              {label}
+              {t(label || '')}
             </Link>
           ))}
         </div>

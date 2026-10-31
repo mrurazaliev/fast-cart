@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useForm } from 'react-hook-form'
@@ -34,6 +35,8 @@ const SubcategoryFields = ({
   data: FormData
   onClose: () => void
 }) => {
+  const { t } = useText()
+
   const mutation = useCategoryMutation()
   const submitting = useRef(false)
   const {
@@ -90,8 +93,8 @@ const SubcategoryFields = ({
   const disabled = mutation.pending || mutation.locked
   return (
     <CategoryDialog
-      title={data.subcategory ? 'Edit subcategory' : 'Add subcategory'}
-      description="Choose the category this subcategory belongs to."
+      title={data.subcategory ? t('Edit subcategory') : t('Add subcategory')}
+      description={t('Choose the category this subcategory belongs to.')}
       pending={mutation.pending}
       onClose={onClose}
     >
@@ -102,7 +105,7 @@ const SubcategoryFields = ({
       >
         <ProductField
           name="subCategoryName"
-          label="Subcategory name"
+          label={t('Subcategory name')}
           error={errors.subCategoryName?.message}
         >
           <Input
@@ -117,7 +120,7 @@ const SubcategoryFields = ({
         </ProductField>
         <ProductField
           name="categoryId"
-          label="Parent category"
+          label={t('Parent category')}
           error={errors.categoryId?.message}
         >
           <select
@@ -130,7 +133,7 @@ const SubcategoryFields = ({
             }
             className="h-11 w-full min-w-0 rounded-sm border bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-primary"
           >
-            <option value={0}>Choose a category</option>
+            <option value={0}>{t('Choose a category')}</option>
             {data.categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.categoryName}
@@ -140,31 +143,32 @@ const SubcategoryFields = ({
         </ProductField>
         {data.subcategory && (
           <p className="text-sm text-muted-foreground">
-            The existing parent is selected. Change it only if you intend to
-            move this subcategory.
+            {t(
+              'The existing parent is selected. Change it only if you intend to move this subcategory.',
+            )}
           </p>
         )}
         {mutation.error && (
           <p role="alert" className="text-sm text-destructive">
-            {mutation.error}
+            {t(mutation.error || '')}
           </p>
         )}
         {mutation.confirmed && (
           <p role="status" className="text-sm">
-            Subcategory {data.subcategory ? 'updated' : 'created'}. The server
-            confirmed the save.
+            {t('Subcategory')} {data.subcategory ? t('updated') : t('created')}
+            {t('. The server confirmed the save.')}
           </p>
         )}
         {mutation.refreshError && (
           <div role="alert" className="space-y-3 text-sm">
-            <p>{mutation.refreshError}</p>
+            <p>{t(mutation.refreshError || '')}</p>
             <Button
               type="button"
               variant="outline"
               disabled={mutation.pending}
               onClick={() => void mutation.reload()}
             >
-              Reload categories
+              {t('Reload categories')}
             </Button>
           </div>
         )}
@@ -175,11 +179,11 @@ const SubcategoryFields = ({
             disabled={mutation.pending}
             onClick={onClose}
           >
-            {mutation.confirmed ? 'Close' : 'Cancel'}
+            {mutation.confirmed ? t('Close') : t('Cancel')}
           </Button>
           {!mutation.confirmed && (
             <Button type="submit" disabled={disabled}>
-              {mutation.pending ? 'Saving…' : 'Save'}
+              {mutation.pending ? t('Saving…') : t('Save')}
             </Button>
           )}
         </div>
@@ -197,6 +201,8 @@ const SubcategoryForm = ({
   categoryId: number | null
   onClose: () => void
 }) => {
+  const { t } = useText()
+
   const [data, setData] = useState<FormData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
@@ -235,8 +241,8 @@ const SubcategoryForm = ({
   if (data) return <SubcategoryFields data={data} onClose={onClose} />
   return (
     <CategoryDialog
-      title={subcategoryId ? 'Edit subcategory' : 'Add subcategory'}
-      description="Loading current categories and parent association."
+      title={subcategoryId ? t('Edit subcategory') : t('Add subcategory')}
+      description={t('Loading current categories and parent association.')}
       pending={false}
       onClose={onClose}
     >
@@ -250,7 +256,7 @@ const SubcategoryForm = ({
       />
       <div className="flex justify-end">
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
+          {t('Cancel')}
         </Button>
       </div>
     </CategoryDialog>

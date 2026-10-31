@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import { ImagePlus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -14,6 +15,8 @@ const ProductFiles = ({
   error?: string
   disabled: boolean
 }) => {
+  const { t } = useText()
+
   const previews = useRef(new Map<File, string>())
   const [entries, setEntries] = useState<{ file: File; url: string }[]>([])
   useEffect(() => {
@@ -40,7 +43,7 @@ const ProductFiles = ({
   return (
     <section aria-labelledby="new-images-heading" className="space-y-4">
       <h2 id="new-images-heading" className="font-semibold">
-        Images
+        {t('Images')}
       </h2>
       <div className="space-y-3 rounded-sm border border-dashed border-primary/40 p-5">
         <ImagePlus
@@ -48,7 +51,7 @@ const ProductFiles = ({
           aria-hidden="true"
         />
         <label htmlFor="newImages" className="block text-sm font-medium">
-          Choose product images
+          {t('Choose product images')}
         </label>
         <Input
           id="newImages"
@@ -72,7 +75,7 @@ const ProductFiles = ({
           role="alert"
           className="text-xs text-destructive"
         >
-          {error}
+          {t(error || '')}
         </p>
       )}
       <ul className="divide-y rounded-sm border">
@@ -80,7 +83,7 @@ const ProductFiles = ({
           <li key={index} className="flex items-center gap-3 p-3">
             <img
               src={entries.find((entry) => entry.file === file)?.url}
-              alt={`Preview ${file.name}`}
+              alt={t('Preview {{value0}}', { value0: file.name })}
               className="size-14 shrink-0 rounded-sm bg-secondary object-contain"
             />
             <span className="min-w-0 flex-1 break-words text-sm">
@@ -91,7 +94,9 @@ const ProductFiles = ({
               variant="ghost"
               size="icon"
               disabled={disabled}
-              aria-label={`Remove selected ${file.name}`}
+              aria-label={t('Remove selected {{value0}}', {
+                value0: file.name,
+              })}
               onClick={() => handleRemove(file)}
             >
               <Trash2 aria-hidden="true" />

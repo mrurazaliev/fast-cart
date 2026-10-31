@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -40,6 +41,8 @@ const ProductForm = ({
   product?: EditableProduct
   onReload?: () => void
 }) => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const store = useStore<RootState>()
@@ -194,7 +197,7 @@ const ProductForm = ({
             className="size-5 text-muted-foreground"
             aria-hidden="true"
           />
-          {product ? 'Products / Edit product' : 'Products / Add new'}
+          {product ? t('Products / Edit product') : t('Products / Add new')}
         </h1>
         <div className="flex gap-3">
           <Button
@@ -203,16 +206,16 @@ const ProductForm = ({
             disabled={isSubmitting}
             onClick={() => navigate(backTo)}
           >
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button type="submit" form="product-form" disabled={disabled}>
-            {isSubmitting ? 'Saving…' : 'Save'}
+            {isSubmitting ? t('Saving…') : t('Save')}
           </Button>
         </div>
       </div>
       {errors.root?.message && (
         <p role="alert" className="text-sm text-destructive">
-          {errors.root.message}
+          {t(errors.root.message || '')}
         </p>
       )}
       {product && product.warnings.length > 0 && (
@@ -221,13 +224,13 @@ const ProductForm = ({
           className="space-y-2 rounded-sm border border-amber-300 bg-amber-50 p-4 text-sm"
         >
           {product.warnings.map((warning) => (
-            <p key={warning}>{warning}</p>
+            <p key={warning}>{t(warning || '')}</p>
           ))}
         </div>
       )}
       {fieldsSaved && onReload && (
         <Button type="button" variant="outline" onClick={onReload}>
-          Reload saved product
+          {t('Reload saved product')}
         </Button>
       )}
       {saved && (
@@ -235,15 +238,18 @@ const ProductForm = ({
           role="status"
           className="space-y-3 rounded-sm border border-primary/30 p-4"
         >
-          <p>{savedLabel}. The server confirmed the save.</p>
+          <p>
+            {t(savedLabel || '')}
+            {t('. The server confirmed the save.')}
+          </p>
           <Button asChild>
-            <Link to={backTo}>Back to products</Link>
+            <Link to={backTo}>{t('Back to products')}</Link>
           </Button>
         </div>
       )}
       {unconfirmed && (
         <Button asChild variant="outline">
-          <Link to={backTo}>Check product list</Link>
+          <Link to={backTo}>{t('Check product list')}</Link>
         </Button>
       )}
       <form
@@ -257,11 +263,11 @@ const ProductForm = ({
           className="grid min-w-0 gap-8 xl:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)]"
         >
           <div className="min-w-0 space-y-6">
-            <h2 className="font-semibold">Information</h2>
+            <h2 className="font-semibold">{t('Information')}</h2>
             <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_160px]">
               <ProductField
                 name="productName"
-                label="Product name"
+                label={t('Product name')}
                 error={errors.productName?.message}
               >
                 <Input
@@ -277,7 +283,7 @@ const ProductForm = ({
               </ProductField>
               <ProductField
                 name="code"
-                label="Code"
+                label={t('Code')}
                 error={errors.code?.message}
               >
                 <Input
@@ -290,7 +296,7 @@ const ProductForm = ({
             </div>
             <ProductField
               name="description"
-              label="Description"
+              label={t('Description')}
               error={errors.description?.message}
             >
               <textarea
@@ -305,7 +311,7 @@ const ProductForm = ({
             <div className="grid gap-4 sm:grid-cols-2">
               <ProductField
                 name="categoryId"
-                label="Category"
+                label={t('Category')}
                 error={errors.categoryId?.message}
               >
                 <select
@@ -317,7 +323,7 @@ const ProductForm = ({
                   aria-invalid={!!errors.categoryId}
                   className={selectClassName}
                 >
-                  <option value={0}>Choose category</option>
+                  <option value={0}>{t('Choose category')}</option>
                   {lookups.categories.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.categoryName} (#{item.id})
@@ -327,7 +333,7 @@ const ProductForm = ({
               </ProductField>
               <ProductField
                 name="subCategoryId"
-                label="Subcategory"
+                label={t('Subcategory')}
                 error={errors.subCategoryId?.message}
               >
                 <select
@@ -337,7 +343,7 @@ const ProductForm = ({
                   aria-invalid={!!errors.subCategoryId}
                   className={selectClassName}
                 >
-                  <option value={0}>Choose subcategory</option>
+                  <option value={0}>{t('Choose subcategory')}</option>
                   {category?.subCategories.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.subCategoryName} (#{item.id})
@@ -347,7 +353,7 @@ const ProductForm = ({
               </ProductField>
               <ProductField
                 name="brandId"
-                label="Brand"
+                label={t('Brand')}
                 error={errors.brandId?.message}
               >
                 <select
@@ -356,7 +362,7 @@ const ProductForm = ({
                   aria-invalid={!!errors.brandId}
                   className={selectClassName}
                 >
-                  <option value={0}>Choose brand</option>
+                  <option value={0}>{t('Choose brand')}</option>
                   {lookups.brands.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.brandName} (#{item.id})
@@ -366,7 +372,7 @@ const ProductForm = ({
               </ProductField>
               <ProductField
                 name="quantity"
-                label="Stock quantity"
+                label={t('Stock quantity')}
                 error={errors.quantity?.message}
               >
                 <Input
@@ -380,11 +386,11 @@ const ProductForm = ({
                 />
               </ProductField>
             </div>
-            <h2 className="font-semibold">Price</h2>
+            <h2 className="font-semibold">{t('Price')}</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               <ProductField
                 name="price"
-                label="Regular price"
+                label={t('Regular price')}
                 error={errors.price?.message}
               >
                 <Input
@@ -399,7 +405,7 @@ const ProductForm = ({
               </ProductField>
               <ProductField
                 name="discountPrice"
-                label="Discounted price"
+                label={t('Discounted price')}
                 error={errors.discountPrice?.message}
               >
                 <Input
@@ -423,19 +429,19 @@ const ProductForm = ({
                 {...register('hasDiscount')}
                 className="size-4 accent-primary"
               />
-              Apply a discounted price
+              {t('Apply a discounted price')}
             </label>
             <div className="grid gap-4 sm:grid-cols-2">
               <ProductField
                 name="size"
-                label="Size"
+                label={t('Size')}
                 error={errors.size?.message}
               >
                 <Input id="size" {...register('size')} className="h-12" />
               </ProductField>
               <ProductField
                 name="weight"
-                label="Weight"
+                label={t('Weight')}
                 error={errors.weight?.message}
               >
                 <Input id="weight" {...register('weight')} className="h-12" />
@@ -446,7 +452,7 @@ const ProductForm = ({
             <div className="rounded-sm border p-5">
               <ProductField
                 name="colorId"
-                label="Color"
+                label={t('Color')}
                 error={errors.colorId?.message}
               >
                 <select
@@ -455,7 +461,7 @@ const ProductForm = ({
                   aria-invalid={!!errors.colorId}
                   className={selectClassName}
                 >
-                  <option value={0}>Choose color</option>
+                  <option value={0}>{t('Choose color')}</option>
                   {lookups.colors.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.colorName} (#{item.id})
@@ -465,8 +471,9 @@ const ProductForm = ({
               </ProductField>
             </div>
             <p className="rounded-sm border p-5 text-sm leading-6 text-muted-foreground">
-              Tags, tax, HEX colors and multiple variants are unavailable. The
-              description is saved as plain text.
+              {t(
+                'Tags, tax, HEX colors and multiple variants are unavailable. The description is saved as plain text.',
+              )}
             </p>
             {product && (
               <ExistingProductImages

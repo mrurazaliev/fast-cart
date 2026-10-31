@@ -1,27 +1,30 @@
+import { useText } from '@/shared/i18n/useText'
 import { BadgePercent, ChartNoAxesColumnIncreasing, Check } from 'lucide-react'
 
 const metrics = {
   Sales: {
     icon: ChartNoAxesColumnIncreasing,
-    background: 'bg-[#fff4f2]',
+    background: 'bg-[#fff4f2] dark:bg-[#3c252b]',
     back: 'bg-[#ffb2a0]',
     front: 'bg-[#ff9b87]',
   },
   Cost: {
     icon: BadgePercent,
-    background: 'bg-[#fff9e9]',
+    background: 'bg-[#fff9e9] dark:bg-[#352e22]',
     back: 'bg-[#ffcf9e]',
     front: 'bg-[#ffb682]',
   },
   Profit: {
     icon: Check,
-    background: 'bg-[#effbf7]',
+    background: 'bg-[#effbf7] dark:bg-[#17352c]',
     back: 'bg-[#50d56e]',
     front: 'bg-[#8ee493]',
   },
 }
 
 const DashboardMetric = ({ label }: { label: keyof typeof metrics }) => {
+  const { t } = useText()
+
   const { icon: Icon, background, back, front } = metrics[label]
   return (
     <div
@@ -39,9 +42,9 @@ const DashboardMetric = ({ label }: { label: keyof typeof metrics }) => {
         </span>
       </span>
       <div className="min-w-0">
-        <p className="text-sm leading-5 text-[#707584]">{label}</p>
+        <p className="text-sm leading-5 text-admin-muted">{t(label || '')}</p>
         <p
-          aria-label={`${label} unavailable`}
+          aria-label={t('{{value0}} unavailable', { value0: t(label) })}
           className="text-[28px] leading-8 font-semibold"
         >
           —

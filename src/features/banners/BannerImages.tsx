@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useId, useRef, useState } from 'react'
 import { ImageOff, Trash2, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,6 +16,8 @@ const BannerImages = ({
   multiple: boolean
   onChange: (images: BannerPreviewImage[]) => void
 }) => {
+  const { t } = useText()
+
   const id = useId()
   const urls = useRef(new Set<string>())
   const [entries, setEntries] = useState<ImageEntry[]>([])
@@ -78,14 +81,15 @@ const BannerImages = ({
           className="mx-auto size-8 rounded-full bg-secondary p-1.5"
         />
         <label htmlFor={id} className="block text-sm font-medium">
-          {label}: click to choose or drop images
+          {t(label || '')}
+          {t(': click to choose or drop images')}
         </label>
         <Input
           id={id}
           type="file"
           accept="image/*"
           multiple={multiple}
-          aria-label={label}
+          aria-label={t(label || '')}
           className="h-auto p-2"
           onChange={(event) => {
             handleFiles(Array.from(event.target.files || []))
@@ -93,12 +97,12 @@ const BannerImages = ({
           }}
         />
         <p className="text-xs text-muted-foreground">
-          Images are used only for this local preview.
+          {t('Images are used only for this local preview.')}
         </p>
       </div>
       {error && (
         <p role="alert" className="text-sm text-destructive">
-          {error}
+          {t(error || '')}
         </p>
       )}
       {entries.length ? (
@@ -106,9 +110,9 @@ const BannerImages = ({
           <table className="w-full text-left text-sm">
             <thead className="bg-secondary text-muted-foreground">
               <tr>
-                <th className="p-3 font-normal">Image</th>
-                <th className="p-3 font-normal">File name</th>
-                <th className="p-3 font-normal">Action</th>
+                <th className="p-3 font-normal">{t('Image')}</th>
+                <th className="p-3 font-normal">{t('File name')}</th>
+                <th className="p-3 font-normal">{t('Action')}</th>
               </tr>
             </thead>
             <tbody>
@@ -117,13 +121,13 @@ const BannerImages = ({
                   <td className="p-3">
                     {failed.includes(entry.url) ? (
                       <ImageOff
-                        aria-label="Preview unavailable"
+                        aria-label={t('Preview unavailable')}
                         className="size-12 text-muted-foreground"
                       />
                     ) : (
                       <img
                         src={entry.url}
-                        alt={`Preview ${entry.name}`}
+                        alt={t('Preview {{value0}}', { value0: entry.name })}
                         onError={() =>
                           setFailed((items) => [...items, entry.url])
                         }
@@ -137,7 +141,9 @@ const BannerImages = ({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      aria-label={`Remove ${entry.name}`}
+                      aria-label={t('Remove {{value0}}', {
+                        value0: entry.name,
+                      })}
                       onClick={() => handleRemove(entry.url)}
                     >
                       <Trash2 aria-hidden="true" />
@@ -150,7 +156,7 @@ const BannerImages = ({
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">
-          No preview images selected.
+          {t('No preview images selected.')}
         </p>
       )}
     </div>

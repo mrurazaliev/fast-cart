@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,8 @@ import {
 import type { BannerDraft } from '@/features/banners/bannerDraft'
 
 const Banners = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const categories = useAppSelector((state) => state.categories)
   const [draft, setDraft] = useState(readBannerDraft)
@@ -48,7 +51,7 @@ const Banners = () => {
   return (
     <section aria-labelledby="banners-heading" className="space-y-6">
       <h1 id="banners-heading" className="text-2xl font-semibold">
-        Banners
+        {t('Banners')}
       </h1>
       <OtherTabs />
       <div
@@ -57,18 +60,21 @@ const Banners = () => {
         className="space-y-2 rounded-sm border border-amber-200 bg-amber-50 p-4 text-sm"
       >
         <p className="font-medium">
-          Server saving is unavailable: the API does not provide banner
-          management.
+          {t(
+            'Server saving is unavailable: the API does not provide banner management.',
+          )}
         </p>
         <p>
-          This local preview does not change the marketplace. Text and the fixed
-          end date stay in this browser; images must be selected again after
-          reload.
+          {t(
+            'This local preview does not change the marketplace. Text and the fixed end date stay in this browser; images must be selected again after reload.',
+          )}
         </p>
       </div>
       {storageError && (
         <p role="alert" className="text-sm text-destructive">
-          Local settings could not be stored. Changes will be lost on reload.
+          {t(
+            'Local settings could not be stored. Changes will be lost on reload.',
+          )}
         </p>
       )}
       <div className="grid items-start gap-8 xl:grid-cols-2">
@@ -77,17 +83,17 @@ const Banners = () => {
           className="min-w-0 space-y-4"
         >
           <h2 id="sliders-heading" className="text-xl font-semibold">
-            Main sliders
+            {t('Main sliders')}
           </h2>
           <BannerImages
-            label="Main slider images"
+            label={t('Main slider images')}
             multiple
             onChange={setSliders}
           />
           <div className="space-y-4 rounded-sm border p-5">
             <div className="space-y-2">
               <label htmlFor="sliderSubtitle" className="text-sm font-medium">
-                Subtitle
+                {t('Subtitle')}
               </label>
               <Input
                 id="sliderSubtitle"
@@ -100,7 +106,7 @@ const Banners = () => {
             </div>
             <div className="space-y-2">
               <label htmlFor="sliderTitle" className="text-sm font-medium">
-                Title
+                {t('Title')}
               </label>
               <Input
                 id="sliderTitle"
@@ -113,12 +119,12 @@ const Banners = () => {
             </div>
             <div className="flex justify-end">
               <Button disabled aria-describedby="banner-save-unavailable">
-                Save
+                {t('Save')}
               </Button>
             </div>
           </div>
           <div className="space-y-4 rounded-sm border p-5">
-            <h3 className="font-medium">Local slider preview</h3>
+            <h3 className="font-medium">{t('Local slider preview')}</h3>
             {currentSlide ? (
               <div className="space-y-3 rounded-sm bg-admin-surface p-5 text-white">
                 <img
@@ -128,12 +134,12 @@ const Banners = () => {
                 />
                 <p className="break-words text-sm">{draft.sliderSubtitle}</p>
                 <p className="break-words text-xl font-semibold">
-                  {draft.sliderTitle || 'Add a title to preview'}
+                  {draft.sliderTitle || t('Add a title to preview')}
                 </p>
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Choose slider images to see a preview.
+                {t('Choose slider images to see a preview.')}
               </p>
             )}
             {sliders.length > 1 && (
@@ -146,7 +152,7 @@ const Banners = () => {
                     )
                   }
                 >
-                  Previous slide
+                  {t('Previous slide')}
                 </Button>
                 <span className="text-sm">
                   {(slide % sliders.length) + 1} / {sliders.length}
@@ -157,7 +163,7 @@ const Banners = () => {
                     setSlide((value) => (value + 1) % sliders.length)
                   }
                 >
-                  Next slide
+                  {t('Next slide')}
                 </Button>
               </div>
             )}
@@ -165,10 +171,10 @@ const Banners = () => {
         </section>
         <section aria-labelledby="banner-heading" className="min-w-0 space-y-4">
           <h2 id="banner-heading" className="text-xl font-semibold">
-            Banner
+            {t('Banner')}
           </h2>
           <BannerImages
-            label="Banner image"
+            label={t('Banner image')}
             multiple={false}
             onChange={setBanner}
           />
@@ -183,7 +189,7 @@ const Banners = () => {
             )}
             <div className="space-y-2">
               <label htmlFor="bannerCategory" className="text-sm font-medium">
-                Category
+                {t('Category')}
               </label>
               <select
                 id="bannerCategory"
@@ -198,7 +204,7 @@ const Banners = () => {
                 }
                 className="h-12 w-full min-w-0 rounded-sm border bg-background px-3 text-sm"
               >
-                <option value="">Choose a category</option>
+                <option value="">{t('Choose a category')}</option>
                 {categories.items.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.categoryName}
@@ -208,20 +214,20 @@ const Banners = () => {
               {categories.status === 'succeeded' &&
                 !categories.items.length && (
                   <p className="text-sm text-muted-foreground">
-                    No categories are available.
+                    {t('No categories are available.')}
                   </p>
                 )}
               {categories.status === 'succeeded' &&
                 draft.categoryId !== null &&
                 !category && (
                   <p role="alert" className="text-sm text-destructive">
-                    The selected category is no longer available.
+                    {t('The selected category is no longer available.')}
                   </p>
                 )}
             </div>
             <div className="space-y-2">
               <label htmlFor="bannerEndsAt" className="text-sm font-medium">
-                End date and time (local time)
+                {t('End date and time (local time)')}
               </label>
               <Input
                 id="bannerEndsAt"
@@ -238,13 +244,13 @@ const Banners = () => {
                   role="alert"
                   className="text-sm text-destructive"
                 >
-                  {dateError}
+                  {t(dateError || '')}
                 </p>
               )}
             </div>
             <div className="space-y-2">
               <label htmlFor="bannerTitle" className="text-sm font-medium">
-                Title
+                {t('Title')}
               </label>
               <Input
                 id="bannerTitle"
@@ -257,12 +263,12 @@ const Banners = () => {
             </div>
             <div className="flex justify-end">
               <Button disabled aria-describedby="banner-save-unavailable">
-                Save
+                {t('Save')}
               </Button>
             </div>
           </div>
           <div className="space-y-4 rounded-sm border p-5">
-            <h3 className="font-medium">Local banner preview</h3>
+            <h3 className="font-medium">{t('Local banner preview')}</h3>
             <div className="space-y-4 rounded-sm bg-admin-surface p-5 text-white">
               {banner[0] ? (
                 <img
@@ -272,7 +278,7 @@ const Banners = () => {
                 />
               ) : (
                 <p className="text-sm">
-                  Choose an image to preview the banner.
+                  {t('Choose an image to preview the banner.')}
                 </p>
               )}
               <p className="text-sm">
@@ -282,7 +288,7 @@ const Banners = () => {
                     : 'Category unavailable')}
               </p>
               <p className="break-words text-xl font-semibold">
-                {draft.bannerTitle || 'Add a title to preview'}
+                {draft.bannerTitle || t('Add a title to preview')}
               </p>
               <BannerCountdown endsAt={draft.endsAt} />
             </div>

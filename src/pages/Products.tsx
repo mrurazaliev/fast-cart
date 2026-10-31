@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { PackageOpen, Pencil, Plus, Trash2 } from 'lucide-react'
@@ -20,6 +21,8 @@ import RequestState from '@/shared/components/RequestState'
 import { Button } from '@/components/ui/button'
 
 const Products = () => {
+  const { t } = useText()
+
   const [params, setParams] = useSearchParams()
   const location = useLocation()
   const query = useMemo(() => readProductsQuery(params), [params])
@@ -144,7 +147,7 @@ const Products = () => {
     <section aria-labelledby="products-heading" className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 id="products-heading" className="text-2xl font-semibold">
-          Products
+          {t('Products')}
         </h1>
         <Button asChild>
           <Link
@@ -152,25 +155,26 @@ const Products = () => {
             state={{ returnTo: `${location.pathname}${location.search}` }}
           >
             <Plus aria-hidden="true" />
-            Add product
+            {t('Add product')}
           </Link>
         </Button>
       </div>
       <p id={unavailableId} className="text-sm text-muted-foreground">
-        Bulk editing is unavailable. Use a row's Edit action to edit one
-        product.
+        {t(
+          "Bulk editing is unavailable. Use a row's Edit action to edit one product.",
+        )}
       </p>
       {products.saveNotice && (
         <div
           role="alert"
           className="space-y-3 rounded-sm border border-amber-300 p-4 text-sm"
         >
-          <p>{products.saveNotice}</p>
+          <p>{t(products.saveNotice || '')}</p>
           <Button
             variant="outline"
             onClick={() => dispatch(productSaveNoticeSet(null))}
           >
-            Dismiss save notice
+            {t('Dismiss save notice')}
           </Button>
         </div>
       )}
@@ -187,7 +191,7 @@ const Products = () => {
               variant="ghost"
               onClick={() => handleSearch('')}
             >
-              Clear search
+              {t('Clear search')}
             </Button>
           )}
         </div>
@@ -197,7 +201,7 @@ const Products = () => {
             variant="outline"
             size="icon"
             disabled
-            aria-label="Edit selected products"
+            aria-label={t('Edit selected products')}
             aria-describedby={unavailableId}
             className="text-primary"
           >
@@ -208,7 +212,7 @@ const Products = () => {
             variant="outline"
             size="icon"
             disabled={selectedIds.length === 0}
-            aria-label="Delete selected products"
+            aria-label={t('Delete selected products')}
             onClick={() =>
               setDeletion({
                 queryKey,
@@ -260,15 +264,15 @@ const Products = () => {
                 className="size-16 text-muted-foreground"
                 aria-hidden="true"
               />
-              <h2 className="text-xl font-semibold">{emptyTitle}</h2>
+              <h2 className="text-xl font-semibold">{t(emptyTitle || '')}</h2>
               <p className="text-sm text-muted-foreground">
                 {query.ProductName
-                  ? 'Try another product name or clear the search.'
-                  : 'The catalog has no products to display on this page.'}
+                  ? t('Try another product name or clear the search.')
+                  : t('The catalog has no products to display on this page.')}
               </p>
               {query.PageNumber > 1 && (
                 <Button variant="outline" onClick={() => handlePageChange(1)}>
-                  Go to first page
+                  {t('Go to first page')}
                 </Button>
               )}
             </div>

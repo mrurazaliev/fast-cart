@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Button } from '@/components/ui/button'
 import AdminDialog from '@/shared/components/admin/AdminDialog'
 import { deleteBrand } from './brandsApi'
@@ -13,6 +14,8 @@ const BrandDeleteDialog = ({
   onClose: () => void
   onDeleted?: () => void
 }) => {
+  const { t } = useText()
+
   const mutation = useBrandMutation()
   const handleDelete = async () => {
     const confirmed = await mutation.run((signal) =>
@@ -22,32 +25,35 @@ const BrandDeleteDialog = ({
   }
   return (
     <AdminDialog
-      title="Delete brand"
-      description={`Delete “${brand.brandName}”? Deletion may be blocked by related products.`}
+      title={t('Delete brand')}
+      description={t(
+        'Delete “{{value0}}”? Deletion may be blocked by related products.',
+        { value0: brand.brandName },
+      )}
       pending={mutation.pending}
       onClose={onClose}
     >
       {mutation.error && (
         <p role="alert" className="text-sm text-destructive">
-          {mutation.error}
+          {t(mutation.error || '')}
         </p>
       )}
       {mutation.confirmed && (
         <p role="status" className="text-sm">
-          Brand deleted.
+          {t('Brand deleted.')}
         </p>
       )}
       {mutation.refreshError && (
         <div role="alert" className="space-y-2 text-sm">
-          <p>{mutation.refreshError}</p>
+          <p>{t(mutation.refreshError || '')}</p>
           <Button variant="outline" onClick={() => void mutation.reload()}>
-            Reload list
+            {t('Reload list')}
           </Button>
         </div>
       )}
       <div className="flex justify-end gap-3">
         <Button variant="outline" disabled={mutation.pending} onClick={onClose}>
-          {mutation.locked ? 'Close' : 'Cancel'}
+          {mutation.locked ? t('Close') : t('Cancel')}
         </Button>
         {!mutation.locked && (
           <Button
@@ -56,7 +62,7 @@ const BrandDeleteDialog = ({
             disabled={mutation.pending}
             onClick={() => void handleDelete()}
           >
-            {mutation.pending ? 'Deleting…' : 'Delete'}
+            {mutation.pending ? t('Deleting…') : t('Delete')}
           </Button>
         )}
       </div>

@@ -1,3 +1,5 @@
+import { getLocale } from '@/shared/i18n/i18n'
+import { useText } from '@/shared/i18n/useText'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -14,6 +16,8 @@ const OrdersPagination = ({
   onChange?: (page: number) => void
   unavailableId: string
 }) => {
+  const { t } = useText()
+
   const current =
     page === null || totalPages === null ? null : Math.min(page, totalPages)
   const pages =
@@ -25,14 +29,14 @@ const OrdersPagination = ({
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 pt-3">
       <nav
-        aria-label="Order pages"
+        aria-label={t('Order pages')}
         className="flex flex-wrap items-center gap-1"
       >
         <Button
           type="button"
           variant="ghost"
           size="icon"
-          aria-label="Previous order page"
+          aria-label={t('Previous order page')}
           disabled={!onChange || page === null || page <= 1}
           aria-describedby={!onChange ? unavailableId : undefined}
           onClick={() => {
@@ -53,13 +57,13 @@ const OrdersPagination = ({
                 type="button"
                 variant="ghost"
                 size="icon"
-                aria-label={`Order page ${value}`}
+                aria-label={t('Order page {{value0}}', { value0: value })}
                 aria-current={page === value ? 'page' : undefined}
                 disabled={!onChange}
                 className={
                   page === value
                     ? 'bg-primary/10 text-primary'
-                    : 'text-[#5A6384]'
+                    : 'text-admin-muted'
                 }
                 onClick={() => onChange?.(value)}
               >
@@ -69,8 +73,8 @@ const OrdersPagination = ({
           ))
         ) : (
           <span
-            aria-label="Order page unavailable"
-            className="px-3 text-[#5A6384]"
+            aria-label={t('Order page unavailable')}
+            className="px-3 text-admin-muted"
           >
             —
           </span>
@@ -79,7 +83,7 @@ const OrdersPagination = ({
           type="button"
           variant="ghost"
           size="icon"
-          aria-label="Next order page"
+          aria-label={t('Next order page')}
           disabled={
             !onChange ||
             page === null ||
@@ -94,10 +98,12 @@ const OrdersPagination = ({
           <ArrowRight aria-hidden="true" />
         </Button>
       </nav>
-      <p role="status" className="text-sm text-[#5A6384]">
+      <p role="status" className="text-sm text-admin-muted">
         {totalResults === null
-          ? 'Results unavailable'
-          : `${totalResults.toLocaleString('en-US')} Results`}
+          ? t('Results unavailable')
+          : t('{{value0}} Results', {
+              value0: totalResults.toLocaleString(getLocale()),
+            })}
       </p>
     </div>
   )

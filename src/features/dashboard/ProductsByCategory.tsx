@@ -1,3 +1,5 @@
+import { getLocale } from '@/shared/i18n/i18n'
+import { useText } from '@/shared/i18n/useText'
 import { useEffect } from 'react'
 import { ChartNoAxesColumnIncreasing, RefreshCw } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -6,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import RequestState from '@/shared/components/RequestState'
 
 const ProductsByCategory = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const session = useAppSelector((state) => state.auth.session)
   const { items, status, error, updatedAt } = useAppSelector(
@@ -23,14 +27,14 @@ const ProductsByCategory = () => {
     <section
       aria-labelledby="category-chart-heading"
       aria-busy={loading}
-      className="flex min-h-[326px] min-w-0 flex-col rounded-[3px] border border-[#e6e6ec] p-5"
+      className="flex min-h-[326px] min-w-0 flex-col rounded-[3px] border border-border p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2
           id="category-chart-heading"
           className="text-base leading-6 font-semibold"
         >
-          Products by category
+          {t('Products by category')}
         </h2>
         <Button
           variant="outline"
@@ -42,15 +46,16 @@ const ProductsByCategory = () => {
             aria-hidden="true"
             className={`size-4 ${loading ? 'animate-spin' : ''}`}
           />
-          Refresh
+          {t('Refresh')}
         </Button>
       </div>
       <p
         id="category-chart-note"
         className="mt-2 text-xs leading-5 text-muted-foreground"
       >
-        Catalog product counts across all pages. These are not sales or units in
-        stock.
+        {t(
+          'Catalog product counts across all pages. These are not sales or units in stock.',
+        )}
       </p>
       <div className="mt-5 min-w-0 flex-1">
         {loading && <RequestState loading />}
@@ -65,7 +70,7 @@ const ProductsByCategory = () => {
               className="mx-auto mb-3 size-8 text-primary/40"
             />
             <p className="text-sm text-muted-foreground">
-              No categories available.
+              {t('No categories available.')}
             </p>
           </div>
         )}
@@ -73,11 +78,11 @@ const ProductsByCategory = () => {
           <>
             {items.every((item) => item.count === 0) && (
               <p role="status" className="mb-4 text-sm text-muted-foreground">
-                No products in these categories yet.
+                {t('No products in these categories yet.')}
               </p>
             )}
             <dl
-              aria-label="Product counts by category"
+              aria-label={t('Product counts by category')}
               aria-describedby="category-chart-note"
               className="max-h-80 space-y-4 overflow-y-auto pr-2"
             >
@@ -85,10 +90,11 @@ const ProductsByCategory = () => {
                 <div key={item.id} className="min-w-0">
                   <div className="mb-1.5 flex justify-between gap-4 text-sm">
                     <dt className="min-w-0 break-words">
-                      {item.name || `Category #${item.id}`}
+                      {item.name ||
+                        t('Category #{{value0}}', { value0: item.id })}
                     </dt>
                     <dd className="shrink-0 font-medium tabular-nums">
-                      {item.count.toLocaleString()}
+                      {item.count.toLocaleString(getLocale())}
                     </dd>
                   </div>
                   <div
@@ -108,7 +114,7 @@ const ProductsByCategory = () => {
       </div>
       {updatedAt && (
         <p className="mt-4 text-xs text-muted-foreground">
-          Updated {new Date(updatedAt).toLocaleTimeString()}
+          {t('Updated')} {new Date(updatedAt).toLocaleTimeString(getLocale())}
         </p>
       )}
     </section>

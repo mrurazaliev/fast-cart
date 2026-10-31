@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import RequestState from '@/shared/components/RequestState'
@@ -15,6 +16,8 @@ const OrdersState = ({
   onClear?: () => void
   unavailableId: string
 }) => {
+  const { t } = useText()
+
   if (kind === 'loading')
     return (
       <div
@@ -66,13 +69,16 @@ const OrdersState = ({
         />
       </svg>
       <div className="max-w-xl space-y-2">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="text-base leading-6 text-[#5A6384]">{description}</p>
+        <h2 className="text-xl font-semibold">{t(title || '')}</h2>
+        <p className="text-base leading-6 text-admin-muted">
+          {t(description || '')}
+        </p>
       </div>
       {kind === 'unavailable' && (
-        <p className="max-w-xl text-sm leading-6 text-[#5A6384]">
-          Search, sorting, selection and order actions are unavailable until an
-          Orders API is connected.
+        <p className="max-w-xl text-sm leading-6 text-admin-muted">
+          {t(
+            'Search, sorting, selection and order actions are unavailable until an Orders API is connected.',
+          )}
         </p>
       )}
       {kind === 'empty' && (
@@ -83,12 +89,12 @@ const OrdersState = ({
           className="h-10 rounded-sm px-4"
         >
           <Plus aria-hidden="true" />
-          Add order
+          {t('Add order')}
         </Button>
       )}
       {kind === 'no-results' && onClear && (
         <Button type="button" variant="outline" onClick={onClear}>
-          Clear search
+          {t('Clear search')}
         </Button>
       )}
     </div>

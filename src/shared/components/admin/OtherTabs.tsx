@@ -1,13 +1,16 @@
+import { useText } from '@/shared/i18n/useText'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { otherNavigation } from './navigationItems'
 
 const OtherTabs = () => {
+  const { t } = useText()
+
   const location = useLocation()
   const pathname = location.pathname.replace(/\/+$/, '')
   const current = pathname === '/subcategories' ? '/categories' : pathname
   return (
-    <nav aria-label="Other sections" className="flex flex-wrap gap-2">
+    <nav aria-label={t('Other sections')} className="flex flex-wrap gap-2">
       {otherNavigation.map((item) => (
         <Button
           key={item.path}
@@ -21,7 +24,7 @@ const OtherTabs = () => {
             to={item.path}
             aria-current={current === item.path ? 'page' : undefined}
           >
-            {item.label}
+            {t(item.label || '')}
           </Link>
         </Button>
       ))}

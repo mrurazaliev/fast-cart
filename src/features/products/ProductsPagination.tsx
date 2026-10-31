@@ -1,3 +1,5 @@
+import { getLocale } from '@/shared/i18n/i18n'
+import { useText } from '@/shared/i18n/useText'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -12,6 +14,8 @@ const ProductsPagination = ({
   totalResults: number
   onChange: (page: number) => void
 }) => {
+  const { t } = useText()
+
   const current = Math.min(page, totalPages)
   const pages = [...new Set([1, current - 1, current, current + 1, totalPages])]
     .filter((item) => item >= 1 && item <= totalPages)
@@ -20,14 +24,14 @@ const ProductsPagination = ({
     <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
       {totalPages > 1 && (
         <nav
-          aria-label="Product pages"
+          aria-label={t('Product pages')}
           className="flex flex-wrap items-center gap-1"
         >
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            aria-label="Previous page"
+            aria-label={t('Previous page')}
             disabled={page <= 1}
             onClick={() => onChange(page - 1)}
           >
@@ -44,7 +48,7 @@ const ProductsPagination = ({
                 type="button"
                 variant="ghost"
                 size="icon"
-                aria-label={`Page ${item}`}
+                aria-label={t('Page {{value0}}', { value0: item })}
                 aria-current={page === item ? 'page' : undefined}
                 className={
                   page === item
@@ -61,7 +65,7 @@ const ProductsPagination = ({
             type="button"
             variant="ghost"
             size="icon"
-            aria-label="Next page"
+            aria-label={t('Next page')}
             disabled={page >= totalPages}
             onClick={() => onChange(page + 1)}
           >
@@ -70,7 +74,9 @@ const ProductsPagination = ({
         </nav>
       )}
       <p role="status" className="text-sm text-muted-foreground">
-        {totalResults.toLocaleString('en-US')} results
+        {t('{{value0}} Results', {
+          value0: totalResults.toLocaleString(getLocale()),
+        })}
       </p>
     </div>
   )

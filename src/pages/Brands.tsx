@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { Pencil, Trash2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -11,6 +12,8 @@ import BrandDeleteDialog from '@/features/brands/BrandDeleteDialog'
 import OtherTabs from '@/shared/components/admin/OtherTabs'
 
 const Brands = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const brands = useAppSelector((state) => state.brands)
   const [editing, setEditing] = useState<Brand | undefined>()
@@ -32,18 +35,18 @@ const Brands = () => {
   return (
     <section aria-labelledby="brands-heading" className="space-y-7">
       <h1 id="brands-heading" className="text-2xl font-semibold">
-        Brands
+        {t('Brands')}
       </h1>
       <OtherTabs />
       <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="min-w-0 space-y-4">
           <label htmlFor="brand-search" className="sr-only">
-            Search brands
+            {t('Search brands')}
           </label>
           <Input
             id="brand-search"
             type="search"
-            placeholder="Search brands…"
+            placeholder={t('Search brands…')}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             className="h-12 rounded-sm"
@@ -60,12 +63,12 @@ const Brands = () => {
           {brands.status === 'succeeded' && (
             <>
               <div className="flex justify-between border-b pb-3 text-sm text-muted-foreground">
-                <span>Brands</span>
-                <span>Actions</span>
+                <span>{t('Brands')}</span>
+                <span>{t('Actions')}</span>
               </div>
               {items.length > 0 ? (
                 <ul
-                  aria-label="Brand list"
+                  aria-label={t('Brand list')}
                   className="max-h-[36rem] divide-y overflow-y-auto pr-2"
                 >
                   {items.map((brand) => (
@@ -82,7 +85,9 @@ const Brands = () => {
                           size="icon"
                           disabled={formPending}
                           className="text-primary"
-                          aria-label={`Edit ${brand.brandName}`}
+                          aria-label={t('Edit {{value0}}', {
+                            value0: brand.brandName,
+                          })}
                           onClick={() => {
                             setEditing(brand)
                             setFormKey((value) => value + 1)
@@ -95,7 +100,9 @@ const Brands = () => {
                           size="icon"
                           disabled={formPending}
                           className="text-destructive"
-                          aria-label={`Delete ${brand.brandName}`}
+                          aria-label={t('Delete {{value0}}', {
+                            value0: brand.brandName,
+                          })}
                           onClick={() => setDeleting(brand)}
                         >
                           <Trash2 aria-hidden="true" />
@@ -107,22 +114,24 @@ const Brands = () => {
               ) : (
                 <div role="status" className="space-y-3 py-10 text-center">
                   <h2 className="font-semibold">
-                    {brands.items.length ? 'No brands found' : 'No brands yet'}
+                    {brands.items.length
+                      ? t('No brands found')
+                      : t('No brands yet')}
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     {brands.items.length
-                      ? 'Try another name or clear the search.'
-                      : 'Create a brand using the form.'}
+                      ? t('Try another name or clear the search.')
+                      : t('Create a brand using the form.')}
                   </p>
                   {search && (
                     <Button variant="outline" onClick={() => setSearch('')}>
-                      Clear search
+                      {t('Clear search')}
                     </Button>
                   )}
                 </div>
               )}
               <p role="status" className="text-sm text-muted-foreground">
-                {items.length} brands
+                {t('Brands: {{value0}}', { value0: items.length })}
               </p>
             </>
           )}

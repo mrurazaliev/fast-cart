@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -26,6 +27,8 @@ const CategoryForm = ({
   category?: Category
   onClose: () => void
 }) => {
+  const { t } = useText()
+
   const mutation = useCategoryMutation()
   const submitting = useRef(false)
   const preview = useRef<string | null>(null)
@@ -92,11 +95,13 @@ const CategoryForm = ({
   }
   return (
     <CategoryDialog
-      title={category ? 'Edit category' : 'Add category'}
+      title={category ? t('Edit category') : t('Add category')}
       description={
         category
-          ? 'Updating a category requires a new image file. The existing image cannot be submitted as a replacement file.'
-          : 'Enter a name and choose a category image.'
+          ? t(
+              'Updating a category requires a new image file. The existing image cannot be submitted as a replacement file.',
+            )
+          : t('Enter a name and choose a category image.')
       }
       pending={mutation.pending}
       onClose={onClose}
@@ -115,7 +120,7 @@ const CategoryForm = ({
         <form onSubmit={handleFormSubmit} className="space-y-5">
           <ProductField
             name="categoryName"
-            label="Category name"
+            label={t('Category name')}
             error={errors.categoryName?.message}
           >
             <Input
@@ -130,7 +135,7 @@ const CategoryForm = ({
           </ProductField>
           {current && (
             <div className="space-y-2 text-sm">
-              <p>Current image</p>
+              <p>{t('Current image')}</p>
               <CategoryImage
                 image={current.categoryImage}
                 name={current.categoryName}
@@ -139,7 +144,7 @@ const CategoryForm = ({
           )}
           <ProductField
             name="categoryImage"
-            label={category ? 'New image (required)' : 'Image'}
+            label={category ? t('New image (required)') : t('Image')}
             error={errors.categoryImage?.message}
           >
             <Input
@@ -165,7 +170,7 @@ const CategoryForm = ({
               {previewUrl && (
                 <img
                   src={previewUrl}
-                  alt={`Preview ${file.name}`}
+                  alt={t('Preview {{value0}}', { value0: file.name })}
                   className="h-32 max-w-full object-contain"
                 />
               )}
@@ -176,29 +181,29 @@ const CategoryForm = ({
                 disabled={mutation.pending || mutation.locked}
                 onClick={() => handleFile(null)}
               >
-                Remove selected image
+                {t('Remove selected image')}
               </Button>
             </div>
           )}
           {mutation.error && (
             <p role="alert" className="text-sm text-destructive">
-              {mutation.error}
+              {t(mutation.error || '')}
             </p>
           )}
           {mutation.confirmed && (
             <p role="status" className="text-sm">
-              The server confirmed the category was saved.
+              {t('The server confirmed the category was saved.')}
             </p>
           )}
           {mutation.refreshError && (
             <div role="alert" className="space-y-2 text-sm">
-              <p>{mutation.refreshError}</p>
+              <p>{t(mutation.refreshError || '')}</p>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => void mutation.reload()}
               >
-                Reload list
+                {t('Reload list')}
               </Button>
             </div>
           )}
@@ -209,11 +214,11 @@ const CategoryForm = ({
               disabled={mutation.pending}
               onClick={onClose}
             >
-              {mutation.locked ? 'Close' : 'Cancel'}
+              {mutation.locked ? t('Close') : t('Cancel')}
             </Button>
             {!mutation.locked && (
               <Button type="submit" disabled={mutation.pending}>
-                {mutation.pending ? 'Saving…' : 'Save'}
+                {mutation.pending ? t('Saving…') : t('Save')}
               </Button>
             )}
           </div>

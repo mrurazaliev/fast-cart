@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useState } from 'react'
 import { ImageOff } from 'lucide-react'
 import { getImageUrl } from '@/shared/api/imageUrl'
@@ -9,6 +10,8 @@ const ProductImage = ({
   image: string | null | undefined
   name: string
 }) => {
+  const { t } = useText()
+
   const [failedImage, setFailedImage] = useState<string | null>(null)
   const imageUrl = getImageUrl(image)
   return (
@@ -22,7 +25,10 @@ const ProductImage = ({
           className="size-full object-contain"
         />
       ) : (
-        <span role="img" aria-label={`Image unavailable for ${name}`}>
+        <span
+          role="img"
+          aria-label={t('Image unavailable for {{value0}}', { value0: name })}
+        >
           <ImageOff
             className="size-5 text-muted-foreground"
             aria-hidden="true"

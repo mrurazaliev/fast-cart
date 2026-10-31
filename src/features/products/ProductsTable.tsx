@@ -1,3 +1,5 @@
+import { getLocale } from '@/shared/i18n/i18n'
+import { useText } from '@/shared/i18n/useText'
 import { Link, useLocation } from 'react-router-dom'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -12,11 +14,6 @@ import {
 } from '@/components/ui/table'
 import type { Product } from './productsApi'
 import ProductImage from './ProductImage'
-
-const priceFormatter = new Intl.NumberFormat('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
 
 const getStockLabel = (quantity: Product['quantity']) => {
   if (quantity === null || quantity === undefined) return 'Stock unknown'
@@ -35,6 +32,12 @@ const ProductsTable = ({
   onSelectionChange: (ids: number[]) => void
   onDelete: (product: Product) => void
 }) => {
+  const { t } = useText()
+  const priceFormatter = new Intl.NumberFormat(getLocale(), {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+
   const location = useLocation()
   const allSelected =
     products.length > 0 && selectedIds.length === products.length
@@ -51,12 +54,14 @@ const ProductsTable = ({
   return (
     <div className="space-y-3">
       <Table className="min-w-[760px]">
-        <caption className="sr-only">Products on the current page</caption>
+        <caption className="sr-only">
+          {t('Products on the current page')}
+        </caption>
         <TableHeader>
           <TableRow>
             <TableHead scope="col" className="w-10">
               <Checkbox
-                aria-label="Select all products on this page"
+                aria-label={t('Select all products on this page')}
                 checked={pageSelection}
                 onCheckedChange={(checked) =>
                   onSelectionChange(
@@ -67,12 +72,12 @@ const ProductsTable = ({
                 }
               />
             </TableHead>
-            <TableHead scope="col">Product</TableHead>
-            <TableHead scope="col">Inventory</TableHead>
-            <TableHead scope="col">Category</TableHead>
-            <TableHead scope="col">Price</TableHead>
+            <TableHead scope="col">{t('Product')}</TableHead>
+            <TableHead scope="col">{t('Inventory')}</TableHead>
+            <TableHead scope="col">{t('Category')}</TableHead>
+            <TableHead scope="col">{t('Price')}</TableHead>
             <TableHead scope="col" className="text-right">
-              Actions
+              {t('Actions')}
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -86,7 +91,9 @@ const ProductsTable = ({
             >
               <TableCell>
                 <Checkbox
-                  aria-label={`Select ${product.productName}`}
+                  aria-label={t('Select {{value0}}', {
+                    value0: product.productName,
+                  })}
                   checked={selectedIds.includes(product.id)}
                   onCheckedChange={(checked) =>
                     handleSelect(product.id, checked === true)
@@ -110,11 +117,11 @@ const ProductsTable = ({
                       : undefined
                   }
                 >
-                  {getStockLabel(product.quantity)}
+                  {t(getStockLabel(product.quantity))}
                 </span>
               </TableCell>
               <TableCell>
-                {product.categoryName?.trim() || 'Category unavailable'}
+                {product.categoryName?.trim() || t('Category unavailable')}
               </TableCell>
               <TableCell className="whitespace-nowrap">
                 {priceFormatter.format(product.price)}
@@ -132,7 +139,9 @@ const ProductsTable = ({
                       state={{
                         returnTo: `${location.pathname}${location.search}`,
                       }}
-                      aria-label={`Edit ${product.productName}`}
+                      aria-label={t('Edit {{value0}}', {
+                        value0: product.productName,
+                      })}
                     >
                       <Pencil aria-hidden="true" />
                     </Link>
@@ -141,7 +150,9 @@ const ProductsTable = ({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label={`Delete ${product.productName}`}
+                    aria-label={t('Delete {{value0}}', {
+                      value0: product.productName,
+                    })}
                     onClick={() => onDelete(product)}
                     className="text-destructive"
                   >
@@ -155,8 +166,10 @@ const ProductsTable = ({
       </Table>
       <p role="status" className="min-h-5 text-sm text-muted-foreground">
         {selectedIds.length > 0
-          ? `${selectedIds.length} selected on this page`
-          : 'Select products using the checkboxes.'}
+          ? t('{{value0}} selected on this page', {
+              value0: selectedIds.length,
+            })
+          : t('Select products using the checkboxes.')}
       </p>
     </div>
   )

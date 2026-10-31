@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { Button } from '@/components/ui/button'
 import CategoryDialog from './CategoryDialog'
 import useCategoryMutation from './useCategoryMutation'
@@ -13,35 +14,40 @@ const CategoryDeleteDialog = ({
   onDelete: (signal: AbortSignal) => Promise<boolean>
   onClose: () => void
 }) => {
+  const { t } = useText()
+
   const mutation = useCategoryMutation()
   return (
     <CategoryDialog
-      title={`Delete ${subject}`}
-      description={`Are you sure you want to delete “${name}”? Deletion may be blocked by related records.`}
+      title={t('Delete {{value0}}', { value0: subject })}
+      description={t(
+        'Are you sure you want to delete “{{value0}}”? Deletion may be blocked by related records.',
+        { value0: name },
+      )}
       pending={mutation.pending}
       onClose={onClose}
     >
       {mutation.error && (
         <p role="alert" className="text-sm text-destructive">
-          {mutation.error}
+          {t(mutation.error || '')}
         </p>
       )}
       {mutation.confirmed && (
         <p role="status" className="text-sm">
-          The server confirmed deletion.
+          {t('The server confirmed deletion.')}
         </p>
       )}
       {mutation.refreshError && (
         <div role="alert" className="space-y-2 text-sm">
-          <p>{mutation.refreshError}</p>
+          <p>{t(mutation.refreshError || '')}</p>
           <Button onClick={() => void mutation.reload()} variant="outline">
-            Reload list
+            {t('Reload list')}
           </Button>
         </div>
       )}
       <div className="flex justify-end gap-3">
         <Button disabled={mutation.pending} onClick={onClose}>
-          {mutation.locked ? 'Close' : 'Cancel'}
+          {mutation.locked ? t('Close') : t('Cancel')}
         </Button>
         {!mutation.locked && (
           <Button
@@ -50,7 +56,7 @@ const CategoryDeleteDialog = ({
             disabled={mutation.pending}
             onClick={() => void mutation.run(onDelete)}
           >
-            {mutation.pending ? 'Deleting…' : 'Delete'}
+            {mutation.pending ? t('Deleting…') : t('Delete')}
           </Button>
         )}
       </div>

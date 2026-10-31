@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { getProductLookups } from '@/features/products/productFormApi'
@@ -13,6 +14,8 @@ import RequestState from '@/shared/components/RequestState'
 import { Button } from '@/components/ui/button'
 
 const ProductEdit = () => {
+  const { t } = useText()
+
   const { id } = useParams()
   const productId = parseEditProductId(id)
   const location = useLocation()
@@ -57,16 +60,16 @@ const ProductEdit = () => {
     setResult(null)
     setAttempt((value) => value + 1)
   }
-  if (!productId) return <p role="alert">Invalid product ID.</p>
+  if (!productId) return <p role="alert">{t('Invalid product ID.')}</p>
   if (!result || result.id !== productId) return <RequestState loading />
   if (result.error)
     return <RequestState error={result.error} onRetry={handleReload} />
   if (!result.product || !result.lookups)
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Product not found</h1>
+        <h1 className="text-2xl font-semibold">{t('Product not found')}</h1>
         <Button asChild>
-          <Link to="/products">Back to products</Link>
+          <Link to="/products">{t('Back to products')}</Link>
         </Button>
       </div>
     )

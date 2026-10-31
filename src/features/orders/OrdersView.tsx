@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useId, useState } from 'react'
 import { ChevronDown, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,8 @@ const OrdersSearch = ({
   onSearch?: (query: string) => void
   unavailableId: string
 }) => {
+  const { t } = useText()
+
   const [value, setValue] = useState(query)
   return (
     <form
@@ -36,7 +39,7 @@ const OrdersSearch = ({
       className="relative w-full sm:w-[250px]"
     >
       <label htmlFor="orders-search" className="sr-only">
-        Search orders
+        {t('Search orders')}
       </label>
       <Input
         id="orders-search"
@@ -45,14 +48,14 @@ const OrdersSearch = ({
         onChange={(event) => setValue(event.target.value)}
         disabled={!onSearch}
         aria-describedby={!onSearch ? unavailableId : undefined}
-        placeholder="Search…"
+        placeholder={t('Search…')}
         className="h-14 rounded-sm pr-12 shadow-none"
       />
       <Button
         type="submit"
         variant="ghost"
         size="icon"
-        aria-label="Search orders"
+        aria-label={t('Search orders')}
         disabled={!onSearch}
         aria-describedby={!onSearch ? unavailableId : undefined}
         className="absolute top-2 right-2 text-muted-foreground"
@@ -74,6 +77,8 @@ const OrdersView = ({
   onSearch?: (query: string) => void
   onPageChange?: (page: number) => void
 }) => {
+  const { t } = useText()
+
   const unavailableId = useId()
   const ready = state.status === 'ready' ? state : null
   const rows = ready?.rows || []
@@ -122,7 +127,7 @@ const OrdersView = ({
     <section aria-labelledby="orders-heading" className="min-w-0">
       <div className="flex min-h-10 flex-wrap items-center justify-between gap-4">
         <h1 id="orders-heading" className="text-[26px] leading-9 font-semibold">
-          Orders
+          {t('Orders')}
         </h1>
         <Button
           type="button"
@@ -131,7 +136,7 @@ const OrdersView = ({
           className="h-10 rounded-sm px-4"
         >
           <Plus aria-hidden="true" />
-          Add order
+          {t('Add order')}
         </Button>
       </div>
       <div className="mt-10 flex flex-wrap items-start justify-between gap-4">
@@ -147,7 +152,7 @@ const OrdersView = ({
               htmlFor="orders-sort"
               className="absolute -top-2 left-3 z-10 bg-background px-1 text-xs text-muted-foreground"
             >
-              Filter
+              {t('Filter')}
             </label>
             <select
               id="orders-sort"
@@ -156,7 +161,7 @@ const OrdersView = ({
               aria-describedby={unavailableId}
               className="h-14 w-full appearance-none rounded-sm border bg-background px-4 pr-9 text-sm disabled:opacity-60"
             >
-              <option value="newest">Newest</option>
+              <option value="newest">{t('Newest')}</option>
             </select>
             <ChevronDown
               aria-hidden="true"
@@ -170,7 +175,7 @@ const OrdersView = ({
             variant="outline"
             size="icon"
             disabled
-            aria-label="Edit selected orders"
+            aria-label={t('Edit selected orders')}
             aria-describedby={unavailableId}
             className="size-10 rounded-sm text-primary"
           >
@@ -181,7 +186,7 @@ const OrdersView = ({
             variant="outline"
             size="icon"
             disabled
-            aria-label="Delete selected orders"
+            aria-label={t('Delete selected orders')}
             aria-describedby={unavailableId}
             className="size-10 rounded-sm text-primary"
           >
@@ -190,17 +195,18 @@ const OrdersView = ({
         </div>
       </div>
       <p id={unavailableId} className="sr-only">
-        Search, selection, sorting and order actions require a confirmed Orders
-        API. These actions are unavailable.
+        {t(
+          'Search, selection, sorting and order actions require a confirmed Orders API. These actions are unavailable.',
+        )}
       </p>
       <div className="mt-6 min-w-0 space-y-3">
         <Table className="min-w-[850px]">
-          <caption className="sr-only">Orders</caption>
-          <TableHeader className="border-b border-[#DDE1F0]">
+          <caption className="sr-only">{t('Orders')}</caption>
+          <TableHeader className="border-b border-border">
             <TableRow>
               <TableHead scope="col" className="h-11 w-7 pr-0 pl-2">
                 <Checkbox
-                  aria-label="Select all orders on this page"
+                  aria-label={t('Select all orders on this page')}
                   checked={checked}
                   disabled={!ready || !rows.length}
                   aria-describedby={!ready ? unavailableId : undefined}
@@ -212,23 +218,23 @@ const OrdersView = ({
                   }
                 />
               </TableHead>
-              <TableHead scope="col" className="h-11 w-[17%] text-[#5A6384]">
-                Order
+              <TableHead scope="col" className="h-11 w-[17%] text-admin-muted">
+                {t('Order')}
               </TableHead>
-              <TableHead scope="col" className="h-11 w-[15%] text-[#5A6384]">
-                Date
+              <TableHead scope="col" className="h-11 w-[15%] text-admin-muted">
+                {t('Date')}
               </TableHead>
-              <TableHead scope="col" className="h-11 w-[15%] text-[#5A6384]">
-                Customer
+              <TableHead scope="col" className="h-11 w-[15%] text-admin-muted">
+                {t('Customer')}
               </TableHead>
-              <TableHead scope="col" className="h-11 w-[17%] text-[#5A6384]">
-                Payment status
+              <TableHead scope="col" className="h-11 w-[17%] text-admin-muted">
+                {t('Payment status')}
               </TableHead>
-              <TableHead scope="col" className="h-11 w-[19%] text-[#5A6384]">
-                Order Status
+              <TableHead scope="col" className="h-11 w-[19%] text-admin-muted">
+                {t('Order Status')}
               </TableHead>
-              <TableHead scope="col" className="h-11 w-[13%] text-[#5A6384]">
-                Total
+              <TableHead scope="col" className="h-11 w-[13%] text-admin-muted">
+                {t('Total')}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -244,7 +250,9 @@ const OrdersView = ({
                   >
                     <TableCell className="pr-0 pl-2">
                       <Checkbox
-                        aria-label={`Select order ${row.order}`}
+                        aria-label={t('Select order {{value0}}', {
+                          value0: row.order,
+                        })}
                         checked={selected.includes(row.id)}
                         onCheckedChange={(value) =>
                           selectRow(row.id, value === true)
@@ -275,7 +283,7 @@ const OrdersView = ({
         {(!ready || !rows.length) && content}
         {selected.length > 0 && (
           <p role="status" className="text-sm text-muted-foreground">
-            {selected.length} selected on this page
+            {selected.length} {t('selected on this page')}
           </p>
         )}
         <OrdersPagination

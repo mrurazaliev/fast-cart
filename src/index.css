@@ -1,24 +1,71 @@
 @import 'tailwindcss' source(none);
 @import 'tw-animate-css';
 @source './';
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #fff;
+  --foreground: #151d2b;
+  --primary: #2563eb;
+  --primary-foreground: #fff;
+  --admin-surface: #1c2536;
+  --secondary: #f4f6fa;
+  --secondary-foreground: #111;
+  --muted: #f5f5f5;
+  --muted-foreground: #666;
+  --accent: #f5f5f5;
+  --accent-foreground: #111;
+  --destructive: #db4444;
+  --border: #dedede;
+  --input: #dedede;
+  --ring: #2563eb;
+  --popover: #fff;
+  --popover-foreground: #151d2b;
+  --admin-muted: #626c91;
+  color-scheme: light;
+}
+
+:root.dark {
+  --background: #10151f;
+  --foreground: #eef2f7;
+  --primary: #79a8ff;
+  --primary-foreground: #081c3f;
+  --secondary: #1c2635;
+  --secondary-foreground: #eef2f7;
+  --muted: #1c2635;
+  --muted-foreground: #aeb8c9;
+  --accent: #243247;
+  --accent-foreground: #f4f7fc;
+  --destructive: #ff8e8e;
+  --border: #354154;
+  --input: #43516a;
+  --ring: #79a8ff;
+  --popover: #192332;
+  --popover-foreground: #eef2f7;
+  --admin-muted: #aebbd3;
+  color-scheme: dark;
+}
 
 @theme inline {
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-admin-muted: var(--admin-muted);
   --font-sans: 'Poppins', sans-serif;
-  --color-background: #fff;
-  --color-foreground: #151d2b;
-  --color-primary: #2563eb;
-  --color-primary-foreground: #fff;
-  --color-admin-surface: #1c2536;
-  --color-secondary: #f4f6fa;
-  --color-secondary-foreground: #111;
-  --color-muted: #f5f5f5;
-  --color-muted-foreground: #666;
-  --color-accent: #f5f5f5;
-  --color-accent-foreground: #111;
-  --color-destructive: #db4444;
-  --color-border: #dedede;
-  --color-input: #dedede;
-  --color-ring: #2563eb;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-admin-surface: var(--admin-surface);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --radius-sm: 2px;
   --radius-md: 4px;
   --radius-lg: 6px;

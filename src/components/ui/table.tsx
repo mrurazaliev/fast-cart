@@ -1,12 +1,15 @@
+import { useText } from '@/shared/i18n/useText'
 import type { ComponentProps } from 'react'
 import { cn } from '@/shared/utils'
 
 function Table({ className, ...props }: ComponentProps<'table'>) {
+  const { t } = useText()
+
   return (
     <div
       data-slot="table-container"
       role="region"
-      aria-label="Scrollable table"
+      aria-label={t('Scrollable table')}
       tabIndex={0}
       className="relative w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-primary"
     >

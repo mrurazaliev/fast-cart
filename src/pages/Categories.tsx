@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Pencil, Plus, Trash2 } from 'lucide-react'
@@ -15,6 +16,8 @@ import CategoryPagination from '@/features/categories/CategoryPagination'
 import OtherTabs from '@/shared/components/admin/OtherTabs'
 
 const Categories = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const categories = useAppSelector((state) => state.categories)
   const [params, setParams] = useSearchParams()
@@ -48,27 +51,27 @@ const Categories = () => {
     <section aria-labelledby="categories-heading" className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 id="categories-heading" className="text-2xl font-semibold">
-          Categories
+          {t('Categories')}
         </h1>
         <Button
           disabled={categories.status !== 'succeeded'}
           onClick={() => setForm({})}
         >
           <Plus aria-hidden="true" />
-          Add category
+          {t('Add category')}
         </Button>
       </div>
       <OtherTabs />
       <div className="max-w-xs space-y-2">
         <label htmlFor="category-search" className="sr-only">
-          Search categories
+          {t('Search categories')}
         </label>
         <Input
           id="category-search"
           type="search"
           value={search}
           onChange={(event) => handleSearch(event.target.value)}
-          placeholder="Search categories…"
+          placeholder={t('Search categories…')}
           className="h-14 rounded-sm"
         />
       </div>
@@ -103,7 +106,9 @@ const Categories = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label={`Edit ${category.categoryName}`}
+                      aria-label={t('Edit {{value0}}', {
+                        value0: category.categoryName,
+                      })}
                       className="text-primary"
                       onClick={() => setForm({ category })}
                     >
@@ -112,7 +117,9 @@ const Categories = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      aria-label={`Delete ${category.categoryName}`}
+                      aria-label={t('Delete {{value0}}', {
+                        value0: category.categoryName,
+                      })}
                       className="text-destructive"
                       onClick={() => setDeleting(category)}
                     >
@@ -125,7 +132,9 @@ const Categories = () => {
                     className="h-auto whitespace-normal p-0 text-left"
                   >
                     <Link to={`/subcategories?CategoryId=${category.id}`}>
-                      {category.subCategories.length} subcategories
+                      {t('Subcategories: {{value0}}', {
+                        value0: category.subCategories.length,
+                      })}
                     </Link>
                   </Button>
                 </article>
@@ -135,17 +144,17 @@ const Categories = () => {
             <div role="status" className="space-y-3 py-16 text-center">
               <h2 className="text-xl font-semibold">
                 {categories.items.length
-                  ? 'No categories found'
-                  : 'No categories yet'}
+                  ? t('No categories found')
+                  : t('No categories yet')}
               </h2>
               <p className="text-sm text-muted-foreground">
                 {categories.items.length
-                  ? 'Try another name or clear the search.'
-                  : 'Add a category to start organizing products.'}
+                  ? t('Try another name or clear the search.')
+                  : t('Add a category to start organizing products.')}
               </p>
               {search && (
                 <Button variant="outline" onClick={() => handleSearch('')}>
-                  Clear search
+                  {t('Clear search')}
                 </Button>
               )}
             </div>

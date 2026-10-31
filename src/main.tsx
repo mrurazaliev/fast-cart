@@ -1,3 +1,5 @@
+import '@/shared/i18n/i18n'
+import { ThemeProvider } from '@/shared/preferences/ThemeProvider'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
@@ -80,8 +82,10 @@ if (!root) throw new Error('Root element was not found.')
 
 createRoot(root).render(
   <StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <ThemeProvider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </ThemeProvider>
   </StrictMode>,
 )

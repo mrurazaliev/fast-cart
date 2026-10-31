@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Layers, Pencil, Plus, Search, Trash2 } from 'lucide-react'
@@ -14,6 +15,8 @@ import CategoryPagination from '@/features/categories/CategoryPagination'
 import OtherTabs from '@/shared/components/admin/OtherTabs'
 
 const Subcategories = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const categories = useAppSelector((state) => state.categories)
   const [params, setParams] = useSearchParams()
@@ -77,11 +80,11 @@ const Subcategories = () => {
           }
         >
           <Plus aria-hidden="true" />
-          Add subcategory
+          {t('Add subcategory')}
         </Button>
       </div>
       <h1 id="subcategories-heading" className="text-2xl font-semibold">
-        Subcategories
+        {t('Subcategories')}
       </h1>
       {categories.status === 'idle' || categories.status === 'pending' ? (
         <RequestState loading />
@@ -97,11 +100,12 @@ const Subcategories = () => {
           {categories.items.length === 0 ? (
             <div className="space-y-4 py-10">
               <p>
-                No categories yet. Create a category before adding
-                subcategories.
+                {t(
+                  'No categories yet. Create a category before adding subcategories.',
+                )}
               </p>
               <Button asChild>
-                <Link to="/categories">Go to categories</Link>
+                <Link to="/categories">{t('Go to categories')}</Link>
               </Button>
             </div>
           ) : (
@@ -112,7 +116,7 @@ const Subcategories = () => {
                     htmlFor="subcategory-parent"
                     className="text-sm font-medium"
                   >
-                    Category
+                    {t('Category')}
                   </label>
                   <select
                     id="subcategory-parent"
@@ -122,7 +126,7 @@ const Subcategories = () => {
                     }
                     className="h-12 w-full min-w-0 rounded-sm border bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-primary"
                   >
-                    <option value="">Choose a category</option>
+                    <option value="">{t('Choose a category')}</option>
                     {categories.items.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.categoryName}
@@ -133,14 +137,14 @@ const Subcategories = () => {
                 {selectedCategory && (
                   <div className="relative w-full sm:max-w-[250px]">
                     <label htmlFor="subcategory-search" className="sr-only">
-                      Search subcategories
+                      {t('Search subcategories')}
                     </label>
                     <Input
                       id="subcategory-search"
                       type="search"
                       value={search}
                       onChange={(event) => handleSearch(event.target.value)}
-                      placeholder="Search subcategories…"
+                      placeholder={t('Search subcategories…')}
                       className="h-12 rounded-sm pr-10 shadow-none"
                     />
                     <Search
@@ -156,8 +160,10 @@ const Subcategories = () => {
                   className="py-10 text-sm text-muted-foreground"
                 >
                   {categoryId
-                    ? 'This category is no longer available. Choose another category.'
-                    : 'Choose a category to view its subcategories.'}
+                    ? t(
+                        'This category is no longer available. Choose another category.',
+                      )
+                    : t('Choose a category to view its subcategories.')}
                 </p>
               )}
               {selectedCategory && (
@@ -192,7 +198,9 @@ const Subcategories = () => {
                               variant="ghost"
                               size="icon"
                               className="text-primary"
-                              aria-label={`Edit ${subcategory.subCategoryName}`}
+                              aria-label={t('Edit {{value0}}', {
+                                value0: subcategory.subCategoryName,
+                              })}
                               onClick={() =>
                                 setForm({
                                   subcategoryId: subcategory.id,
@@ -206,7 +214,9 @@ const Subcategories = () => {
                               variant="ghost"
                               size="icon"
                               className="text-destructive"
-                              aria-label={`Delete ${subcategory.subCategoryName}`}
+                              aria-label={t('Delete {{value0}}', {
+                                value0: subcategory.subCategoryName,
+                              })}
                               onClick={() => setDeleting(subcategory)}
                             >
                               <Trash2 aria-hidden="true" />
@@ -219,20 +229,20 @@ const Subcategories = () => {
                     <div role="status" className="space-y-3 py-10 text-center">
                       <h3 className="font-semibold">
                         {selectedCategory.subCategories.length > 0
-                          ? 'No matching subcategories'
-                          : 'No subcategories yet'}
+                          ? t('No matching subcategories')
+                          : t('No subcategories yet')}
                       </h3>
                       <p className="text-sm text-muted-foreground">
                         {selectedCategory.subCategories.length > 0
-                          ? 'Try another name or clear the search.'
-                          : 'Add a subcategory to this category.'}
+                          ? t('Try another name or clear the search.')
+                          : t('Add a subcategory to this category.')}
                       </p>
                       {search && (
                         <Button
                           variant="outline"
                           onClick={() => handleSearch('')}
                         >
-                          Clear search
+                          {t('Clear search')}
                         </Button>
                       )}
                     </div>

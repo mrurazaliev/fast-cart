@@ -1,3 +1,5 @@
+import AppearanceControls from '@/shared/preferences/AppearanceControls'
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
@@ -19,6 +21,8 @@ import { Button } from '@/components/ui/button'
 import { productSaveNoticeSet } from '@/features/products/productsSlice'
 
 const Login = () => {
+  const { t } = useText()
+
   const dispatch = useAppDispatch()
   const store = useStore<RootState>()
   const session = useAppSelector((state) => state.auth.session)
@@ -91,12 +95,15 @@ const Login = () => {
 
   return (
     <main className="grid min-h-svh lg:grid-cols-[53.125%_46.875%]">
+      <div className="fixed top-4 right-4 z-30 rounded-sm border bg-background p-1">
+        <AppearanceControls />
+      </div>
       <section
-        aria-label="FastCart administration"
+        aria-label={t('FastCart administration')}
         className="flex flex-col justify-center gap-5 bg-[#1c2536] bg-[radial-gradient(ellipse_at_top_left,#183e47,transparent_65%)] px-6 py-10 text-white sm:px-12 lg:px-16"
       >
         <p className="text-xl font-medium sm:text-2xl">
-          Welcome to admin panel
+          {t('Welcome to admin panel')}
         </p>
         <Logo large />
       </section>
@@ -106,20 +113,20 @@ const Login = () => {
       >
         <div className="w-full max-w-[400px] space-y-5">
           <h1 id="login-heading" className="text-2xl font-semibold">
-            Log in
+            {t('Log in')}
           </h1>
           {saveNotice && (
             <div
               role="alert"
               className="space-y-2 rounded-sm border border-amber-300 p-3 text-sm"
             >
-              <p>{saveNotice}</p>
+              <p>{t(saveNotice || '')}</p>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => dispatch(productSaveNoticeSet(null))}
               >
-                Dismiss save notice
+                {t('Dismiss save notice')}
               </Button>
             </div>
           )}
@@ -131,14 +138,14 @@ const Login = () => {
           >
             <fieldset disabled={isSubmitting} className="space-y-5">
               <AuthField
-                label="Username"
+                label={t('Username')}
                 field={register('userName')}
                 autoComplete="username"
                 error={errors.userName?.message}
               />
               <div className="relative">
                 <AuthField
-                  label="Password"
+                  label={t('Password')}
                   field={register('password')}
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
@@ -148,7 +155,9 @@ const Login = () => {
                   type="button"
                   variant="ghost"
                   size="icon"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={
+                    showPassword ? t('Hide password') : t('Show password')
+                  }
                   aria-pressed={showPassword}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute top-2 right-2 text-muted-foreground"
@@ -161,24 +170,26 @@ const Login = () => {
                 </Button>
               </div>
               <p className="py-2 text-center text-xs text-muted-foreground">
-                Password recovery is unavailable. Contact your administrator.
+                {t(
+                  'Password recovery is unavailable. Contact your administrator.',
+                )}
               </p>
               <Button
                 type="submit"
                 disabled={isSubmitting}
                 className="h-[54px] w-full rounded-sm text-base"
               >
-                {isSubmitting ? 'Signing in…' : 'Log in'}
+                {isSubmitting ? t('Signing in…') : t('Log in')}
               </Button>
             </fieldset>
             {isSubmitting && (
               <p role="status" className="text-sm text-muted-foreground">
-                Signing in. Admin access will be checked separately.
+                {t('Signing in. Admin access will be checked separately.')}
               </p>
             )}
             {errors.root?.message && (
               <p role="alert" className="text-sm text-destructive">
-                {errors.root.message}
+                {t(errors.root.message || '')}
               </p>
             )}
           </form>

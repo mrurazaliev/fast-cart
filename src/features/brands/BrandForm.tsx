@@ -1,3 +1,4 @@
+import { useText } from '@/shared/i18n/useText'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useForm } from 'react-hook-form'
@@ -21,6 +22,8 @@ const BrandForm = ({
   onCancel: () => void
   onPendingChange?: (pending: boolean) => void
 }) => {
+  const { t } = useText()
+
   const mutation = useBrandMutation()
   const submitting = useRef(false)
   const [loaded, setLoaded] = useState(!brand)
@@ -76,11 +79,12 @@ const BrandForm = ({
       className="space-y-5 rounded-sm border p-5 sm:p-7"
     >
       <h2 id="brand-form-heading" className="text-xl font-semibold">
-        {brand ? 'Edit brand' : 'Add new brand'}
+        {brand ? t('Edit brand') : t('Add new brand')}
       </h2>
       {brand && (
         <p className="text-sm text-muted-foreground">
-          Editing brand #{brand.id}
+          {t('Editing brand #')}
+          {brand.id}
         </p>
       )}
       {!loaded && (
@@ -101,13 +105,13 @@ const BrandForm = ({
         >
           <ProductField
             name="brandName"
-            label="Brand name"
+            label={t('Brand name')}
             error={errors.brandName?.message}
           >
             <Input
               id="brandName"
               {...register('brandName')}
-              placeholder="Brand name"
+              placeholder={t('Brand name')}
               disabled={mutation.pending || mutation.locked}
               aria-invalid={!!errors.brandName}
               aria-describedby={
@@ -118,23 +122,23 @@ const BrandForm = ({
           </ProductField>
           {mutation.error && (
             <p role="alert" className="text-sm text-destructive">
-              {mutation.error}
+              {t(mutation.error || '')}
             </p>
           )}
           {mutation.confirmed && (
             <p role="status" className="text-sm">
-              {brand ? 'Brand updated.' : 'Brand created.'}
+              {brand ? t('Brand updated.') : t('Brand created.')}
             </p>
           )}
           {mutation.refreshError && (
             <div role="alert" className="space-y-2 text-sm">
-              <p>{mutation.refreshError}</p>
+              <p>{t(mutation.refreshError || '')}</p>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => void mutation.reload()}
               >
-                Reload list
+                {t('Reload list')}
               </Button>
             </div>
           )}
@@ -146,12 +150,16 @@ const BrandForm = ({
                 disabled={mutation.pending}
                 onClick={onCancel}
               >
-                {brand ? 'Cancel' : 'Add another brand'}
+                {brand ? t('Cancel') : t('Add another brand')}
               </Button>
             )}
             {!mutation.locked && (
               <Button type="submit" disabled={mutation.pending}>
-                {mutation.pending ? 'Saving…' : brand ? 'Save' : 'Create'}
+                {mutation.pending
+                  ? t('Saving…')
+                  : brand
+                    ? t('Save')
+                    : t('Create')}
               </Button>
             )}
           </div>
@@ -159,7 +167,7 @@ const BrandForm = ({
       )}
       {!loaded && (
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
+          {t('Cancel')}
         </Button>
       )}
     </section>
