@@ -17,9 +17,17 @@ import {
   removeFromWishlist,
 } from '@/features/wishlist/wishlistSlice'
 
-type ProductCardProps = { product: Product; wishlist?: boolean }
+type ProductCardProps = {
+  product: Product
+  wishlist?: boolean
+  carousel?: boolean
+}
 
-const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  wishlist = false,
+  carousel = false,
+}: ProductCardProps) => {
   const dispatch = useAppDispatch()
   const saved = useAppSelector((state) =>
     state.wishlist.ids.includes(product.id),
@@ -35,11 +43,13 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
       aria-label={product.productName}
       className="product-card relative min-w-0 space-y-3"
     >
-      <div className="relative overflow-hidden rounded-sm bg-secondary">
+      <div
+        className={`relative overflow-hidden bg-secondary ${carousel ? 'rounded-md' : 'rounded-sm'}`}
+      >
         <Link
           to={detailsUrl}
           aria-label={`View ${product.productName}`}
-          className="flex h-64 items-center justify-center p-8 pb-12 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
+          className={`flex items-center justify-center focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary ${carousel ? 'h-56 p-6 pb-12 sm:h-60' : 'h-64 p-8 pb-12'}`}
         >
           {imageUrl && failedImage !== imageUrl ? (
             <img
@@ -112,7 +122,9 @@ const ProductCard = ({ product, wishlist = false }: ProductCardProps) => {
           className="h-10 w-full rounded-none bg-black text-white hover:bg-black/90 disabled:opacity-70"
         />
       </div>
-      <h3 className="line-clamp-2 min-h-12 text-base leading-6 font-medium">
+      <h3
+        className={`line-clamp-2 font-medium ${carousel ? 'min-h-10 text-sm leading-5 sm:min-h-12 sm:text-base sm:leading-6' : 'min-h-12 text-base leading-6'}`}
+      >
         <Link
           to={detailsUrl}
           className="rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-primary"
