@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { checkoutSchema } from '@/features/checkout/checkoutSchema'
@@ -39,8 +39,15 @@ const fields = [
   type?: string
 }[]
 
-const CheckoutForm = ({ disabled }: { disabled: boolean }) => {
-  const [validated, setValidated] = useState(false)
+const CheckoutForm = ({
+  disabled,
+  onSave,
+}: {
+  disabled: boolean
+  onSave: (values: CheckoutValues) => void
+}) => {
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const submitting = useRef(false)
   const {
     register,
     handleSubmit,
@@ -61,14 +68,25 @@ const CheckoutForm = ({ disabled }: { disabled: boolean }) => {
   return (
     <form
       noValidate
-      onChange={() => setValidated(false)}
+      onChange={() => setSaveError(null)}
       onSubmit={(event) => {
         event.preventDefault()
-        if (disabled || isSubmitting) return
-        void handleSubmit(
-          () => setValidated(true),
-          () => setValidated(false),
-        )(event)
+        if (disabled || isSubmitting || submitting.current) return
+        submitting.current = true
+        setSaveError(null)
+        void handleSubmit((values) => {
+          try {
+            onSave(values)
+          } catch (error) {
+            setSaveError(
+              error instanceof Error
+                ? error.message
+                : 'Unable to save locally. Please try again.',
+            )
+          }
+        })(event).finally(() => {
+          submitting.current = false
+        })
       }}
       aria-describedby="checkout-availability-note checkout-form-note"
       aria-busy={isSubmitting}
@@ -110,7 +128,7 @@ const CheckoutForm = ({ disabled }: { disabled: boolean }) => {
           )
         })}
         <Button type="submit" className="h-12 w-full rounded-sm">
-          Check billing details
+          {isSubmitting ? 'Saving locally…' : 'Save local order'}
         </Button>
       </fieldset>
       {isSubmitted && !isValid && (
@@ -118,15 +136,15 @@ const CheckoutForm = ({ disabled }: { disabled: boolean }) => {
           Please correct the highlighted fields. No information was sent.
         </p>
       )}
-      {validated && !disabled && (
-        <p role="status" className="text-sm">
-          Details checked locally. No order was created and no information was
-          sent.
+      {saveError && (
+        <p role="alert" className="text-sm text-destructive">
+          {saveError}
         </p>
       )}
       <p id="checkout-form-note" className="text-xs text-muted-foreground">
-        These details are only used for local validation. They are not saved for
-        your next visit or submitted to the server.
+        Saving stores your billing details and a cart snapshot in this browser
+        for this account. No real order or payment is submitted. You can delete
+        the saved local order afterwards.
       </p>
     </form>
   )

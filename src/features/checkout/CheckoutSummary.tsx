@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import type { Cart, CartLine } from '@/features/cart/cartApi'
 import { getImageUrl } from '@/shared/api/imageUrl'
 import { formatPrice, hasValidDiscount } from '@/shared/productPrice'
-import { Button } from '@/components/ui/button'
 
 const CheckoutImage = ({ line }: { line: CartLine }) => {
   const url = getImageUrl(line.product.image)
@@ -117,20 +116,10 @@ const CheckoutSummary = ({
         Payment, delivery pricing and coupons are not connected. No payment
         method has been selected.
       </p>
-      <div className="space-y-3">
-        <Button
-          type="button"
-          disabled
-          aria-describedby="checkout-order-note"
-          className="h-12 w-full rounded-sm px-10 sm:w-auto"
-        >
-          Place Order unavailable
-        </Button>
-        <p id="checkout-order-note" className="text-sm text-muted-foreground">
-          Orders cannot be submitted here yet. No order or payment will be
-          created. Your cart will be kept.
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Use “Save local order” to keep a demo checkout on this device. Your
+        server cart will be kept.
+      </p>
     </section>
   )
 }
